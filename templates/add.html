@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Application</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="navbar">
+        <h1>📋 Job Application Tracker</h1>
+        <div>
+            <a href="/dashboard">Dashboard</a>
+            <a href="/logout">Logout</a>
+        </div>
+    </div>
+    <div class="container">
+        <div class="card" style="max-width:500px; margin: 40px auto;">
+            <h2>Add New Application</h2>
+            <form method="POST">
+                <label>Company Name</label>
+                <input type="text" name="company" required>
+                <label>Position</label>
+                <input type="text" name="position" required>
+                <label>Application Date</label>
+                <input type="date" name="date" required>
+                <label>Status</label>
+                <select name="status">
+                    <option>Pending</option>
+                    <option>Applied</option>
+                    <option>Written Test</option>
+                    <option>Interview</option>
+                    <option>Offer</option>
+                    <option>Rejected</option>
+                </select>
+                <button type="submit">Add Application</button>
+                <a href="/dashboard" class="btn btn-danger" style="margin-left:10px;">Cancel</a>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

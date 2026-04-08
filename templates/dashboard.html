@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="navbar">
+        <h1>📋 Job Application Tracker</h1>
+        <div>
+            <span style="margin-right:15px;">Welcome, {{ username }}!</span>
+            <a href="/add">+ Add Application</a>
+            <a href="/logout">Logout</a>
+        </div>
+    </div>
+    <div class="container">
+
+        <!-- Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>{{ stats.total }}</h3>
+                <p>Total Applications</p>
+            </div>
+            <div class="stat-card">
+                <h3>{{ stats.interviews }}</h3>
+                <p>Interviews</p>
+            </div>
+            <div class="stat-card">
+                <h3>{{ stats.interview_rate }}%</h3>
+                <p>Interview Rate</p>
+            </div>
+        </div>
+
+        <!-- Applications Table -->
+        <div class="card">
+            <h2>All Applications</h2>
+            {% if applications %}
+            <table>
+                <tr>
+                    <th>Company</th>
+                    <th>Position</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+                {% for i, app in applications %}
+                <tr>
+                    <td>{{ app.company }}</td>
+                    <td>{{ app.position }}</td>
+                    <td>{{ app.date }}</td>
+                    <td>
+                        <span class="status-badge status-{{ app.status.replace(' ', '-') }}">
+                            {{ app.status }}
+                        </span>
+                    </td>
+                    <td>
+                        <a href="/update/{{ i }}" class="btn btn-warning" style="padding:5px 10px; font-size:12px;">Update</a>
+                        <a href="/delete/{{ i }}" class="btn btn-danger" style="padding:5px 10px; font-size:12px;">Delete</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+            {% else %}
+            <p style="color:#888; text-align:center; padding:30px;">No applications yet. <a href="/add">Add one now!</a></p>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

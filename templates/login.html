@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Register</title>
+    <title>Login</title>
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
@@ -12,18 +12,23 @@
     </div>
     <div class="container">
         <div class="card" style="max-width:400px; margin: 40px auto;">
-            <h2>Register</h2>
+            <h2>Login</h2>
             {% if error %}
             <div class="alert alert-error">{{ error }}</div>
+            {% endif %}
+            {% if success %}
+            <div class="alert alert-success">{{ success }}</div>
             {% endif %}
             <form method="POST">
                 <label>Username</label>
                 <input type="text" name="username" required>
                 <label>Password</label>
                 <input type="password" name="password" required>
-                <button type="submit">Register</button>
+                <button type="submit">Login</button>
             </form>
-            <p style="margin-top:15px; font-size:14px;">Already have an account? <a href="/login">Login</a></p>
+            <p style="margin-top:15px; font-size:14px;">
+                Don't have an account? <a href="/register">Register</a>
+            </p>
         </div>
     </div>
 </body>

@@ -66,5 +66,16 @@
             {% endif %}
         </div>
     </div>
+    <!-- Chart -->
+        {% if chart_available %}
+        <div class="card">
+            <h2>📊 Statistics Chart</h2>
+            <img src="/static/chart.png" style="width:100%; border-radius:8px;">
+        </div>
+        {% else %}
+        <div class="card" style="text-align:center; color:#888; padding:30px;">
+            <p>No data yet. Add some applications to see your chart! 📈</p>
+        </div>
+        {% endif %}
 </body>
 </html>

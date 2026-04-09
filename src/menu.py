@@ -1,6 +1,6 @@
-from manager import add_application, delete_application, update_status, load_applications
-from display import show_all, filter_by_status
-from stats import show_stats, show_chart
+from src.manager import add_application, delete_application, update_status, load_applications
+from src.display import show_all, filter_by_status
+from src.stats import show_stats, show_chart
 
 def main_menu(user):
     while True:

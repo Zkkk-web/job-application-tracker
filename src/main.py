@@ -1,5 +1,5 @@
-from auth import login, register
-from menu import main_menu
+from src.auth import login, register
+from src.menu import main_menu
 
 def main():
     print("=" * 40)

@@ -1,6 +1,7 @@
-from src.manager import add_application, delete_application, update_status, load_applications
-from src.display import show_all, filter_by_status
-from src.stats import show_stats, show_chart
+from manager import add_application, delete_application, update_status, load_applications
+from display import show_all, filter_by_status
+from stats import show_stats, generate_chart
+
 
 def main_menu(user):
     while True:
@@ -32,7 +33,7 @@ def main_menu(user):
         elif choice == "6":
             show_stats(applications)
         elif choice == "7":
-            show_chart(applications)
+            generate_chart(applications)
         elif choice == "0":
             print("Goodbye!")
             break

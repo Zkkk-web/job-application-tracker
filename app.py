@@ -1,7 +1,8 @@
+
 from flask import Flask, render_template, request, redirect, url_for, session
-from auth import register_web, login_web
-from manager import load_applications, add_application, delete_application, update_status
-from stats import show_stats
+from src.auth import register_web, login_web
+from src.manager import load_applications, add_application,save_applications, delete_application, update_status
+from src.stats import show_stats, generate_chart
 
 app = Flask(__name__)
 app.secret_key = "job_tracker_secret_key"
@@ -53,7 +54,6 @@ def dashboard():
     username = session['username']
     applications = load_applications(username)
     
-    from stats import show_stats, generate_chart
     stats = show_stats(applications) or {
         'total': 0,
         'interviews': 0,
@@ -100,7 +100,6 @@ def delete(index):
     applications = load_applications(username)
     if 0 <= index < len(applications):
         applications.pop(index)
-        from manager import save_applications
         save_applications(username, applications)
     return redirect(url_for('dashboard'))
 
@@ -113,7 +112,6 @@ def update(index):
     applications = load_applications(username)
     if request.method == 'POST':
         applications[index]['status'] = request.form['status']
-        from manager import save_applications
         save_applications(username, applications)
         return redirect(url_for('dashboard'))
     return render_template('update.html',

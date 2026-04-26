@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{% block title %}ApplyTrack{% endblock %}</title>
+  <link rel="stylesheet" href="{{static/sidemenu.css}}">
+</head>
+<body>
+
+  <!-- overlay (clicking it closes the menu) -->
+  <div class="menu-overlay" id="menuOverlay" onclick="closeMenu()"></div>
+
+  <!-- side menu -->
+  <nav class="sidemenu" id="sidemenu">
+    <div class="menu-header">
+      <strong>ApplyTrack</strong>
+    </div>
+
+    <div class="menu-nav">
+      <div class="menu-section">Main</div>
+      <!-- CHANGE: set class="menu-item active" on whichever matches the current page -->
+      <a href="/" class="menu-item">Dashboard</a>
+      <a href="/board" class="menu-item">Kanban board</a>
+      <a href="/upcoming" class="menu-item">Upcoming</a>
+
+      <div class="menu-section">Tools</div>
+      <a href="/resume" class="menu-item">Resume builder</a>
+      <a href="/emails" class="menu-item">Email drafts</a>
+      <a href="/stats" class="menu-item">Stats</a>
+    </div>
+
+    <div class="menu-footer">
+      Logged in as {{ current_user.username }}
+    </div>
+  </nav>
+
+  <!-- top bar -->
+  <header style="display:flex; align-items:center; gap:12px; padding:14px 20px;
+                 border-bottom:1px solid #eee; position:sticky; top:0; background:#fff; z-index:100;">
+    <button class="hamburger" id="hamburger" onclick="toggleMenu()">
+      <span></span><span></span><span></span>
+    </button>
+    <span style="font-weight:600;">ApplyTrack</span>
+  </header>
+
+  <!-- page content goes here -->
+  <main style="padding: 24px 28px;">
+    {% block content %}{% endblock %}
+  </main>
+
+  <script src="{{static/animations.js}}"></script>
+  <script>
+    function toggleMenu() {
+      const open = document.getElementById('sidemenu').classList.toggle('open');
+      document.getElementById('menuOverlay').classList.toggle('visible', open);
+      document.getElementById('hamburger').classList.toggle('open', open);
+    }
+    function closeMenu() {
+      document.getElementById('sidemenu').classList.remove('open');
+      document.getElementById('menuOverlay').classList.remove('visible');
+      document.getElementById('hamburger').classList.remove('open');
+    }
+  </script>
+</body>
+</html>

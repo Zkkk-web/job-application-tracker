@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <title>Job Application Tracker</title>
     <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="/static/side_menu.css">
+    
     <style>
         .hero {
             display: flex;
@@ -122,7 +124,26 @@
     </style>
 </head>
 <body>
+    <div class="menu-overlay" id="menuOverlay" onclick="closeMenu()"></div>
+
+    <nav class="sidemenu" id="sidemenu">
+        <div class="menu-header">
+            <strong>ApplyTrack</strong>
+        </div>
+        <div class="menu-nav">
+            <div class="menu-section">Main</div>
+            <a href="/" class="menu-item active">Home</a>
+            <div class="menu-section">Account</div>
+            <a href="/login" class="menu-item">Login</a>
+            <a href="/register" class="menu-item">Register</a>
+        </div>
+    </nav>
     <div class="navbar">
+        <div class="menu">
+            <button class="hamburger" id="hamburger" onclick="toggleMenu()">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
         <div class="brand">
             <span class="brand-icon">📋</span>
             <div class="brand-text">
@@ -169,5 +190,17 @@
         </div>
     </div>
 
+    <script>
+        function toggleMenu() {
+            const open = document.getElementById('sidemenu').classList.toggle('open');
+            document.getElementById('menuOverlay').classList.toggle('visible', open);
+            document.getElementById('hamburger').classList.toggle('open', open);
+        }
+        function closeMenu() {
+            document.getElementById('sidemenu').classList.remove('open');
+            document.getElementById('menuOverlay').classList.remove('visible');
+            document.getElementById('hamburger').classList.remove('open');
+        }
+    </script>
 </body>
 </html>

@@ -4,12 +4,38 @@
     <meta charset="UTF-8">
     <title>Dashboard</title>
     <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="/static/sidemenu.css">
 </head>
 <body>
+    <div class="menu-overlay" id="menuOverlay" onclick="closeMenu()"></div>
+
+    <nav class="sidemenu" id="sidemenu">
+        <div class="menu-header">
+            <strong>ApplyTrack</strong>
+        </div>
+        <div class="menu-nav">
+            <div class="menu-section">Main</div>
+            <a href="/" class="menu-item active">Dashboard</a>
+            <a href="/board" class="menu-item">Kanban board</a>
+
+            <div class="menu-section">Tools</div>
+            <a href="/resume" class="menu-item">Resume builder</a>
+            <a href="/emails" class="menu-item">Email drafts</a>
+            <a href="/stats" class="menu-item">Stats</a>
+        </div>
+        <div class="menu-footer">Welcome, {{ username }}!</div>
+    </nav>
+
+
     <div class="navbar">
+
+        <button class="hamburger" id="hamburger" onclick="toggleMenu()">
+            <span></span><span></span><span></span>
+        </button> <!-- the menu button [3 horizontal lines] -->
+
         <h1>📋 Job Application Tracker</h1>
         <div>
-            <span style="margin-right:15px;">Welcome, {{ username }}!</span>
+            <span style="margin: right 16px;">Welcome, {{ username }}!</span>
             <a href="/add">+ Add Application</a>
             <a href="/logout">Logout</a>
         </div>
@@ -77,5 +103,21 @@
             <p>No data yet. Add some applications to see your chart! 📈</p>
         </div>
         {% endif %}
+
+    <!--for the menu button -->
+    <script src="/static/js/animations.js"></script>
+    <script>
+        function toggleMenu() {
+            const open = document.getElementById('sidemenu').classList.toggle('open');
+            document.getElementById('menuOverlay').classList.toggle('visible', open);
+            document.getElementById('hamburger').classList.toggle('open', open);
+        }
+        function closeMenu() {
+            document.getElementById('sidemenu').classList.remove('open');
+            document.getElementById('menuOverlay').classList.remove('visible');
+            document.getElementById('hamburger').classList.remove('open');
+        }
+    </script>
+
 </body>
 </html>

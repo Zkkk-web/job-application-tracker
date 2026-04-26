@@ -1,0 +1,16 @@
+{
+    "admin": [
+        {
+            "company": "apple ",
+            "position": "software dev ",
+            "date": "2026-04-26",
+            "status": "Interview"
+        },
+        {
+            "company": "google ",
+            "position": "software engineer",
+            "date": "2026-04-28",
+            "status": "Applied"
+        }
+    ]
+}

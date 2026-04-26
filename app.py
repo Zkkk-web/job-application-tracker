@@ -1,7 +1,7 @@
 
 from flask import Flask, render_template, request, redirect, url_for, session
 from src.auth import register_web, login_web
-from src.manager import load_applications, add_application,save_applications, delete_application, update_status
+from src.manager import load_applications, add_application, save_applications, delete_application, update_status
 from src.stats import show_stats, generate_chart
 
 app = Flask(__name__)
@@ -78,19 +78,15 @@ def add():
         return redirect(url_for('login'))
     if request.method == 'POST':
         username = session['username']
-        applications = load_applications(username)
         new_app = {
             'company': request.form['company'],
             'position': request.form['position'],
             'date': request.form['date'],
             'status': request.form['status']
         }
-        applications.append(new_app)
-        from manager import save_applications
-        save_applications(username, applications)
+        add_application(username, new_app)
         return redirect(url_for('dashboard'))
     return render_template('add.html')
-
 # ─── Delete Application ─────────────────────────────
 @app.route('/delete/<int:index>')
 def delete(index):

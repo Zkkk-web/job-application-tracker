@@ -9,6 +9,18 @@
 <body>
     <div class="menu-overlay" id="menuOverlay" onclick="closeMenu()"></div>
 
+    <!-- Logout confirm modal -->
+    <div class="logout-overlay" id="logoutOverlay">
+    <div class="logout-modal">
+        <p class="logout-title">Log out of ApplyTrack?</p>
+        <p class="logout-sub">You'll need to sign back in to access your applications.</p>
+        <div class="logout-buttons">
+        <a href="/logout" class="logout-confirm">Log out</a>
+        <button class="logout-cancel" onclick="closeLogout()">Cancel</button>
+        </div>
+    </div>
+    </div>
+
     <nav class="sidemenu" id="sidemenu">
         <div class="menu-header">
             <strong>ApplyTrack</strong>
@@ -25,7 +37,7 @@
             <a href="/emails" class="menu-item">Email drafts</a>
             <a href="/stats" class="menu-item">Stats</a>
         </div>
-        <div class="menu-footer">Welcome, {{ username }}!</div>
+        <div class="menu-footer"> {{ username }} </div>
     </nav>
 
 
@@ -37,10 +49,9 @@
 
         <h1>📋 Job Application Tracker</h1>
         <div>
-            <span style="margin: right 16px;">Welcome, {{ username }}!</span>
+            <span style="margin: right 16px;"> {{ username }} </span>
             <a href="/add">+ Add Application</a>
-            <a href="/logout">Logout</a>
-        </div>
+            <a href="#" onclick="openLogout(); return false;">Logout</a>        </div>
     </div>
     <div class="container">
 
@@ -119,7 +130,19 @@
             document.getElementById('menuOverlay').classList.remove('visible');
             document.getElementById('hamburger').classList.remove('open');
         }
+        // logout modal functions
+        function openLogout() {
+        document.getElementById('logoutOverlay').classList.add('active');
+        }
+        function closeLogout() {
+            document.getElementById('logoutOverlay').classList.remove('active');
+        }
+        // close if clicking outside the modal box
+        document.getElementById('logoutOverlay').addEventListener('click', function(e) {
+            if (e.target === this) closeLogout();
+        });
     </script>
+    
 
 </body>
 </html>

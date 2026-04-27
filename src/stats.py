@@ -35,7 +35,7 @@ def generate_chart(applications):
     colors = {
         "Pending": "#c8f1f4",
         "Applied": "#D3E8C7",
-        "Written Test": "#f7e0d9",
+        "Written Test": "#fccaba",
         "Interview": "#d4b7e0",
         "Offer": "#2c9156",
         "Rejected": "#e7a69f"
@@ -56,7 +56,7 @@ def generate_chart(applications):
     )
     for text in autotexts:
         text.set_fontsize(10)
-        text.set_color('white')
+        text.set_color('black')
         text.set_fontweight('bold')
     ax1.set_title("Status Distribution", fontsize=14, fontweight='bold', pad=15)
 

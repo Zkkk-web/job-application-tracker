@@ -1,0 +1,176 @@
+{% extends "base.html" %}
+{% block title %}Email Drafts – ApplyTrack{% endblock %}
+
+{% block nav_emails %}active{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <h2 class="fw-bold mb-1">Email Drafts</h2>
+  <p class="text-muted mb-4">Select an application and email type to generate a draft you can copy and send.</p>
+
+  <div class="row g-4">
+
+    <!-- Controls -->
+    <div class="col-lg-4">
+      <div class="card shadow-sm">
+        <div class="card-header bg-white fw-semibold border-bottom">Generate a Draft</div>
+        <div class="card-body">
+
+          <div class="mb-3">
+            <label class="form-label small fw-semibold">Application</label>
+            <select class="form-select" id="app-select">
+              <option value="">-- Select an application --</option>
+              {% for app in apps %}
+              <option value="{{ app.id }}">{{ app.company }} – {{ app.role }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label small fw-semibold">Email Type</label>
+            <div class="list-group" id="email-type-list">
+              {% for et in email_types %}
+              <button type="button"
+                      class="list-group-item list-group-item-action small email-type-btn"
+                      data-type="{{ et.type }}">
+                {{ et.label }}
+              </button>
+              {% endfor %}
+            </div>
+          </div>
+
+          <button class="btn btn-primary w-100" id="generate-btn" disabled>
+            Generate Draft
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Draft output -->
+    <div class="col-lg-8">
+      <div class="card shadow-sm h-100" id="draft-card">
+        <div class="card-header bg-white d-flex justify-content-between align-items-center border-bottom">
+          <span class="fw-semibold" id="draft-label">Your Draft</span>
+          <button class="btn btn-sm btn-outline-secondary" id="copy-btn" style="display:none;">
+            Copy to Clipboard
+          </button>
+        </div>
+        <div class="card-body">
+
+          <!-- Empty state -->
+          <div id="empty-state" class="text-center text-muted py-5">
+            <div class="fs-1 mb-2">✉️</div>
+            <p>Select an application and email type to get started.</p>
+          </div>
+
+          <!-- Draft display -->
+          <div id="draft-display" style="display:none;">
+            <div class="mb-2">
+              <label class="form-label small fw-semibold text-muted">Subject</label>
+              <div class="form-control bg-light" id="draft-subject"></div>
+            </div>
+            <div>
+              <label class="form-label small fw-semibold text-muted">Body</label>
+              <textarea class="form-control" id="draft-body" rows="14"
+                        style="font-family: monospace; font-size: 0.875rem;"></textarea>
+            </div>
+          </div>
+
+          <!-- Loading spinner -->
+          <div id="draft-loading" style="display:none;" class="text-center py-5">
+            <div class="spinner-border text-primary" role="status"></div>
+            <p class="text-muted mt-2 small">Generating draft…</p>
+          </div>
+
+          <!-- Error -->
+          <div id="draft-error" style="display:none;" class="alert alert-danger small"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  let selectedAppId = null;
+  let selectedType = null;
+
+  document.getElementById('app-select').addEventListener('change', function () {
+    selectedAppId = this.value;
+    updateGenerateBtn();
+  });
+
+  document.querySelectorAll('.email-type-btn').forEach(btn => {
+    btn.addEventListener('click', function () {
+      document.querySelectorAll('.email-type-btn').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+      selectedType = this.dataset.type;
+      updateGenerateBtn();
+    });
+  });
+
+  function updateGenerateBtn() {
+    document.getElementById('generate-btn').disabled = !(selectedAppId && selectedType);
+  }
+
+  document.getElementById('generate-btn').addEventListener('click', async () => {
+    showLoading();
+    try {
+      const res = await fetch('/email-drafts/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ app_id: selectedAppId, email_type: selectedType })
+      });
+      const data = await res.json();
+      if (data.success) {
+        showDraft(data);
+      } else {
+        showError(data.error || 'Failed to generate draft.');
+      }
+    } catch (err) {
+      showError('Network error. Please try again.');
+    }
+  });
+
+  function showLoading() {
+    document.getElementById('empty-state').style.display = 'none';
+    document.getElementById('draft-display').style.display = 'none';
+    document.getElementById('draft-error').style.display = 'none';
+    document.getElementById('draft-loading').style.display = 'block';
+    document.getElementById('copy-btn').style.display = 'none';
+  }
+
+  function showDraft(data) {
+    document.getElementById('draft-loading').style.display = 'none';
+    document.getElementById('draft-error').style.display = 'none';
+    document.getElementById('draft-subject').textContent = data.subject;
+    document.getElementById('draft-body').value = data.body;
+    document.getElementById('draft-label').textContent = data.label;
+    document.getElementById('draft-display').style.display = 'block';
+    document.getElementById('copy-btn').style.display = 'inline-block';
+  }
+
+  function showError(msg) {
+    document.getElementById('draft-loading').style.display = 'none';
+    document.getElementById('draft-error').textContent = msg;
+    document.getElementById('draft-error').style.display = 'block';
+  }
+
+  document.getElementById('copy-btn').addEventListener('click', () => {
+    const subject = document.getElementById('draft-subject').textContent;
+    const body = document.getElementById('draft-body').value;
+    const full = `Subject: ${subject}\n\n${body}`;
+    navigator.clipboard.writeText(full).then(() => {
+      const btn = document.getElementById('copy-btn');
+      btn.textContent = 'Copied!';
+      btn.classList.replace('btn-outline-secondary', 'btn-success');
+      setTimeout(() => {
+        btn.textContent = 'Copy to Clipboard';
+        btn.classList.replace('btn-success', 'btn-outline-secondary');
+      }, 2000);
+    });
+  });
+</script>
+{% endblock %}

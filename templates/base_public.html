@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{% block title %}ApplyTrack{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='side_menu.css') }}">
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+
+  <!-- overlay -->
+  <div class="menu-overlay" id="menuOverlay" onclick="closeMenu()"></div>
+
+  <!-- side menu (public: only Home / Login / Register) -->
+  <nav class="sidemenu" id="sidemenu">
+    <div class="menu-header">
+      <strong>ApplyTrack</strong>
+    </div>
+    <div class="menu-nav">
+      <div class="menu-section">Account</div>
+      <a href="/"         class="menu-item {% block nav_home %}{% endblock %}">Home</a>
+      <a href="/login"    class="menu-item {% block nav_login %}{% endblock %}">Login</a>
+      <a href="/register" class="menu-item {% block nav_register %}{% endblock %}">Register</a>
+    </div>
+  </nav>
+
+  <!-- top navbar (public) -->
+  <div class="navbar">
+    <button class="hamburger" id="hamburger" onclick="toggleMenu()">
+      <span></span><span></span><span></span>
+    </button>
+    <h1>📋 Job Application Tracker</h1>
+    <div>
+      <a href="/login">Login</a>
+      <a href="/register">Register</a>
+    </div>
+  </div>
+
+  <!-- page content -->
+  <div class="container">
+    {% block content %}{% endblock %}
+  </div>
+
+  <script>
+    function toggleMenu() {
+      const open = document.getElementById('sidemenu').classList.toggle('open');
+      document.getElementById('menuOverlay').classList.toggle('visible', open);
+      document.getElementById('hamburger').classList.toggle('open', open);
+    }
+    function closeMenu() {
+      document.getElementById('sidemenu').classList.remove('open');
+      document.getElementById('menuOverlay').classList.remove('visible');
+      document.getElementById('hamburger').classList.remove('open');
+    }
+  </script>
+  {% block extra_scripts %}{% endblock %}
+
+</body>
+</html>

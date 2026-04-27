@@ -1,30 +1,26 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Register</title>
-    <link rel="stylesheet" href="/static/style.css">
-</head>
-<body>
-    <div class="navbar">
-        <h1>📋 Job Application Tracker</h1>
-        <div><a href="/">Home</a></div>
-    </div>
-    <div class="container">
-        <div class="card" style="max-width:400px; margin: 40px auto;">
-            <h2>Register</h2>
-            {% if error %}
-            <div class="alert alert-error">{{ error }}</div>
-            {% endif %}
-            <form method="POST">
-                <label>Username</label>
-                <input type="text" name="username" required>
-                <label>Password</label>
-                <input type="password" name="password" required>
-                <button type="submit">Register</button>
-            </form>
-            <p style="margin-top:15px; font-size:14px;">Already have an account? <a href="/login">Login</a></p>
-        </div>
-    </div>
-</body>
-</html>
+{% extends "base_public.html" %}
+
+{% block title %}Register — ApplyTrack{% endblock %}
+
+{% block nav_register %}active{% endblock %}
+
+{% block content %}
+
+  <div class="card" style="max-width:400px; margin: 40px auto;">
+    <h2>Register</h2>
+    {% if error %}
+    <div class="alert alert-error">{{ error }}</div>
+    {% endif %}
+    <form method="POST">
+      <label>Username</label>
+      <input type="text" name="username" required>
+      <label>Password</label>
+      <input type="password" name="password" required>
+      <button type="submit">Register</button>
+    </form>
+    <p style="margin-top:15px; font-size:14px;">
+      Already have an account? <a href="/login">Login</a>
+    </p>
+  </div>
+
+{% endblock %}

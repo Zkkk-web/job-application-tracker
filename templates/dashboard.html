@@ -1,148 +1,74 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Dashboard</title>
-    <link rel="stylesheet" href="./static/style.css">
-    <link rel="stylesheet" href="./static/side_menu.css">
-</head>
-<body>
-    <div class="menu-overlay" id="menuOverlay" onclick="closeMenu()"></div>
+{% extends "base.html" %}
 
-    <!-- Logout confirm modal -->
-    <div class="logout-overlay" id="logoutOverlay">
-    <div class="logout-modal">
-        <p class="logout-title">Log out of ApplyTrack?</p>
-        <p class="logout-sub">You'll need to sign back in to access your applications.</p>
-        <div class="logout-buttons">
-        <a href="/logout" class="logout-confirm">Log out</a>
-        <button class="logout-cancel" onclick="closeLogout()">Cancel</button>
-        </div>
+{% block title %}Dashboard — ApplyTrack{% endblock %}
+
+{# Mark the active sidemenu link #}
+{% block nav_dashboard %}active{% endblock %}
+
+{% block content %}
+
+  <!-- Stats -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <h3>{{ stats.total }}</h3>
+      <p>Total Applications</p>
     </div>
+    <div class="stat-card">
+      <h3>{{ stats.interviews }}</h3>
+      <p>Interviews</p>
     </div>
-
-    <nav class="sidemenu" id="sidemenu">
-        <div class="menu-header">
-            <strong>ApplyTrack</strong>
-        </div>
-        <div class="menu-nav">
-            <div class="menu-section">Main</div>
-            <a href="/" class="menu-item active">Dashboard</a>
-            <a href="/board" class="menu-item">Kanban board</a>
-            <a href="/calendar" class="menu-item">Calendar</a>
-
-
-            <div class="menu-section">Tools</div>
-            <a href="/resume" class="menu-item">Resume builder</a>
-            <a href="/emails" class="menu-item">Email drafts</a>
-            <a href="/stats" class="menu-item">Stats</a>
-        </div>
-        <div class="menu-footer"> {{ username }} </div>
-    </nav>
-
-
-    <div class="navbar">
-
-        <button class="hamburger" id="hamburger" onclick="toggleMenu()">
-            <span></span><span></span><span></span>
-        </button> <!-- the menu button [3 horizontal lines] -->
-
-        <h1>📋 Job Application Tracker</h1>
-        <div>
-            <span style="margin: right 16px;"> {{ username }} </span>
-            <a href="/add">+ Add Application</a>
-            <a href="#" onclick="openLogout(); return false;">Logout</a>        </div>
+    <div class="stat-card">
+      <h3>{{ stats.interview_rate }}%</h3>
+      <p>Interview Rate</p>
     </div>
-    <div class="container">
+  </div>
 
-        <!-- Stats -->
-        <div class="stats-grid">
-            <div class="stat-card">
-                <h3>{{ stats.total }}</h3>
-                <p>Total Applications</p>
-            </div>
-            <div class="stat-card">
-                <h3>{{ stats.interviews }}</h3>
-                <p>Interviews</p>
-            </div>
-            <div class="stat-card">
-                <h3>{{ stats.interview_rate }}%</h3>
-                <p>Interview Rate</p>
-            </div>
-        </div>
+  <!-- Applications Table -->
+  <div class="card">
+    <h2>All Applications</h2>
+    {% if applications %}
+    <table>
+      <tr>
+        <th>Company</th>
+        <th>Position</th>
+        <th>Date</th>
+        <th>Status</th>
+        <th>Action</th>
+      </tr>
+      {% for i, app in applications %}
+      <tr>
+        <td>{{ app.company }}</td>
+        <td>{{ app.position }}</td>
+        <td>{{ app.date }}</td>
+        <td>
+          <span class="status-badge status-{{ app.status.replace(' ', '-') }}">
+            {{ app.status }}
+          </span>
+        </td>
+        <td>
+          <a href="/update/{{ i }}" class="btn btn-warning" style="padding:5px 10px; font-size:12px;">Update</a>
+          <a href="/delete/{{ i }}" class="btn btn-danger"  style="padding:5px 10px; font-size:12px;">Delete</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
+    {% else %}
+    <p style="color:#888; text-align:center; padding:30px;">
+      No applications yet. <a href="/add">Add one now!</a>
+    </p>
+    {% endif %}
+  </div>
 
-        <!-- Applications Table -->
-        <div class="card">
-            <h2>All Applications</h2>
-            {% if applications %}
-            <table>
-                <tr>
-                    <th>Company</th>
-                    <th>Position</th>
-                    <th>Date</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                </tr>
-                {% for i, app in applications %}
-                <tr>
-                    <td>{{ app.company }}</td>
-                    <td>{{ app.position }}</td>
-                    <td>{{ app.date }}</td>
-                    <td>
-                        <span class="status-badge status-{{ app.status.replace(' ', '-') }}">
-                            {{ app.status }}
-                        </span>
-                    </td>
-                    <td>
-                        <a href="/update/{{ i }}" class="btn btn-warning" style="padding:5px 10px; font-size:12px;">Update</a>
-                        <a href="/delete/{{ i }}" class="btn btn-danger" style="padding:5px 10px; font-size:12px;">Delete</a>
-                    </td>
-                </tr>
-                {% endfor %}
-            </table>
-            {% else %}
-            <p style="color:#888; text-align:center; padding:30px;">No applications yet. <a href="/add">Add one now!</a></p>
-            {% endif %}
-        </div>
-    </div>
-    <!-- Chart -->
-        {% if chart_available %}
-        <div class="card">
-            <h2>📊 Statistics Chart</h2>
-            <img src="/static/chart.png" style="width:100%; border-radius:8px;">
-        </div>
-        {% else %}
-        <div class="card" style="text-align:center; color:#888; padding:30px;">
-            <p>No data yet. Add some applications to see your chart! 📈</p>
-        </div>
-        {% endif %}
+  <!-- Chart -->
+  {% if chart_available %}
+  <div class="card">
+    <h2>📊 Statistics Chart</h2>
+    <img src="/static/chart.png" style="width:100%; border-radius:8px;">
+  </div>
+  {% else %}
+  <div class="card" style="text-align:center; color:#888; padding:30px;">
+    <p>No data yet. Add some applications to see your chart! 📈</p>
+  </div>
+  {% endif %}
 
-    <!--for the menu button -->
-    <script src="/static/js/animations.js"></script>
-    <script>
-        function toggleMenu() {
-            const open = document.getElementById('sidemenu').classList.toggle('open');
-            document.getElementById('menuOverlay').classList.toggle('visible', open);
-            document.getElementById('hamburger').classList.toggle('open', open);
-        }
-        function closeMenu() {
-            document.getElementById('sidemenu').classList.remove('open');
-            document.getElementById('menuOverlay').classList.remove('visible');
-            document.getElementById('hamburger').classList.remove('open');
-        }
-        // logout modal functions
-        function openLogout() {
-        document.getElementById('logoutOverlay').classList.add('active');
-        }
-        function closeLogout() {
-            document.getElementById('logoutOverlay').classList.remove('active');
-        }
-        // close if clicking outside the modal box
-        document.getElementById('logoutOverlay').addEventListener('click', function(e) {
-            if (e.target === this) closeLogout();
-        });
-    </script>
-    
-
-</body>
-</html>
+{% endblock %}

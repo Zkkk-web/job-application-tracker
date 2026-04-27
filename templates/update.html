@@ -1,37 +1,28 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Update Status</title>
-    <link rel="stylesheet" href="/static/style.css">
-</head>
-<body>
-    <div class="navbar">
-        <h1>📋 Job Application Tracker</h1>
-        <div>
-            <a href="/dashboard">Dashboard</a>
-            <a href="#" onclick="openLogout(); return false;">Logout</a>        </div>
-    </div>
-    <div class="container">
-        <div class="card" style="max-width:500px; margin: 40px auto;">
-            <h2>Update Application Status</h2>
-            <p style="color:#888; margin-bottom:20px;">
-                {{ app.company }} — {{ app.position }}
-            </p>
-            <form method="POST">
-                <label>Current Status</label>
-                <select name="status">
-                    <option {% if app.status == 'Pending' %}selected{% endif %}>Pending</option>
-                    <option {% if app.status == 'Applied' %}selected{% endif %}>Applied</option>
-                    <option {% if app.status == 'Written Test' %}selected{% endif %}>Written Test</option>
-                    <option {% if app.status == 'Interview' %}selected{% endif %}>Interview</option>
-                    <option {% if app.status == 'Offer' %}selected{% endif %}>Offer</option>
-                    <option {% if app.status == 'Rejected' %}selected{% endif %}>Rejected</option>
-                </select>
-                <button type="submit">Update</button>
-                <a href="/dashboard" class="btn btn-danger" style="margin-left:10px;">Cancel</a>
-            </form>
-        </div>
-    </div>
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block title %}Update Application — ApplyTrack{% endblock %}
+
+{% block content %}
+
+  <div class="card" style="max-width:500px; margin: 40px auto;">
+    <h2>Update Application Status</h2>
+    <p style="color:#888; margin-bottom:20px;">
+      {{ app.company }} — {{ app.position }}
+    </p>
+    <form method="POST">
+      <label>Current Status</label>
+      <select name="status">
+        <option {% if app.status == 'Pending'      %}selected{% endif %}>Pending</option>
+        <option {% if app.status == 'Applied'      %}selected{% endif %}>Applied</option>
+        <option {% if app.status == 'Written Test' %}selected{% endif %}>Written Test</option>
+        <option {% if app.status == 'Interview'    %}selected{% endif %}>Interview</option>
+        <option {% if app.status == 'Offer'        %}selected{% endif %}>Offer</option>
+        <option {% if app.status == 'Rejected'     %}selected{% endif %}>Rejected</option>
+      </select>
+
+      <button type="submit">Update</button>
+      <a href="/dashboard" class="btn btn-danger" style="margin-left:10px;">Cancel</a>
+    </form>
+  </div>
+
+{% endblock %}

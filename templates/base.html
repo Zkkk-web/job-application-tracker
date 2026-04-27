@@ -3,52 +3,65 @@
 <head>
   <meta charset="UTF-8">
   <title>{% block title %}ApplyTrack{% endblock %}</title>
-  <link rel="stylesheet" href="{{static/sidemenu.css}}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='side_menu.css') }}">
+  {% block extra_head %}{% endblock %}
 </head>
 <body>
 
   <!-- overlay (clicking it closes the menu) -->
   <div class="menu-overlay" id="menuOverlay" onclick="closeMenu()"></div>
 
+  <!-- logout confirm modal -->
+  <div class="logout-overlay" id="logoutOverlay">
+    <div class="logout-modal">
+      <p class="logout-title">Log out of ApplyTrack?</p>
+      <p class="logout-sub">You'll need to sign back in to access your applications.</p>
+      <div class="logout-buttons">
+        <a href="/logout" class="logout-confirm">Log out</a>
+        <button class="logout-cancel" onclick="closeLogout()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
   <!-- side menu -->
   <nav class="sidemenu" id="sidemenu">
     <div class="menu-header">
-      <strong>ApplyTrack</strong>
+      <strong>Menu</strong>
     </div>
-
     <div class="menu-nav">
       <div class="menu-section">Main</div>
-      <!-- CHANGE: set class="menu-item active" on whichever matches the current page -->
-      <a href="/" class="menu-item">Dashboard</a>
-      <a href="/board" class="menu-item">Kanban board</a>
-      <a href="/upcoming" class="menu-item">Upcoming</a>
+      <a href="/"         class="menu-item {% block nav_dashboard %}{% endblock %}">Dashboard</a>
+      <a href="/board"    class="menu-item {% block nav_board %}{% endblock %}">Kanban board</a>
+      <a href="/calendar" class="menu-item {% block nav_calendar %}{% endblock %}">Calendar</a>
 
       <div class="menu-section">Tools</div>
-      <a href="/resume" class="menu-item">Resume builder</a>
-      <a href="/emails" class="menu-item">Email drafts</a>
-      <a href="/stats" class="menu-item">Stats</a>
+      <a href="/resume" class="menu-item {% block nav_resume %}{% endblock %}">Resume builder</a>
+      <a href="/emails" class="menu-item {% block nav_emails %}{% endblock %}">Email drafts</a>
+      <a href="/stats"  class="menu-item {% block nav_stats %}{% endblock %}">Stats</a>
     </div>
-
-    <div class="menu-footer">
-      Logged in as {{ current_user.username }}
-    </div>
+    <div class="menu-footer">{{ username }}</div>
   </nav>
 
-  <!-- top bar -->
-  <header style="display:flex; align-items:center; gap:12px; padding:14px 20px;
-                 border-bottom:1px solid #eee; position:sticky; top:0; background:#fff; z-index:100;">
+  <!-- top navbar -->
+  <div class="navbar">
     <button class="hamburger" id="hamburger" onclick="toggleMenu()">
       <span></span><span></span><span></span>
     </button>
-    <span style="font-weight:600;">ApplyTrack</span>
-  </header>
+    <h1>📋 Job Application Tracker</h1>
+    <div>
+      <span style="margin-right:16px;">{{ username }}</span>
+      <a href="/add">+ Add Application</a>
+      <a href="#" onclick="openLogout(); return false;">Logout</a>
+    </div>
+  </div>
 
-  <!-- page content goes here -->
-  <main style="padding: 24px 28px;">
+  <!-- page content -->
+  <div class="container">
     {% block content %}{% endblock %}
-  </main>
+  </div>
 
-  <script src="{{static/animations.js}}"></script>
+  <script src="{{ url_for('static', filename='js/animations.js') }}"></script>
   <script>
     function toggleMenu() {
       const open = document.getElementById('sidemenu').classList.toggle('open');
@@ -60,6 +73,18 @@
       document.getElementById('menuOverlay').classList.remove('visible');
       document.getElementById('hamburger').classList.remove('open');
     }
+    function openLogout() {
+      document.getElementById('logoutOverlay').classList.add('active');
+    }
+    function closeLogout() {
+      document.getElementById('logoutOverlay').classList.remove('active');
+    }
+    document.getElementById('logoutOverlay').addEventListener('click', function(e) {
+      if (e.target === this) closeLogout();
+    });
   </script>
+  {% block extra_scripts %}{% endblock %}
+
 </body>
 </html>
+

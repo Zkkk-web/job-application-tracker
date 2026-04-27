@@ -11,6 +11,12 @@
             "position": "software engineer",
             "date": "2026-04-28",
             "status": "Applied"
+        },
+        {
+            "company": "aws ",
+            "position": "intern",
+            "date": "2026-04-27",
+            "status": "Interview"
         }
     ]
 }

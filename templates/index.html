@@ -1,206 +1,97 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Job Application Tracker</title>
-    <link rel="stylesheet" href="/static/style.css">
-    <link rel="stylesheet" href="/static/side_menu.css">
-    
-    <style>
-        .hero {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 60vh;
-        }
+{% extends "base_public.html" %}
 
-        .hero-card {
-            background: white;
-            border-radius: 16px;
-            padding: 50px;
-            width: 420px;
-            height: 420px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.10);
-        }
+{% block title %}Home — ApplyTrack{% endblock %}
 
-        .hero-card .icon {
-            font-size: 52px;
-            margin-bottom: 16px;
-        }
+{% block nav_home %}active{% endblock %}
 
-        .hero-card h2 {
-            font-size: 24px;
-            color: #2c3e50;
-            margin-bottom: 10px;
-        }
+{% block extra_head %}
+<style>
+  .hero {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 60vh;
+  }
+  .hero-card {
+    background: white;
+    border-radius: 16px;
+    padding: 50px;
+    width: 420px;
+    height: 420px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.10);
+  }
+  .hero-card .icon { font-size: 52px; margin-bottom: 16px; }
+  .hero-card h2   { font-size: 24px; color: #2c3e50; margin-bottom: 10px; }
+  .hero-card p    { color: #888; font-size: 15px; margin-bottom: 30px; line-height: 1.6; }
+  .hero-card .btn-group { display: flex; gap: 15px; }
 
-        .hero-card p {
-            color: #888;
-            font-size: 15px;
-            margin-bottom: 30px;
-            line-height: 1.6;
-        }
+  .info-section {
+    max-width: 900px;
+    margin: 0 auto 60px;
+    padding: 0 20px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+  .info-card {
+    background: white;
+    border-radius: 12px;
+    padding: 30px 24px;
+    text-align: center;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+  }
+  .info-card .info-icon { font-size: 36px; margin-bottom: 14px; }
+  .info-card h3 { font-size: 16px; color: #2c3e50; margin-bottom: 10px; }
+  .info-card p  { font-size: 13px; color: #888; line-height: 1.6; }
 
-        .hero-card .btn-group {
-            display: flex;
-            gap: 15px;
-        }
+  .section-title {
+    text-align: center;
+    margin: 40px 0 24px;
+    font-size: 20px;
+    color: #2c3e50;
+    font-weight: 700;
+  }
+</style>
+{% endblock %}
 
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+{% block content %}
 
-        .brand-icon {
-            font-size: 24px;
-        }
-
-        .brand-text {
-            display: flex;
-            flex-direction: column;
-            line-height: 1.2;
-        }
-
-        .brand-title {
-            font-size: 16px;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-        }
-
-        .brand-sub {
-            font-size: 11px;
-            color: #a0aec0;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
-
-        .info-section {
-            max-width: 900px;
-            margin: 0 auto 60px;
-            padding: 0 20px;
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 24px;
-        }
-
-        .info-card {
-            background: white;
-            border-radius: 12px;
-            padding: 30px 24px;
-            text-align: center;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.07);
-        }
-
-        .info-card .info-icon {
-            font-size: 36px;
-            margin-bottom: 14px;
-        }
-
-        .info-card h3 {
-            font-size: 16px;
-            color: #2c3e50;
-            margin-bottom: 10px;
-        }
-
-        .info-card p {
-            font-size: 13px;
-            color: #888;
-            line-height: 1.6;
-        }
-
-        .section-title {
-            text-align: center;
-            margin: 40px 0 24px;
-            font-size: 20px;
-            color: #2c3e50;
-            font-weight: 700;
-        }
-    </style>
-</head>
-<body>
-    <div class="menu-overlay" id="menuOverlay" onclick="closeMenu()"></div>
-
-    <nav class="sidemenu" id="sidemenu">
-        <div class="menu-header">
-            <strong>ApplyTrack</strong>
-        </div>
-        <div class="menu-nav">
-            <div class="menu-section">Main</div>
-            <a href="/" class="menu-item active">Home</a>
-            <div class="menu-section">Account</div>
-            <a href="/login" class="menu-item">Login</a>
-            <a href="/register" class="menu-item">Register</a>
-        </div>
-    </nav>
-    <div class="navbar">
-        <div class="menu">
-            <button class="hamburger" id="hamburger" onclick="toggleMenu()">
-                <span></span><span></span><span></span>
-            </button>
-        </div>
-        <div class="brand">
-            <span class="brand-icon">📋</span>
-            <div class="brand-text">
-                <span class="brand-title">Job Application Tracker</span>
-                <span class="brand-sub">Your Career Dashboard</span>
-            </div>
-        </div>
-        <div>
-            <a href="/login">Login</a>
-            <a href="/register">Register</a>
-        </div>
+  <!-- Hero Section -->
+  <div class="hero">
+    <div class="hero-card">
+      <div class="icon">🚀</div>
+      <h2>Take Control of Your Career</h2>
+      <p>Track every application, never miss a deadline, and land your dream job.</p>
+      <div class="btn-group">
+        <a href="/login"    class="btn">Login</a>
+        <a href="/register" class="btn btn-success">Get Started</a>
+      </div>
     </div>
+  </div>
 
-    <!-- Hero Section -->
-    <div class="hero">
-        <div class="hero-card">
-            <div class="icon">🚀</div>
-            <h2>Take Control of Your Career</h2>
-            <p>Track every application, never miss a deadline, and land your dream job.</p>
-            <div class="btn-group">
-                <a href="/login" class="btn">Login</a>
-                <a href="/register" class="btn btn-success">Get Started</a>
-            </div>
-        </div>
+  <!-- Info Section -->
+  <p class="section-title">Why Job Application Tracker?</p>
+  <div class="info-section">
+    <div class="info-card">
+      <div class="info-icon">🎯</div>
+      <h3>Our Mission</h3>
+      <p>Help students and job seekers stay organized during their job search journey, reducing stress and increasing success rates.</p>
     </div>
-
-    <!-- Info Section -->
-    <p class="section-title">Why Job Application Tracker?</p>
-    <div class="info-section">
-        <div class="info-card">
-            <div class="info-icon">🎯</div>
-            <h3>Our Mission</h3>
-            <p>Help students and job seekers stay organized during their job search journey, reducing stress and increasing success rates.</p>
-        </div>
-        <div class="info-card">
-            <div class="info-icon">🌟</div>
-            <h3>Our Goal</h3>
-            <p>Make job hunting simple, transparent, and data-driven — so you always know where you stand and what to do next.</p>
-        </div>
-        <div class="info-card">
-            <div class="info-icon">⚡</div>
-            <h3>What We Offer</h3>
-            <p>Track applications, update statuses, visualize your progress with charts, and manage your entire job search in one place.</p>
-        </div>
+    <div class="info-card">
+      <div class="info-icon">🌟</div>
+      <h3>Our Goal</h3>
+      <p>Make job hunting simple, transparent, and data-driven — so you always know where you stand and what to do next.</p>
     </div>
+    <div class="info-card">
+      <div class="info-icon">⚡</div>
+      <h3>What We Offer</h3>
+      <p>Track applications, update statuses, visualize your progress with charts, and manage your entire job search in one place.</p>
+    </div>
+  </div>
 
-    <script>
-        function toggleMenu() {
-            const open = document.getElementById('sidemenu').classList.toggle('open');
-            document.getElementById('menuOverlay').classList.toggle('visible', open);
-            document.getElementById('hamburger').classList.toggle('open', open);
-        }
-        function closeMenu() {
-            document.getElementById('sidemenu').classList.remove('open');
-            document.getElementById('menuOverlay').classList.remove('visible');
-            document.getElementById('hamburger').classList.remove('open');
-        }
-    </script>
-</body>
-</html>
+{% endblock %}

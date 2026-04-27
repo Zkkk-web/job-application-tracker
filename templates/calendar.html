@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+{% block title %}Calendar - ApplyTrack{% endblock %}
+
+{% block nav_calendar %}active{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="row g-4">
+
+    <!-- Calendar -->
+    <div class="col-lg-8">
+      <div class="card shadow-sm">
+        <div class="card-header d-flex justify-content-between align-items-center bg-white border-bottom">
+          <a href="{{ url_for('calendar_view', year=grid.prev_month.year, month=grid.prev_month.month) }}"
+             class="btn btn-outline-secondary btn-sm">&larr;</a>
+          <h5 class="mb-0 fw-semibold">{{ grid.month_name }} {{ grid.year }}</h5>
+          <a href="{{ url_for('calendar_view', year=grid.next_month.year, month=grid.next_month.month) }}"
+             class="btn btn-outline-secondary btn-sm">&rarr;</a>
+        </div>
+        <div class="card-body p-0">
+          <table class="table table-bordered mb-0 text-center" id="cal-table">
+            <thead class="table-light">
+              <tr>
+                {% for day in ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'] %}
+                <th class="fw-normal text-muted small py-2">{{ day }}</th>
+                {% endfor %}
+              </tr>
+            </thead>
+            <tbody>
+              {% for week in grid.weeks %}
+              <tr>
+                {% for day in week %}
+                <td class="p-1" style="height:80px; vertical-align:top; width:14.28%;"
+                    {% if day == grid.today %}style="background:#e8f0fe;"{% endif %}>
+                  {% if day != 0 %}
+                  <div class="d-flex flex-column h-100">
+                    <span class="small fw-semibold
+                      {% if day == grid.today %}text-primary fw-bold{% endif %}">
+                      {{ day }}
+                    </span>
+                    {% if day in events %}
+                    <div class="mt-auto">
+                      {% for event in events[day][:2] %}
+                      <span class="badge text-truncate d-block mb-1"
+                            style="background: {{ event.color }};"
+                            title="{{ event.company }} - {{ event.role }} ({{ event.event_type }})">
+                          {{ event.company[:12] }}
+                      </span>
+                      {% endfor %}
+                      {% if events[day]|length > 2 %}
+                      <span class="small text-muted">+{{ events[day]|length - 2 }} more</span>
+                      {% endif %}
+                    </div>
+                    {% endif %}
+                  </div>
+                  {% endif %}
+                </td>
+                {% endfor %}
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Legend -->
+      <div class="d-flex flex-wrap gap-3 mt-3 small text-muted">
+        {% set legend = [
+          ('Applied', '#0d6efd'),
+          ('Online Test', '#fd7e14'),
+          ('Interview', '#6f42c1'),
+          ('Offer', '#198754'),
+          ('Rejected', '#dc3545')
+        ] %}
+        {% for label, color in legend %}
+        <span>
+          <span class="rounded-circle d-inline-block me-1"style="width: 10px; height: 10px; background: {{ color }};"></span>
+          {{ label }}
+        </span>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Upcoming events sidebar -->
+    <div class="col-lg-4">
+      <div class="card shadow-sm">
+        <div class="card-header bg-white fw-semibold border-bottom">Upcoming</div>
+        <div class="card-body p-0">
+          {% if upcoming %}
+          <ul class="list-group list-group-flush">
+            {% for ev in upcoming %}
+            <li class="list-group-item">
+              <div class="d-flex justify-content-between align-items-start">
+                <div>
+                  <div class="fw-semibold small">{{ ev.company }}</div>
+                  <div class="text-muted small">{{ ev.role }}</div>
+                  <span class="badge text-bg-secondary small">{{ ev.type }}</span>
+                </div>
+                <div class="text-end">
+                  <div class="small text-muted">{{ ev.date }}</div>
+                  {% if ev.days_away == 0 %}
+                  <span class="badge text-bg-danger">Today</span>
+                  {% elif ev.days_away == 1 %}
+                  <span class="badge text-bg-warning">Tomorrow</span>
+                  {% else %}
+                  <span class="badge text-bg-light text-dark">{{ ev.days_away }}d</span>
+                  {% endif %}
+                </div>
+              </div>
+            </li>
+            {% endfor %}
+          </ul>
+          {% else %}
+          <p class="text-muted text-center py-4 small">No upcoming events.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

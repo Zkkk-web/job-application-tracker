@@ -4,7 +4,7 @@ A Python tool to track internship applications
 
 
 
-
+ 
 TODO:
 - pages for calendar, kanban, stats, resume builder, email drafts [right now is showing PageNot Found]
   - use python for logic 

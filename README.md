@@ -1,4 +1,3 @@
-markdown
 # 📋 Job Application Tracker
 
 A full-stack web application built with Python Flask to help students and job seekers track their internship and job applications in one place.
@@ -6,8 +5,8 @@ A full-stack web application built with Python Flask to help students and job se
 ---
 
 ## 👥 Team Members
-- Member 1: Bacy Zhu
-- Member 2: (Partner's name)
+- Member 1: Bacy
+- Member 2: Hadassah
 
 ---
 
@@ -114,5 +113,3 @@ Pending → Applied → Written Test → Interview → Offer ✅
 ## 🎯 Purpose
 
 This project was built to solve a real problem for students during job hunting season — keeping track of dozens of applications across different companies and platforms. Instead of using spreadsheets, this app provides a clean, interactive, and visual way to manage the entire job search process.
-```
-

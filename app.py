@@ -1,8 +1,8 @@
 
 from flask import Flask, render_template, request, redirect, url_for, session
-from src.auth import register_web, login_web
-from src.manager import load_applications, add_application, save_applications, delete_application, update_status
-from src.stats import show_stats, generate_chart
+from auth import register_web, login_web
+from manager import load_applications, add_application, save_applications, delete_application, update_status
+from stats import show_stats, generate_chart
 
 app = Flask(__name__)
 app.secret_key = "job_tracker_secret_key"

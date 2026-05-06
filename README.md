@@ -1,6 +1,6 @@
 好！把 `README.md` 全部替换成这个：
 
-```markdown
+markdown
 # 📋 Job Application Tracker
 
 A full-stack web application built with Python Flask to help students and job seekers track their internship and job applications in one place.

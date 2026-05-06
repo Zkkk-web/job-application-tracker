@@ -1,5 +1,3 @@
-好！把 `README.md` 全部替换成这个：
-
 markdown
 # 📋 Job Application Tracker
 
@@ -118,4 +116,3 @@ Pending → Applied → Written Test → Interview → Offer ✅
 This project was built to solve a real problem for students during job hunting season — keeping track of dozens of applications across different companies and platforms. Instead of using spreadsheets, this app provides a clean, interactive, and visual way to manage the entire job search process.
 ```
 
-保存完 `git add -A` → `git commit -m "Update README"` → `git push` 😄

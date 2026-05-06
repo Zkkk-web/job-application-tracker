@@ -115,5 +115,85 @@ def update(index):
                            app=applications[index])
 
 # ─── Run ────────────────────────────────────────────
+@app.route('/board')
+def kanban():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+    username = session['username']
+    applications = load_applications(username)
+    from stats import show_stats
+    stats = show_stats(applications) or {
+        'total': 0, 'interviews': 0,
+        'offers': 0, 'rejected': 0, 'interview_rate': 0
+    }
+    # 按状态分组
+    board = {
+        'Pending': [a for a in applications if a['status'] == 'Pending'],
+        'Applied': [a for a in applications if a['status'] == 'Applied'],
+        'Written Test': [a for a in applications if a['status'] == 'Written Test'],
+        'Interview': [a for a in applications if a['status'] == 'Interview'],
+        'Offer': [a for a in applications if a['status'] == 'Offer'],
+        'Rejected': [a for a in applications if a['status'] == 'Rejected'],
+    }
+    return render_template('kanban.html', applications=applications, stats=stats, board=board)
+@app.route('/calendar')
+def calendar_view():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+    username = session['username']
+    applications = load_applications(username)
+    import calendar
+    from datetime import datetime
+    now = datetime.now()
+    month = int(request.args.get('month', now.month))
+    year = int(request.args.get('year', now.year))
+
+    class GridObj:
+        pass
+    grid = GridObj()
+    grid.month_name = f"{calendar.month_name[month]} {year}"
+    grid.weeks = calendar.monthcalendar(year, month)
+    grid.today = now.day if (month == now.month and year == now.year) else -1
+    grid.prev_year = year if month > 1 else year - 1
+    grid.prev_month = month - 1 if month > 1 else 12
+    grid.next_year = year if month < 12 else year + 1
+    grid.next_month = month + 1 if month < 12 else 1
+
+    return render_template('calendar.html',
+                           applications=applications,
+                           grid=grid,
+                           month=month,
+                           year=year)
+@app.route('/resume', methods=['GET', 'POST'])
+def resume():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+    username = session['username']
+    applications = load_applications(username)
+    from stats import show_stats
+    stats = show_stats(applications) or {
+        'total': 0, 'interviews': 0,
+        'offers': 0, 'rejected': 0, 'interview_rate': 0
+    }
+    resume_data = {
+        'name': '', 'email': '', 'phone': '',
+        'linkedin': '', 'summary': '', 'education': '',
+        'experience': '', 'skills': '', 'profile': '',
+        'github': '', 'location': '', 'projects': '', 'awards': ''
+    }
+    return render_template('resume.html', resume=resume_data,
+                           username=username, stats=stats,
+                           applications=applications)
+@app.route('/resume_save', methods=['POST'])
+def resume_save():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+    return redirect(url_for('resume'))
+
+@app.route('/email-drafts')
+def email_drafts():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+    return render_template('email_drafts.html')
 if __name__ == '__main__':
     app.run(debug=True)

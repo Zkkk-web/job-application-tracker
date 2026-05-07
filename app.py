@@ -78,13 +78,15 @@ def add():
         return redirect(url_for('login'))
     if request.method == 'POST':
         username = session['username']
+        applications = load_applications(username)
         new_app = {
             'company': request.form['company'],
             'position': request.form['position'],
             'date': request.form['date'],
             'status': request.form['status']
         }
-        add_application(username, new_app)
+        applications.append(new_app)
+        save_applications(username, applications)
         return redirect(url_for('dashboard'))
     return render_template('add.html')
 # ─── Delete Application ─────────────────────────────
@@ -199,5 +201,38 @@ def emails_drafts():
     if 'username' not in session:
         return redirect(url_for('login'))
     return render_template('emails_drafts.html')
+
+
+@app.route('/stats')
+def stats():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+    username = session['username']
+    applications = load_applications(username)
+    from stats import show_stats, generate_chart
+    stats_data = show_stats(applications) or {
+        'total': 0, 'interviews': 0,
+        'offers': 0, 'rejected': 0, 'interview_rate': 0
+    }
+    generate_chart(applications)
+    
+    # 每周投递数据
+    from datetime import datetime, timedelta
+    weekly = {}
+    for app in applications:
+        try:
+            date = datetime.strptime(app['date'], '%Y-%m-%d')
+            week = date.strftime('%Y-W%W')
+            weekly[week] = weekly.get(week, 0) + 1
+        except:
+            pass
+    weekly_labels = sorted(weekly.keys())
+    weekly_values = [weekly[w] for w in weekly_labels]
+
+    return render_template('stats_page.html',
+                           stats=stats_data,
+                           applications=applications,
+                           weekly_labels=weekly_labels,
+                           weekly_values=weekly_values)
 if __name__ == '__main__':
     app.run(debug=True)

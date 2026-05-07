@@ -123,7 +123,6 @@ def kanban():
         return redirect(url_for('login'))
     username = session['username']
     applications = load_applications(username)
-    from stats import show_stats
     stats = show_stats(applications) or {
         'total': 0, 'interviews': 0,
         'offers': 0, 'rejected': 0, 'interview_rate': 0
@@ -172,7 +171,6 @@ def resume():
         return redirect(url_for('login'))
     username = session['username']
     applications = load_applications(username)
-    from stats import show_stats
     stats = show_stats(applications) or {
         'total': 0, 'interviews': 0,
         'offers': 0, 'rejected': 0, 'interview_rate': 0
@@ -209,7 +207,6 @@ def stats():
         return redirect(url_for('login'))
     username = session['username']
     applications = load_applications(username)
-    from stats import show_stats, generate_chart
     stats_data = show_stats(applications) or {
         'total': 0, 'interviews': 0,
         'offers': 0, 'rejected': 0, 'interview_rate': 0

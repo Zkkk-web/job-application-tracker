@@ -177,13 +177,17 @@ def resume():
     }
     resume_data = {
         'name': '', 'email': '', 'phone': '',
-        'linkedin': '', 'summary': '', 'education': '',
-        'experience': '', 'skills': '', 'profile': '',
-        'github': '', 'location': '', 'projects': '', 'awards': ''
+        'linkedin': '', 'github': '', 'location': '',
+        'summary': '', 'profile': '', 'education': '',
+        'experience': '', 'skills': '',
+        'projects': '', 'awards': ''
     }
-    return render_template('resume.html', resume=resume_data,
-                           username=username, stats=stats,
+    return render_template('resume.html',
+                           resume=resume_data,
+                           username=username,
+                           stats=stats,
                            applications=applications)
+
 @app.route('/resume_save', methods=['POST'])
 def resume_save():
     if 'username' not in session:

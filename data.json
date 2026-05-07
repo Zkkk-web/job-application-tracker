@@ -39,12 +39,10 @@
             "status": "Written Test"
         },
         {
-<<<<<<< Updated upstream
             "company": "INVDA",
             "position": "U.S.",
             "date": "2026-05-21",
             "status": "Interview"
-=======
             "company": "Microsoft",
             "position": "U.S.",
             "date": "2026-05-21",
@@ -67,7 +65,6 @@
             "position": "U.S.",
             "date": "2026-05-15",
             "status": "Pending"
->>>>>>> Stashed changes
         }
     ]
 }

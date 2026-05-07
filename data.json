@@ -39,10 +39,35 @@
             "status": "Written Test"
         },
         {
+<<<<<<< Updated upstream
             "company": "INVDA",
             "position": "U.S.",
             "date": "2026-05-21",
             "status": "Interview"
+=======
+            "company": "Microsoft",
+            "position": "U.S.",
+            "date": "2026-05-21",
+            "status": "Rejected"
+        },
+        {
+            "company": "APPLE",
+            "position": "U.S.",
+            "date": "2026-05-23",
+            "status": "Applied"
+        },
+        {
+            "company": "TESLA",
+            "position": "U.S.",
+            "date": "2026-05-05",
+            "status": "Written Test"
+        },
+        {
+            "company": "CIRCLE",
+            "position": "U.S.",
+            "date": "2026-05-15",
+            "status": "Pending"
+>>>>>>> Stashed changes
         }
     ]
 }

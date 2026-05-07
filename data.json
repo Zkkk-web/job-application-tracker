@@ -1,38 +1,6 @@
 {
     "admin": [
         {
-            "company": "apple ",
-            "position": "software dev ",
-            "date": "2026-04-26",
-            "status": "Interview"
-        },
-        {
-            "company": "google ",
-            "position": "software engineer",
-            "date": "2026-04-28",
-            "status": "Applied"
-        },
-        {
-            "company": "aws ",
-            "position": "intern",
-            "date": "2026-04-27",
-            "status": "Interview"
-        },
-        {
-            "company": "AWS",
-            "position": "intern",
-            "date": "2026-05-07",
-            "status": "Pending"
-        },
-        {
-            "company": "AWS",
-            "position": "intern",
-            "date": "2026-05-07",
-            "status": "Pending"
-        }
-    ],
-    "Test2": [
-        {
             "company": "Google",
             "position": "U.S.",
             "date": "2026-05-08",

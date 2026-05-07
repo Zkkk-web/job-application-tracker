@@ -1,145 +1,116 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Resume Builder</title>
-    <link rel="stylesheet" href="/static/style.css">
-    <style>
-        body { background: #f0f2f5; }
-        .resume-preview {
-            background: white;
-            border-radius: 12px;
-            padding: 40px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-            max-width: 700px;
-            margin: 0 auto;
-        }
-        .resume-name {
-            font-size: 28px;
-            font-weight: 700;
-            color: #2c3e50;
-        }
-        .resume-contact {
-            color: #888;
-            font-size: 13px;
-            margin: 6px 0 20px;
-        }
-        .resume-section {
-            margin-top: 24px;
-            border-top: 2px solid #f0f0f0;
-            padding-top: 16px;
-        }
-        .resume-section h3 {
-            font-size: 14px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: #3498db;
-            margin-bottom: 12px;
-        }
-        textarea {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            font-size: 13px;
-            resize: vertical;
-        }
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-        }
-        @media print {
-            .navbar, .btn, .card { display: none; }
-            .resume-preview { box-shadow: none; }
-        }
-    </style>
-</head>
-<body>
-    <div class="navbar">
-        <div style="display:flex; align-items:center; gap:10px;">
-            <span style="font-size:20px;">📋</span>
-            <div>
-                <div style="font-weight:700; font-size:16px;">Job Application Tracker</div>
-                <div style="font-size:11px; color:#a0aec0; text-transform:uppercase; letter-spacing:1px;">Your Career Dashboard</div>
-            </div>
+{% extends "base.html" %}
+
+{% block title %}Resume Builder — ApplyTrack{% endblock %}
+
+{% block nav_resume %}active{% endblock %}
+
+{% block extra_head %}
+<style>
+    body { background: #f0f2f5; }
+    .resume-preview {
+        background: white;
+        border-radius: 12px;
+        padding: 40px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        max-width: 700px;
+        margin: 0 auto;
+    }
+    .resume-name { font-size: 28px; font-weight: 700; color: #2c3e50; }
+    .resume-contact { color: #888; font-size: 13px; margin: 6px 0 20px; }
+    .resume-section { margin-top: 24px; border-top: 2px solid #f0f0f0; padding-top: 16px; }
+    .resume-section h3 {
+        font-size: 14px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: #3498db;
+        margin-bottom: 12px;
+    }
+    textarea {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        font-size: 13px;
+        resize: vertical;
+    }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @media print {
+        .navbar, .btn, .card { display: none; }
+        .resume-preview { box-shadow: none; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="card" style="margin-bottom:24px;">
+    <h2>📄 Resume Builder</h2>
+    <p style="color:#888; margin-top:8px; margin-bottom:20px;">Fill in your details and print your resume!</p>
+    <div class="form-row">
+        <div>
+            <label>Full Name</label>
+            <input type="text" id="name" placeholder="Your Name" oninput="updatePreview()">
         </div>
         <div>
-            <a href="/dashboard">Dashboard</a>
-            <a href="/logout">Logout</a>
+            <label>Email</label>
+            <input type="text" id="email" placeholder="email@example.com" oninput="updatePreview()">
         </div>
     </div>
-
-    <div class="container">
-        <div class="card" style="margin-bottom:24px;">
-            <h2>📄 Resume Builder</h2>
-            <p style="color:#888; margin-top:8px; margin-bottom:20px;">Fill in your details and print your resume!</p>
-            <div class="form-row">
-                <div>
-                    <label>Full Name</label>
-                    <input type="text" id="name" placeholder="Your Name" oninput="updatePreview()">
-                </div>
-                <div>
-                    <label>Email</label>
-                    <input type="text" id="email" placeholder="email@example.com" oninput="updatePreview()">
-                </div>
-            </div>
-            <div class="form-row">
-                <div>
-                    <label>Phone</label>
-                    <input type="text" id="phone" placeholder="+1 234 567 8900" oninput="updatePreview()">
-                </div>
-                <div>
-                    <label>LinkedIn / GitHub</label>
-                    <input type="text" id="linkedin" placeholder="linkedin.com/in/yourname" oninput="updatePreview()">
-                </div>
-            </div>
-            <label>Summary</label>
-            <textarea id="summary" rows="3" placeholder="Brief professional summary..." oninput="updatePreview()"></textarea>
-            <label>Education</label>
-            <textarea id="education" rows="3" placeholder="University, Degree, Year..." oninput="updatePreview()"></textarea>
-            <label>Experience</label>
-            <textarea id="experience" rows="4" placeholder="Company, Role, Duration, Responsibilities..." oninput="updatePreview()"></textarea>
-            <label>Skills</label>
-            <textarea id="skills" rows="2" placeholder="Python, Flask, HTML, CSS..." oninput="updatePreview()"></textarea>
-            <br><br>
-            <button onclick="window.print()">🖨️ Print Resume</button>
+    <div class="form-row">
+        <div>
+            <label>Phone</label>
+            <input type="text" id="phone" placeholder="+1 234 567 8900" oninput="updatePreview()">
         </div>
-
-        <div class="resume-preview" id="resume-preview">
-            <div class="resume-name" id="prev-name">Your Name</div>
-            <div class="resume-contact" id="prev-contact">email | phone | linkedin</div>
-            <div class="resume-section">
-                <h3>Summary</h3>
-                <p id="prev-summary" style="font-size:13px; color:#555;">Your summary will appear here.</p>
-            </div>
-            <div class="resume-section">
-                <h3>Education</h3>
-                <p id="prev-education" style="font-size:13px; color:#555;">Your education will appear here.</p>
-            </div>
-            <div class="resume-section">
-                <h3>Experience</h3>
-                <p id="prev-experience" style="font-size:13px; color:#555;">Your experience will appear here.</p>
-            </div>
-            <div class="resume-section">
-                <h3>Skills</h3>
-                <p id="prev-skills" style="font-size:13px; color:#555;">Your skills will appear here.</p>
-            </div>
+        <div>
+            <label>LinkedIn / GitHub</label>
+            <input type="text" id="linkedin" placeholder="linkedin.com/in/yourname" oninput="updatePreview()">
         </div>
     </div>
+    <label>Summary</label>
+    <textarea id="summary" rows="3" placeholder="Brief professional summary..." oninput="updatePreview()"></textarea>
+    <label>Education</label>
+    <textarea id="education" rows="3" placeholder="University, Degree, Year..." oninput="updatePreview()"></textarea>
+    <label>Experience</label>
+    <textarea id="experience" rows="4" placeholder="Company, Role, Duration, Responsibilities..." oninput="updatePreview()"></textarea>
+    <label>Skills</label>
+    <textarea id="skills" rows="2" placeholder="Python, Flask, HTML, CSS..." oninput="updatePreview()"></textarea>
+    <br><br>
+    <button onclick="window.print()">🖨️ Print Resume</button>
+</div>
 
-    <script>
-        function updatePreview() {
-            document.getElementById('prev-name').textContent = document.getElementById('name').value || 'Your Name';
-            document.getElementById('prev-contact').textContent =
-                (document.getElementById('email').value || 'email') + ' | ' +
-                (document.getElementById('phone').value || 'phone') + ' | ' +
-                (document.getElementById('linkedin').value || 'linkedin');
-            document.getElementById('prev-summary').textContent = document.getElementById('summary').value || 'Your summary will appear here.';
-            document.getElementById('prev-education').textContent = document.getElementById('education').value || 'Your education will appear here.';
-            document.getElementById('prev-experience').textContent = document.getElementById('experience').value || 'Your experience will appear here.';
-            document.getElementById('prev-skills').textContent = document.getElementById('skills').value || 'Your skills will appear here.';
-        }
-    </script>
-</body>
-</html>
+<div class="resume-preview" id="resume-preview">
+    <div class="resume-name" id="prev-name">Your Name</div>
+    <div class="resume-contact" id="prev-contact">email | phone | linkedin</div>
+    <div class="resume-section">
+        <h3>Summary</h3>
+        <p id="prev-summary" style="font-size:13px; color:#555;">Your summary will appear here.</p>
+    </div>
+    <div class="resume-section">
+        <h3>Education</h3>
+        <p id="prev-education" style="font-size:13px; color:#555;">Your education will appear here.</p>
+    </div>
+    <div class="resume-section">
+        <h3>Experience</h3>
+        <p id="prev-experience" style="font-size:13px; color:#555;">Your experience will appear here.</p>
+    </div>
+    <div class="resume-section">
+        <h3>Skills</h3>
+        <p id="prev-skills" style="font-size:13px; color:#555;">Your skills will appear here.</p>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    function updatePreview() {
+        document.getElementById('prev-name').textContent = document.getElementById('name').value || 'Your Name';
+        document.getElementById('prev-contact').textContent =
+            (document.getElementById('email').value || 'email') + ' | ' +
+            (document.getElementById('phone').value || 'phone') + ' | ' +
+            (document.getElementById('linkedin').value || 'linkedin');
+        document.getElementById('prev-summary').textContent = document.getElementById('summary').value || 'Your summary will appear here.';
+        document.getElementById('prev-education').textContent = document.getElementById('education').value || 'Your education will appear here.';
+        document.getElementById('prev-experience').textContent = document.getElementById('experience').value || 'Your experience will appear here.';
+        document.getElementById('prev-skills').textContent = document.getElementById('skills').value || 'Your skills will appear here.';
+    }
+</script>
+{% endblock %}

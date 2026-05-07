@@ -1,0 +1,221 @@
+{% extends "base.html" %}
+
+{% block title %}Email Drafts — ApplyTrack{% endblock %}
+
+{% block nav_emails %}active{% endblock %}
+
+{% block extra_head %}
+<style>
+    body { background: #f0f2f5; }
+    .page-title {
+        font-size: 24px;
+        font-weight: 700;
+        color: #2c3e50;
+        margin-bottom: 6px;
+    }
+    .page-sub {
+        color: #888;
+        font-size: 14px;
+        margin-bottom: 24px;
+    }
+    .template-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 14px;
+        margin-bottom: 24px;
+    }
+    .template-card {
+        background: white;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+        cursor: pointer;
+        border: 2px solid transparent;
+        transition: all 0.2s;
+        text-align: center;
+    }
+    .template-card:hover, .template-card.active {
+        border-color: #2c3e50;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+    }
+    .template-card .icon { font-size: 32px; margin-bottom: 10px; }
+    .template-card h4 {
+        font-size: 13px;
+        font-weight: 700;
+        color: #2c3e50;
+        margin-bottom: 6px;
+    }
+    .template-card p { font-size: 11px; color: #aaa; line-height: 1.5; }
+    .composer {
+        background: white;
+        border-radius: 14px;
+        padding: 28px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    }
+    .composer h3 {
+        font-size: 16px;
+        font-weight: 700;
+        color: #2c3e50;
+        margin-bottom: 18px;
+    }
+    .field-row {
+        display: grid;
+        grid-template-columns: 80px 1fr;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 12px;
+    }
+    .field-row label { font-size: 13px; font-weight: 600; color: #888; }
+    .field-row input {
+        width: 100%;
+        padding: 10px 14px;
+        border: 1px solid #eee;
+        border-radius: 8px;
+        font-size: 13px;
+        background: #f8f9fa;
+    }
+    .email-body {
+        width: 100%;
+        padding: 14px;
+        border: 1px solid #eee;
+        border-radius: 8px;
+        font-size: 13px;
+        background: #f8f9fa;
+        resize: vertical;
+        height: 220px;
+        line-height: 1.7;
+        margin-top: 4px;
+    }
+    .action-bar { display: flex; gap: 12px; margin-top: 16px; }
+    .btn-copy {
+        background: #2c3e50;
+        color: white;
+        padding: 10px 24px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 13px;
+        font-weight: 600;
+    }
+    .btn-clear {
+        background: #f0f0f0;
+        color: #666;
+        padding: 10px 24px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 13px;
+    }
+    .btn-copy:hover { background: #34495e; }
+    .toast {
+        display: none;
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        background: #27ae60;
+        color: white;
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-size: 14px;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div style="max-width:960px;">
+    <div class="page-title">✉️ Email Drafts</div>
+    <div class="page-sub">Choose a template and customize your email in seconds</div>
+
+    <div class="template-grid">
+        <div class="template-card" onclick="loadTemplate('followup', this)">
+            <div class="icon">📨</div>
+            <h4>Follow-up</h4>
+            <p>After submitting your application</p>
+        </div>
+        <div class="template-card" onclick="loadTemplate('thankyou', this)">
+            <div class="icon">🙏</div>
+            <h4>Thank You</h4>
+            <p>After an interview</p>
+        </div>
+        <div class="template-card" onclick="loadTemplate('withdraw', this)">
+            <div class="icon">🚫</div>
+            <h4>Withdraw</h4>
+            <p>Withdraw your application</p>
+        </div>
+        <div class="template-card" onclick="loadTemplate('negotiate', this)">
+            <div class="icon">💰</div>
+            <h4>Negotiate</h4>
+            <p>Negotiate your offer</p>
+        </div>
+    </div>
+
+    <div class="composer">
+        <h3>✏️ Compose Email</h3>
+        <div class="field-row">
+            <label>To</label>
+            <input type="text" id="email-to" placeholder="recruiter@company.com">
+        </div>
+        <div class="field-row">
+            <label>Subject</label>
+            <input type="text" id="email-subject" placeholder="Click a template above to get started">
+        </div>
+        <div style="margin-top:4px;">
+            <textarea class="email-body" id="email-body" placeholder="Your email body will appear here after selecting a template..."></textarea>
+        </div>
+        <div class="action-bar">
+            <button class="btn-copy" onclick="copyEmail()">📋 Copy to Clipboard</button>
+            <button class="btn-clear" onclick="clearEmail()">🗑️ Clear</button>
+        </div>
+    </div>
+</div>
+
+<div class="toast" id="toast">✅ Copied to clipboard!</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    const templates = {
+        followup: {
+            subject: "Follow-up on My Application - [Position] at [Company]",
+            body: `Dear Hiring Manager,\n\nI hope this message finds you well. I recently submitted my application for the [Position] role at [Company] and wanted to follow up to express my continued interest.\n\nI am very enthusiastic about the possibility of joining your team. Please let me know if you need any additional information.\n\nThank you for your time and consideration.\n\nBest regards,\n[Your Name]`
+        },
+        thankyou: {
+            subject: "Thank You - [Position] Interview at [Company]",
+            body: `Dear [Interviewer's Name],\n\nThank you so much for taking the time to interview me for the [Position] role at [Company]. I really enjoyed our conversation and learning more about the team.\n\nThe discussion reinforced my enthusiasm for this opportunity, and I look forward to hearing about the next steps.\n\nBest regards,\n[Your Name]`
+        },
+        withdraw: {
+            subject: "Withdrawal of Application - [Position] at [Company]",
+            body: `Dear Hiring Manager,\n\nI am writing to formally withdraw my application for the [Position] role at [Company].\n\nAfter careful consideration, I have decided to pursue a different opportunity. I have great respect for [Company] and hope our paths may cross in the future.\n\nThank you for your time and consideration.\n\nBest regards,\n[Your Name]`
+        },
+        negotiate: {
+            subject: "Offer Discussion - [Position] at [Company]",
+            body: `Dear [Hiring Manager's Name],\n\nThank you for the offer for the [Position] role at [Company]. I am very excited about this opportunity.\n\nAfter reviewing the offer, I would like to discuss the possibility of adjusting the base salary to [desired amount], based on my research and experience.\n\nI am open to discussion and look forward to finding a mutually beneficial arrangement.\n\nBest regards,\n[Your Name]`
+        }
+    };
+
+    function loadTemplate(type, el) {
+        document.querySelectorAll('.template-card').forEach(c => c.classList.remove('active'));
+        el.classList.add('active');
+        document.getElementById('email-subject').value = templates[type].subject;
+        document.getElementById('email-body').value = templates[type].body;
+    }
+
+    function copyEmail() {
+        const text = `To: ${document.getElementById('email-to').value}\nSubject: ${document.getElementById('email-subject').value}\n\n${document.getElementById('email-body').value}`;
+        navigator.clipboard.writeText(text).then(() => {
+            const toast = document.getElementById('toast');
+            toast.style.display = 'block';
+            setTimeout(() => toast.style.display = 'none', 2500);
+        });
+    }
+
+    function clearEmail() {
+        document.getElementById('email-to').value = '';
+        document.getElementById('email-subject').value = '';
+        document.getElementById('email-body').value = '';
+        document.querySelectorAll('.template-card').forEach(c => c.classList.remove('active'));
+    }
+</script>
+{% endblock %}

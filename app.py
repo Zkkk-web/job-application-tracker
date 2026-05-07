@@ -194,11 +194,11 @@ def resume_save():
         return redirect(url_for('login'))
     return redirect(url_for('resume'))
 
-@app.route('/emails-drafts')
-def emails_drafts():
+@app.route('/email-drafts')
+def email_drafts():
     if 'username' not in session:
         return redirect(url_for('login'))
-    return render_template('emails_drafts.html')
+    return render_template('email_drafts.html')
 
 
 @app.route('/stats')

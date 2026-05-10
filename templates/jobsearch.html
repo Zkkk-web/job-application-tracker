@@ -1,0 +1,499 @@
+{% extends "base.html" %}
+
+{% block title %}Job Search 2026 — ApplyTrack{% endblock %}
+{% block page_title %}Job Search 2026{% endblock %}
+{% block nav_jobsearch %}active{% endblock %}
+
+{% block extra_head %}
+<style>
+    .js-topbar {
+        display: flex; align-items: center;
+        justify-content: space-between; margin-bottom: 20px;
+    }
+    .js-title { font-size: 16px; font-weight: 700; color: #1a1a2e; }
+    .js-tabs {
+        display: flex; align-items: center; gap: 4px;
+        background: #f5f3ff; padding: 4px; border-radius: 10px;
+    }
+    .js-tab {
+        padding: 7px 16px; border-radius: 7px;
+        font-size: 13px; font-weight: 600; color: #888;
+        cursor: pointer; text-decoration: none;
+        display: flex; align-items: center; gap: 6px;
+        transition: all 0.15s;
+    }
+    .js-tab.active { background: white; color: #7c3aed; box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
+    .js-tab:hover { color: #7c3aed; }
+    .btn-create {
+        background: #7c3aed; color: white; padding: 9px 18px;
+        border-radius: 8px; text-decoration: none; font-size: 13px;
+        font-weight: 700; display: flex; align-items: center; gap: 6px;
+        box-shadow: 0 2px 8px rgba(124,58,237,0.25); transition: all 0.2s;
+    }
+    .btn-create:hover { background: #6d28d9; transform: translateY(-1px); }
+
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* ── Resume Tab ── */
+    .resume-showcase {
+        display: grid;
+        grid-template-columns: 280px 1fr;
+        gap: 20px;
+    }
+    .resume-list-panel {
+        background: white; border-radius: 14px;
+        box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+        border: 1px solid #f0f0f0; overflow: hidden;
+    }
+    .resume-list-header {
+        padding: 16px 20px; border-bottom: 1px solid #f5f3ff;
+        display: flex; align-items: center; justify-content: space-between;
+    }
+    .resume-list-header h3 { font-size: 14px; font-weight: 700; color: #1a1a2e; }
+    .resume-list-body { padding: 10px; }
+    .resume-list-item {
+        display: flex; align-items: center; gap: 12px;
+        padding: 12px; border-radius: 10px; cursor: pointer;
+        transition: all 0.15s; border: 1px solid transparent;
+        margin-bottom: 6px; text-decoration: none;
+    }
+    .resume-list-item:hover { background: #f5f3ff; border-color: #e9d5ff; }
+    .resume-list-item.active { background: #f5f3ff; border-color: #7c3aed; }
+    .resume-list-icon {
+        width: 38px; height: 38px; border-radius: 10px;
+        background: linear-gradient(135deg, #7c3aed, #a78bfa);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 18px; flex-shrink: 0;
+    }
+    .resume-list-info h4 { font-size: 13px; font-weight: 700; color: #1a1a2e; }
+    .resume-list-info p { font-size: 11px; color: #888; margin-top: 2px; }
+    .resume-preview-panel {
+        background: white; border-radius: 14px; padding: 32px;
+        box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+        border: 1px solid #f0f0f0;
+    }
+    .preview-header-row {
+        display: flex; align-items: center; justify-content: space-between;
+        margin-bottom: 24px; padding-bottom: 16px;
+        border-bottom: 2px solid #f5f3ff;
+    }
+    .preview-name { font-size: 26px; font-weight: 900; color: #1a1a2e; }
+    .preview-actions { display: flex; gap: 8px; }
+    .preview-btn {
+        padding: 8px 16px; border-radius: 8px; font-size: 12px;
+        font-weight: 700; cursor: pointer; border: none;
+        text-decoration: none; display: inline-block;
+        transition: all 0.15s;
+    }
+    .preview-btn-purple { background: #7c3aed; color: white; }
+    .preview-btn-purple:hover { background: #6d28d9; }
+    .preview-btn-outline { background: #f5f3ff; color: #7c3aed; border: 1px solid #e9d5ff; }
+    .preview-btn-outline:hover { background: #ede9fe; }
+    .resume-section-title {
+        font-size: 11px; font-weight: 700; color: #7c3aed;
+        text-transform: uppercase; letter-spacing: 1px;
+        margin: 18px 0 8px; padding-bottom: 6px;
+        border-bottom: 2px solid #f5f3ff;
+    }
+    .resume-field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .resume-field { margin-bottom: 12px; }
+    .resume-field label {
+        font-size: 10px; font-weight: 700; color: #aaa;
+        text-transform: uppercase; letter-spacing: 0.5px;
+        display: block; margin-bottom: 4px;
+    }
+    .resume-field input, .resume-field textarea {
+        width: 100%; padding: 9px 12px;
+        border: 1px solid #e9d5ff; border-radius: 8px;
+        font-size: 13px; margin-bottom: 0; font-family: inherit;
+        resize: vertical; transition: all 0.2s;
+    }
+    .resume-field input:focus, .resume-field textarea:focus {
+        outline: none; border-color: #7c3aed;
+        box-shadow: 0 0 0 3px rgba(124,58,237,0.1);
+    }
+
+    /* ── Activities Tab ── */
+    .activities-layout { display: grid; grid-template-columns: 1fr 260px; gap: 20px; }
+    .activity-panel {
+        background: white; border-radius: 14px; overflow: hidden;
+        box-shadow: 0 1px 6px rgba(0,0,0,0.06); border: 1px solid #f0f0f0;
+    }
+    .activity-header {
+        padding: 16px 20px; border-bottom: 1px solid #f5f3ff;
+        display: flex; align-items: center; justify-content: space-between;
+    }
+    .activity-header h3 { font-size: 15px; font-weight: 700; color: #1a1a2e; }
+    .activity-row {
+        display: flex; align-items: center; padding: 13px 20px;
+        border-bottom: 1px solid #faf9ff; gap: 12px; transition: background 0.15s;
+    }
+    .activity-row:hover { background: #faf9ff; }
+    .activity-row:last-child { border-bottom: none; }
+    .activity-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .activity-info { flex: 1; }
+    .activity-company { font-size: 13px; font-weight: 700; color: #1a1a2e; }
+    .activity-position { font-size: 12px; color: #888; margin-top: 1px; }
+    .activity-badge {
+        font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px;
+    }
+    .activity-date { font-size: 11px; color: #aaa; white-space: nowrap; }
+    .badge-pending { background: #fef9c3; color: #854d0e; }
+    .badge-applied { background: #dbeafe; color: #1d4ed8; }
+    .badge-written { background: #ffedd5; color: #c2410c; }
+    .badge-interview { background: #ede9fe; color: #7c3aed; }
+    .badge-offer { background: #dcfce7; color: #15803d; }
+    .badge-rejected { background: #fee2e2; color: #dc2626; }
+    .side-panel { display: flex; flex-direction: column; gap: 14px; }
+    .side-card {
+        background: white; border-radius: 12px; padding: 18px;
+        box-shadow: 0 1px 6px rgba(0,0,0,0.06); border: 1px solid #f0f0f0;
+    }
+    .side-card h4 {
+        font-size: 11px; font-weight: 700; color: #aaa;
+        text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px;
+    }
+    .side-stat-row {
+        display: flex; justify-content: space-between; align-items: center;
+        padding: 8px 0; border-bottom: 1px solid #faf9ff;
+    }
+    .side-stat-row:last-child { border-bottom: none; }
+    .side-stat-label { font-size: 13px; color: #555; display: flex; align-items: center; gap: 6px; }
+    .side-stat-val { font-size: 14px; font-weight: 800; color: #1a1a2e; }
+
+    /* ── Goals Tab ── */
+    .goals-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .goal-card {
+        background: white; border-radius: 14px; padding: 22px;
+        box-shadow: 0 1px 6px rgba(0,0,0,0.06); border: 1px solid #f0f0f0;
+    }
+    .goal-card h3 { font-size: 14px; font-weight: 700; color: #1a1a2e; margin-bottom: 4px; }
+    .goal-card p { font-size: 12px; color: #aaa; margin-bottom: 16px; }
+    .goal-progress-bg {
+        height: 10px; background: #f0f0f0; border-radius: 10px;
+        overflow: hidden; margin-bottom: 8px;
+    }
+    .goal-progress-fill { height: 100%; border-radius: 10px; transition: width 0.5s ease; }
+    .goal-numbers {
+        display: flex; justify-content: space-between;
+        font-size: 12px; color: #888;
+    }
+    .goal-numbers strong { color: #1a1a2e; font-weight: 700; }
+    .goal-target-row {
+        display: flex; align-items: center; gap: 10px; margin-top: 12px;
+    }
+    .goal-target-input {
+        width: 80px; padding: 7px 10px; border: 1px solid #e9d5ff;
+        border-radius: 8px; font-size: 13px; font-weight: 700;
+        color: #7c3aed; text-align: center; margin-bottom: 0;
+    }
+    .goal-target-label { font-size: 12px; color: #888; }
+    .goal-big-num { font-size: 36px; font-weight: 900; margin-bottom: 4px; }
+    .goal-check-list { margin-top: 8px; }
+    .goal-check-item {
+        display: flex; align-items: center; gap: 10px;
+        padding: 10px; border-radius: 8px; margin-bottom: 6px;
+        background: #faf9ff; font-size: 13px; color: #555;
+    }
+    .goal-check-item .check-circle {
+        width: 20px; height: 20px; border-radius: 50%;
+        border: 2px solid #d8b4fe; display: flex;
+        align-items: center; justify-content: center;
+        font-size: 11px; cursor: pointer; flex-shrink: 0;
+        transition: all 0.2s;
+    }
+    .goal-check-item .check-circle.done { background: #7c3aed; border-color: #7c3aed; color: white; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div style="max-width:100%;">
+
+    <!-- Topbar -->
+    <div class="js-topbar">
+        <div class="js-title">🔍 Job Search 2026</div>
+        <div style="display:flex; align-items:center; gap:12px;">
+            <div class="js-tabs">
+                <div class="js-tab active" onclick="switchView('resume', this)">📄 Resume</div>
+                <div class="js-tab" onclick="switchView('activities', this)">📝 Activities</div>
+                <div class="js-tab" onclick="switchView('goals', this)">🎯 Goals</div>
+            </div>
+            <a href="/add" class="btn-create">+ Create</a>
+        </div>
+    </div>
+
+    <!-- ── Resume Tab ── -->
+    <div class="tab-content active" id="view-resume">
+        <div class="resume-showcase">
+            <!-- Left: Resume list -->
+            <div class="resume-list-panel">
+                <div class="resume-list-header">
+                    <h3>My Resumes</h3>
+                    <a href="/resume" style="font-size:12px; color:#7c3aed; font-weight:700; text-decoration:none;">+ New</a>
+                </div>
+                <div class="resume-list-body">
+                    <div class="resume-list-item active">
+                        <div class="resume-list-icon">📋</div>
+                        <div class="resume-list-info">
+                            <h4>Base Resume</h4>
+                            <p>General · Entry Level</p>
+                        </div>
+                    </div>
+                    <div class="resume-list-item">
+                        <div class="resume-list-icon" style="background:linear-gradient(135deg,#6BCB77,#4D96FF);">📄</div>
+                        <div class="resume-list-info">
+                            <h4>Software Engineer</h4>
+                            <p>Tech · Internship</p>
+                        </div>
+                    </div>
+                    <div class="resume-list-item">
+                        <div class="resume-list-icon" style="background:linear-gradient(135deg,#FF6B6B,#FF8E53);">📝</div>
+                        <div class="resume-list-info">
+                            <h4>Data Analyst</h4>
+                            <p>Analytics · Junior</p>
+                        </div>
+                    </div>
+                    <a href="/resume" style="
+                        display:block; margin-top:10px; padding:10px;
+                        border: 1px dashed #d8b4fe; border-radius:10px;
+                        text-align:center; color:#a78bfa; font-size:13px;
+                        font-weight:700; text-decoration:none; transition:all 0.15s;
+                    ">+ Create New Resume</a>
+                </div>
+            </div>
+
+            <!-- Right: Resume editor preview -->
+            <div class="resume-preview-panel">
+                <div class="preview-header-row">
+                    <div class="preview-name">{{ username }}'s Resume</div>
+                    <div class="preview-actions">
+                        <a href="/resume" class="preview-btn preview-btn-outline">✏️ Edit</a>
+                        <button class="preview-btn preview-btn-purple" onclick="window.print()">🖨️ Export PDF</button>
+                    </div>
+                </div>
+
+                <div class="resume-section-title">Personal Info</div>
+                <div class="resume-field-row">
+                    <div class="resume-field">
+                        <label>Full Name</label>
+                        <input type="text" placeholder="{{ username }}">
+                    </div>
+                    <div class="resume-field">
+                        <label>Email</label>
+                        <input type="text" placeholder="your@email.com">
+                    </div>
+                </div>
+                <div class="resume-field-row">
+                    <div class="resume-field">
+                        <label>Phone</label>
+                        <input type="text" placeholder="+1 234 567 8900">
+                    </div>
+                    <div class="resume-field">
+                        <label>LinkedIn</label>
+                        <input type="text" placeholder="linkedin.com/in/you">
+                    </div>
+                </div>
+
+                <div class="resume-section-title">Summary</div>
+                <div class="resume-field">
+                    <textarea rows="3" placeholder="Brief professional summary..."></textarea>
+                </div>
+
+                <div class="resume-section-title">Experience</div>
+                <div class="resume-field">
+                    <textarea rows="4" placeholder="Company, Role, Duration, Key achievements..."></textarea>
+                </div>
+
+                <div class="resume-section-title">Skills</div>
+                <div class="resume-field">
+                    <input type="text" placeholder="Python, Flask, React, SQL...">
+                </div>
+
+                <a href="/resume" class="preview-btn preview-btn-purple" style="display:block; text-align:center; margin-top:8px;">
+                    Open Full Resume Builder →
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── Activities Tab ── -->
+    <div class="tab-content" id="view-activities">
+        <div class="activities-layout">
+            <div class="activity-panel">
+                <div class="activity-header">
+                    <h3>All Applications</h3>
+                    <span style="font-size:12px; color:#aaa;">{{ applications | length }} total</span>
+                </div>
+                {% if applications %}
+                    {% for app in applications %}
+                    {% set badge_map = {
+                        'Pending': 'badge-pending',
+                        'Applied': 'badge-applied',
+                        'Written Test': 'badge-written',
+                        'Interview': 'badge-interview',
+                        'Offer': 'badge-offer',
+                        'Rejected': 'badge-rejected'
+                    } %}
+                    {% set dot_map = {
+                        'Pending': '#FFD93D',
+                        'Applied': '#4D96FF',
+                        'Written Test': '#FF8C42',
+                        'Interview': '#C855F7',
+                        'Offer': '#6BCB77',
+                        'Rejected': '#FF6B6B'
+                    } %}
+                    <div class="activity-row">
+                        <div class="activity-dot" style="background:{{ dot_map.get(app.status, '#aaa') }};"></div>
+                        <div class="activity-info">
+                            <div class="activity-company">{{ app.company }}</div>
+                            <div class="activity-position">{{ app.position }}</div>
+                        </div>
+                        <span class="activity-badge {{ badge_map.get(app.status, 'badge-pending') }}">{{ app.status }}</span>
+                        <div class="activity-date">{{ app.date }}</div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                <div style="padding:50px; text-align:center; color:#ccc;">
+                    <div style="font-size:40px; margin-bottom:12px;">📭</div>
+                    <p style="font-size:13px;">No applications yet</p>
+                    <a href="/add" style="color:#7c3aed; font-weight:700; font-size:13px; text-decoration:none;">+ Add your first</a>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Side stats -->
+            <div class="side-panel">
+                <div class="side-card">
+                    <h4>Key Numbers</h4>
+                    <div class="side-stat-row">
+                        <span class="side-stat-label">📤 Applied</span>
+                        <span class="side-stat-val">{{ applications | length }}</span>
+                    </div>
+                    <div class="side-stat-row">
+                        <span class="side-stat-label">🎤 Interviews</span>
+                        <span class="side-stat-val">{{ applications | selectattr('status', 'equalto', 'Interview') | list | length }}</span>
+                    </div>
+                    <div class="side-stat-row">
+                        <span class="side-stat-label">🏆 Offers</span>
+                        <span class="side-stat-val">{{ applications | selectattr('status', 'equalto', 'Offer') | list | length }}</span>
+                    </div>
+                    <div class="side-stat-row">
+                        <span class="side-stat-label">❌ Rejected</span>
+                        <span class="side-stat-val">{{ applications | selectattr('status', 'equalto', 'Rejected') | list | length }}</span>
+                    </div>
+                </div>
+                <a href="/add" style="
+                    display:block; background:#7c3aed; color:white;
+                    padding:14px; border-radius:12px; text-align:center;
+                    text-decoration:none; font-weight:700; font-size:14px;
+                    box-shadow:0 2px 8px rgba(124,58,237,0.25);
+                ">+ Add Application</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── Goals Tab ── -->
+    <div class="tab-content" id="view-goals">
+        {% set total = applications | length %}
+        {% set interviews = applications | selectattr('status', 'equalto', 'Interview') | list | length %}
+        {% set offers = applications | selectattr('status', 'equalto', 'Offer') | list | length %}
+
+        <div class="goals-layout">
+            <!-- Applications goal -->
+            <div class="goal-card">
+                <h3>📤 Applications Goal</h3>
+                <p>How many companies do you want to apply to?</p>
+                <div class="goal-progress-bg">
+                    <div class="goal-progress-fill" id="app-bar" style="width:0%; background:linear-gradient(90deg,#4D96FF,#C855F7);"></div>
+                </div>
+                <div class="goal-numbers">
+                    <span>Progress: <strong>{{ applications | length }}</strong></span>
+                    <span><strong id="app-pct">0</strong>% complete</span>
+                </div>
+                <div class="goal-target-row">
+                    <input type="number" class="goal-target-input" id="app-target" value="50" min="1"
+                        oninput="updateGoal('app', {{ applications | length }}, this.value)">
+                    <span class="goal-target-label">target applications</span>
+                </div>
+            </div>
+
+            <!-- Interview goal -->
+            <div class="goal-card">
+                <h3>🎤 Interview Goal</h3>
+                <p>Target number of interviews to land</p>
+                <div class="goal-progress-bg">
+                    <div class="goal-progress-fill" id="int-bar" style="width:0%; background:linear-gradient(90deg,#C855F7,#FF6B6B);"></div>
+                </div>
+                <div class="goal-numbers">
+                    <span>Progress: <strong>{{ applications | selectattr('status', 'equalto', 'Interview') | list | length }}</strong></span>
+                    <span><strong id="int-pct">0</strong>% complete</span>
+                </div>
+                <div class="goal-target-row">
+                    <input type="number" class="goal-target-input" id="int-target" value="10" min="1"
+                        oninput="updateGoal('int', {{ applications | selectattr('status', 'equalto', 'Interview') | list | length }}, this.value)">
+                    <span class="goal-target-label">target interviews</span>
+                </div>
+            </div>
+
+            <!-- Offer goal -->
+            <div class="goal-card">
+                <h3>🏆 Offer Goal</h3>
+                <p>How many offers are you aiming for?</p>
+                <div class="goal-big-num" style="color:#6BCB77;">{{ offers }}</div>
+                <p style="font-size:12px; color:#aaa; margin-bottom:8px;">offers received so far</p>
+                <div class="goal-progress-bg">
+                    <div class="goal-progress-fill" style="width:{{ [offers * 33, 100] | min }}%; background:linear-gradient(90deg,#6BCB77,#4D96FF);"></div>
+                </div>
+            </div>
+
+            <!-- Weekly checklist -->
+            <div class="goal-card">
+                <h3>✅ This Week's Checklist</h3>
+                <p>Daily habits for a successful job search</p>
+                <div class="goal-check-list">
+                    {% for item in [
+                        'Apply to 3 new companies',
+                        'Follow up on pending applications',
+                        'Update resume for target role',
+                        'Research 2 new companies',
+                        'Practice interview questions',
+                        'Connect with 1 person on LinkedIn'
+                    ] %}
+                    <div class="goal-check-item">
+                        <div class="check-circle" onclick="toggleCheck(this)"></div>
+                        {{ item }}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+function switchView(view, el) {
+    document.querySelectorAll('.js-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('view-' + view).classList.add('active');
+}
+function toggleCheck(el) {
+    el.classList.toggle('done');
+    el.textContent = el.classList.contains('done') ? '✓' : '';
+}
+function updateGoal(id, current, target) {
+    const pct = Math.min(Math.round((current / Math.max(target, 1)) * 100), 100);
+    document.getElementById(id + '-bar').style.width = pct + '%';
+    document.getElementById(id + '-pct').textContent = pct;
+}
+// Init on load
+window.addEventListener('load', () => {
+    updateGoal('app', {{ applications | length }}, 50);
+    updateGoal('int', {{ applications | selectattr('status', 'equalto', 'Interview') | list | length }}, 10);
+});
+</script>
+{% endblock %}

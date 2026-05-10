@@ -1,74 +1,451 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard - ApplyTrack</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: #fff; display: flex; height: 100vh; overflow: hidden; }
 
-{% block title %}Dashboard — ApplyTrack{% endblock %}
+        /* ── Sidebar ── */
+        .sidebar {
+            width: 220px;
+            background: white;
+            border-right: 1px solid #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            padding: 20px 0;
+            flex-shrink: 0;
+        }
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0 20px 24px;
+            border-bottom: 1px solid #f0f0f0;
+            margin-bottom: 12px;
+        }
+        .sidebar-logo .logo-icon {
+            background: linear-gradient(135deg, #7c3aed, #a78bfa);
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+        .sidebar-logo span { font-weight: 800; font-size: 15px; color: #7c3aed; }
+        .nav-section { padding: 0 12px; margin-bottom: 8px; }
+        .nav-label {
+            font-size: 11px;
+            font-weight: 700;
+            color: #bbb;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 8px 8px 4px;
+        }
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #555;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.15s;
+            margin-bottom: 2px;
+        }
+        .nav-item:hover { background: #f5f3ff; color: #7c3aed; }
+        .nav-item.active { background: #f5f3ff; color: #7c3aed; font-weight: 700; }
+        .nav-item .icon { font-size: 16px; width: 20px; text-align: center; }
+        .tracker-section { padding: 0 12px; margin-bottom: 8px; }
+        .tracker-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 8px 4px;
+        }
+        .tracker-header span {
+            font-size: 11px;
+            font-weight: 700;
+            color: #bbb;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .tracker-header a { color: #7c3aed; font-size: 18px; text-decoration: none; }
+        .tracker-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #555;
+            font-size: 13px;
+        }
+        .tracker-item:hover { background: #f5f3ff; color: #7c3aed; }
+        .tracker-dot { width: 8px; height: 8px; border-radius: 50%; background: #7c3aed; }
+        .sidebar-bottom { margin-top: auto; padding: 12px; border-top: 1px solid #f0f0f0; }
+        .upgrade-card {
+            background: linear-gradient(135deg, #f5f3ff, #ede9fe);
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 12px;
+        }
+        .upgrade-card .upgrade-title { font-size: 13px; font-weight: 700; color: #7c3aed; margin-bottom: 4px; }
+        .upgrade-card .upgrade-sub { font-size: 11px; color: #888; margin-bottom: 10px; }
+        .upgrade-btn {
+            background: #f59e0b;
+            color: white;
+            border: none;
+            padding: 7px 14px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            width: 100%;
+        }
+        .user-row { display: flex; align-items: center; justify-content: space-between; padding: 8px; }
+        .user-info { display: flex; align-items: center; gap: 8px; }
+        .user-avatar {
+            width: 30px; height: 30px;
+            border-radius: 50%;
+            background: #7c3aed;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 700;
+        }
+        .user-name { font-size: 13px; font-weight: 600; color: #333; }
 
-{# Mark the active sidemenu link #}
-{% block nav_dashboard %}active{% endblock %}
+        /* ── Main ── */
+        .main { flex: 1; overflow-y: auto; position: relative; }
+        .confetti-bg {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 280px;
+            overflow: hidden;
+            z-index: 0;
+            pointer-events: none;
+        }
+        .breadcrumb {
+            position: relative;
+            z-index: 1;
+            padding: 16px 40px;
+            font-size: 13px;
+            color: #aaa;
+        }
+        .breadcrumb span { color: #555; font-weight: 600; }
 
-{% block content %}
+        /* ── Stats Row ── */
+        .stats-row {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+            padding: 0 40px 20px;
+        }
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 18px 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+            border-top: 3px solid #ddd;
+        }
+        .stat-card h3 { font-size: 28px; font-weight: 800; color: #1a1a2e; margin-bottom: 4px; }
+        .stat-card p { font-size: 12px; color: #888; text-transform: uppercase; letter-spacing: 0.5px; }
+        .stat-card.s-total { border-top-color: #7c3aed; }
+        .stat-card.s-total h3 { color: #7c3aed; }
+        .stat-card.s-interview { border-top-color: #9b59b6; }
+        .stat-card.s-interview h3 { color: #9b59b6; }
+        .stat-card.s-offer { border-top-color: #27ae60; }
+        .stat-card.s-offer h3 { color: #27ae60; }
+        .stat-card.s-rate { border-top-color: #3498db; }
+        .stat-card.s-rate h3 { color: #3498db; }
 
-  <!-- Stats -->
-  <div class="stats-grid">
-    <div class="stat-card">
-      <h3>{{ stats.total }}</h3>
-      <p>Total Applications</p>
+        /* ── Table ── */
+        .table-section {
+            position: relative;
+            z-index: 1;
+            padding: 0 40px 40px;
+        }
+        .table-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+        .table-header h2 { font-size: 18px; font-weight: 700; color: #1a1a2e; }
+        .btn-add {
+            background: #7c3aed;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-add:hover { background: #6d28d9; }
+        .table-card {
+            background: white;
+            border-radius: 14px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+            overflow: hidden;
+        }
+        table { width: 100%; border-collapse: collapse; }
+        th {
+            background: #faf9ff;
+            padding: 14px 20px;
+            text-align: left;
+            font-size: 12px;
+            font-weight: 700;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        td {
+            padding: 14px 20px;
+            font-size: 14px;
+            color: #333;
+            border-bottom: 1px solid #f9f9f9;
+        }
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background: #faf9ff; }
+        .company-name { font-weight: 700; color: #1a1a2e; }
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .status-Pending { background: #f0f0f0; color: #666; }
+        .status-Applied { background: #dbeafe; color: #2563eb; }
+        .status-Written-Test { background: #fef3c7; color: #d97706; }
+        .status-Interview { background: #ede9fe; color: #7c3aed; }
+        .status-Offer { background: #d1fae5; color: #059669; }
+        .status-Rejected { background: #fee2e2; color: #dc2626; }
+        .action-btns { display: flex; gap: 8px; }
+        .btn-action {
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .btn-update { background: #f5f3ff; color: #7c3aed; }
+        .btn-update:hover { background: #ede9fe; }
+        .btn-delete { background: #fee2e2; color: #dc2626; }
+        .btn-delete:hover { background: #fecaca; }
+        .empty-state {
+            text-align: center;
+            padding: 50px;
+            color: #aaa;
+        }
+        .empty-state div { font-size: 48px; margin-bottom: 16px; }
+        .empty-state a {
+            display: inline-block;
+            margin-top: 16px;
+            background: #7c3aed;
+            color: white;
+            padding: 10px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        /* Chart */
+        .chart-section {
+            position: relative;
+            z-index: 1;
+            padding: 0 40px 20px;
+        }
+        .chart-card {
+            background: white;
+            border-radius: 14px;
+            padding: 24px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+        }
+        .chart-card h3 { font-size: 15px; font-weight: 700; color: #1a1a2e; margin-bottom: 16px; }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-logo">
+            <div class="logo-icon">📋</div>
+            <span>ApplyTrack</span>
+        </div>
+        <div class="nav-section">
+            <div class="nav-label">Main</div>
+            <a href="/welcome" class="nav-item">
+                <span class="icon">🏠</span> Welcome
+            </a>
+            <a href="/dashboard" class="nav-item active">
+                <span class="icon">📊</span> Dashboard
+            </a>
+            <a href="/stats" class="nav-item">
+                <span class="icon">📈</span> Statistics
+            </a>
+            <a href="/resume" class="nav-item">
+                <span class="icon">📄</span> Resume Builder
+            </a>
+        </div>
+        <div class="tracker-section">
+            <div class="tracker-header">
+                <span>My Trackers</span>
+                <a href="/add">+</a>
+            </div>
+            <a href="/board" class="tracker-item">
+                <div class="tracker-dot"></div>
+                Job Search 2025
+            </a>
+        </div>
+        <div class="nav-section">
+            <div class="nav-label">Tools</div>
+            <a href="/board" class="nav-item">
+                <span class="icon">🗂️</span> Kanban Board
+            </a>
+            <a href="/calendar" class="nav-item">
+                <span class="icon">📅</span> Calendar
+            </a>
+            <a href="/email-drafts" class="nav-item">
+                <span class="icon">✉️</span> Email Drafts
+            </a>
+        </div>
+        <div class="sidebar-bottom">
+            <div class="upgrade-card">
+                <div class="upgrade-title">⭐ Pro Features</div>
+                <div class="upgrade-sub">Unlock AI resume tools</div>
+                <button class="upgrade-btn">Coming Soon</button>
+            </div>
+            <div class="user-row">
+                <div class="user-info">
+                    <div class="user-avatar">{{ username[0].upper() }}</div>
+                    <div class="user-name">{{ username }}</div>
+                </div>
+                <a href="/logout" style="font-size:13px; color:#aaa; text-decoration:none;">🚪</a>
+            </div>
+        </div>
     </div>
-    <div class="stat-card">
-      <h3>{{ stats.interviews }}</h3>
-      <p>Interviews</p>
+
+    <!-- Main -->
+    <div class="main">
+        <div class="confetti-bg">
+            <canvas id="confetti"></canvas>
+        </div>
+
+        <div class="breadcrumb">Home › <span>Dashboard</span></div>
+
+        <!-- Stats -->
+        <div class="stats-row">
+            <div class="stat-card s-total">
+                <h3>{{ stats.total }}</h3>
+                <p>Total Applications</p>
+            </div>
+            <div class="stat-card s-interview">
+                <h3>{{ stats.interviews }}</h3>
+                <p>Interviews</p>
+            </div>
+            <div class="stat-card s-offer">
+                <h3>{{ stats.offers }}</h3>
+                <p>Offers</p>
+            </div>
+            <div class="stat-card s-rate">
+                <h3>{{ stats.interview_rate }}%</h3>
+                <p>Interview Rate</p>
+            </div>
+        </div>
+
+        <!-- Chart -->
+        
+        <!-- Table -->
+        <div class="table-section">
+            <div class="table-header">
+                <h2>All Applications</h2>
+                <a href="/add" class="btn-add">+ Add Application</a>
+            </div>
+            <div class="table-card">
+                {% set apps = applications | list %}
+                {% if apps %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Company</th>
+                            <th>Position</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for i, app in apps %}
+                        <tr>
+                            <td><span class="company-name">{{ app.company }}</span></td>
+                            <td>{{ app.position }}</td>
+                            <td>{{ app.date }}</td>
+                            <td>
+                                <span class="status-badge status-{{ app.status.replace(' ', '-') }}">
+                                    {{ app.status }}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="action-btns">
+                                    <a href="/update/{{ i }}" class="btn-action btn-update">Update</a>
+                                    <a href="/delete/{{ i }}" class="btn-action btn-delete">Delete</a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <div class="empty-state">
+                    <div>📭</div>
+                    <p>No applications yet.</p>
+                    <a href="/add">+ Add your first application</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
     </div>
-    <div class="stat-card">
-      <h3>{{ stats.interview_rate }}%</h3>
-      <p>Interview Rate</p>
-    </div>
-  </div>
 
-  <!-- Applications Table -->
-  <div class="card">
-    <h2>All Applications</h2>
-    {% if applications %}
-    <table>
-      <tr>
-        <th>Company</th>
-        <th>Position</th>
-        <th>Date</th>
-        <th>Status</th>
-        <th>Action</th>
-      </tr>
-      {% for i, app in applications %}
-      <tr>
-        <td>{{ app.company }}</td>
-        <td>{{ app.position }}</td>
-        <td>{{ app.date }}</td>
-        <td>
-          <span class="status-badge status-{{ app.status.replace(' ', '-') }}">
-            {{ app.status }}
-          </span>
-        </td>
-        <td>
-          <a href="/update/{{ i }}" class="btn btn-warning" style="padding:5px 10px; font-size:12px;">Update</a>
-          <a href="/delete/{{ i }}" class="btn btn-danger"  style="padding:5px 10px; font-size:12px;">Delete</a>
-        </td>
-      </tr>
-      {% endfor %}
-    </table>
-    {% else %}
-    <p style="color:#888; text-align:center; padding:30px;">
-      No applications yet. <a href="/add">Add one now!</a>
-    </p>
-    {% endif %}
-  </div>
-
-  <!-- Chart -->
-  {% if chart_available %}
-  <div class="card">
-    <h2>📊 Statistics Chart</h2>
-    <img src="/static/chart.png" style="width:100%; border-radius:8px;">
-  </div>
-  {% else %}
-  <div class="card" style="text-align:center; color:#888; padding:30px;">
-    <p>No data yet. Add some applications to see your chart! 📈</p>
-  </div>
-  {% endif %}
-
-{% endblock %}
+    <script>
+        const canvas = document.getElementById('confetti');
+        const ctx = canvas.getContext('2d');
+        canvas.width = canvas.offsetWidth;
+        canvas.height = canvas.offsetHeight;
+        const colors = ['#7c3aed','#a78bfa','#f59e0b','#34d399','#f87171','#60a5fa'];
+        Array.from({length: 50}, () => ({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            size: Math.random() * 10 + 4,
+            color: colors[Math.floor(Math.random() * colors.length)],
+            rotation: Math.random() * Math.PI * 2,
+            opacity: Math.random() * 0.4 + 0.1
+        })).forEach(p => {
+            ctx.save();
+            ctx.globalAlpha = p.opacity;
+            ctx.fillStyle = p.color;
+            ctx.translate(p.x, p.y);
+            ctx.rotate(p.rotation);
+            ctx.fillRect(-p.size/2, -p.size/4, p.size, p.size/2);
+            ctx.restore();
+        });
+    </script>
+</body>
+</html>

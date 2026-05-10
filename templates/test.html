@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Job Application Tracker</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: #fff; color: #1a1a2e; }
+
+        /* ── Navbar ── */
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 18px 60px;
+            background: white;
+            border-bottom: 1px solid #f0f0f0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 20px;
+            font-weight: 800;
+            color: #5b21b6;
+        }
+        .logo-icon {
+            background: linear-gradient(135deg, #7c3aed, #a78bfa);
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+        .nav-links { display: flex; align-items: center; gap: 12px; }
+        .nav-links a {
+            text-decoration: none;
+            color: #555;
+            font-size: 14px;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+        .nav-links a:hover { background: #f5f3ff; color: #7c3aed; }
+        .nav-links .btn-primary {
+            background: #7c3aed;
+            color: white;
+            font-weight: 600;
+        }
+        .nav-links .btn-primary:hover { background: #6d28d9; color: white; }
+
+        /* ── Hero ── */
+        .hero {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 80px 60px;
+            max-width: 1200px;
+            margin: 0 auto;
+            gap: 60px;
+        }
+        .hero-left { flex: 1; }
+        .hero-tag {
+            display: inline-block;
+            background: #f5f3ff;
+            color: #7c3aed;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 6px 14px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        .hero-left h1 {
+            font-size: 52px;
+            font-weight: 800;
+            line-height: 1.15;
+            color: #1a1a2e;
+            margin-bottom: 20px;
+        }
+        .hero-left h1 span {
+            color: #7c3aed;
+            position: relative;
+        }
+        .hero-left p {
+            font-size: 17px;
+            color: #666;
+            line-height: 1.7;
+            margin-bottom: 36px;
+            max-width: 480px;
+        }
+        .hero-buttons { display: flex; gap: 14px; align-items: center; }
+        .btn-purple {
+            background: #7c3aed;
+            color: white;
+            padding: 14px 32px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 15px;
+            transition: all 0.2s;
+            box-shadow: 0 4px 14px rgba(124,58,237,0.3);
+        }
+        .btn-purple:hover {
+            background: #6d28d9;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(124,58,237,0.4);
+        }
+        .btn-outline {
+            background: transparent;
+            color: #7c3aed;
+            padding: 14px 32px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 15px;
+            border: 2px solid #7c3aed;
+            transition: all 0.2s;
+        }
+        .btn-outline:hover { background: #f5f3ff; }
+
+        /* ── Hero Right (Preview Card) ── */
+        .hero-right { flex: 1; position: relative; }
+        .preview-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.12);
+            overflow: hidden;
+            border: 1px solid #f0f0f0;
+        }
+        .preview-header {
+            background: #7c3aed;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .preview-header span {
+            color: white;
+            font-weight: 700;
+            font-size: 14px;
+        }
+        .preview-body { padding: 20px; }
+        .preview-cols {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+        .preview-col h4 {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #888;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        .preview-item {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 8px;
+            border-left: 3px solid #ddd;
+            font-size: 12px;
+        }
+        .preview-item .co { font-weight: 700; color: #2c3e50; }
+        .preview-item .pos { color: #888; margin-top: 2px; }
+        .col-applied .preview-item { border-left-color: #3498db; }
+        .col-interview .preview-item { border-left-color: #9b59b6; }
+        .col-offer .preview-item { border-left-color: #27ae60; }
+
+        /* Decorative shapes */
+        .shape {
+            position: absolute;
+            border-radius: 50%;
+            z-index: -1;
+        }
+        .shape-1 {
+            width: 120px; height: 120px;
+            background: #a78bfa;
+            top: -30px; right: -20px;
+            border-radius: 30% 70% 70% 30%;
+        }
+        .shape-2 {
+            width: 80px; height: 80px;
+            background: #fbbf24;
+            bottom: -20px; left: -20px;
+            border-radius: 50%;
+        }
+        .shape-3 {
+            width: 50px; height: 50px;
+            background: #34d399;
+            top: 40%; left: -30px;
+            border-radius: 12px;
+            transform: rotate(20deg);
+        }
+
+        /* ── Stats Bar ── */
+        .stats-bar {
+            background: #f5f3ff;
+            padding: 30px 60px;
+            display: flex;
+            justify-content: center;
+            gap: 80px;
+        }
+        .stat-item { text-align: center; }
+        .stat-item h3 {
+            font-size: 32px;
+            font-weight: 800;
+            color: #7c3aed;
+        }
+        .stat-item p { font-size: 13px; color: #888; margin-top: 4px; }
+
+        /* ── Features ── */
+        .features {
+            padding: 80px 60px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .features-title {
+            text-align: center;
+            font-size: 36px;
+            font-weight: 800;
+            color: #1a1a2e;
+            margin-bottom: 12px;
+        }
+        .features-sub {
+            text-align: center;
+            color: #888;
+            font-size: 16px;
+            margin-bottom: 48px;
+        }
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+        .feature-card {
+            background: white;
+            border-radius: 16px;
+            padding: 32px 28px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.07);
+            border: 1px solid #f0f0f0;
+            transition: all 0.2s;
+        }
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 30px rgba(124,58,237,0.12);
+            border-color: #e9d5ff;
+        }
+        .feature-icon {
+            width: 52px; height: 52px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 18px;
+        }
+        .icon-purple { background: #f5f3ff; }
+        .icon-blue { background: #eff6ff; }
+        .icon-green { background: #f0fdf4; }
+        .feature-card h3 {
+            font-size: 17px;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin-bottom: 10px;
+        }
+        .feature-card p {
+            font-size: 14px;
+            color: #888;
+            line-height: 1.6;
+        }
+
+        /* ── CTA ── */
+        .cta {
+            background: linear-gradient(135deg, #7c3aed, #a78bfa);
+            padding: 80px 60px;
+            text-align: center;
+            color: white;
+        }
+        .cta h2 {
+            font-size: 36px;
+            font-weight: 800;
+            margin-bottom: 16px;
+        }
+        .cta p {
+            font-size: 16px;
+            opacity: 0.85;
+            margin-bottom: 32px;
+        }
+        .btn-white {
+            background: white;
+            color: #7c3aed;
+            padding: 14px 36px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 15px;
+            display: inline-block;
+            transition: all 0.2s;
+        }
+        .btn-white:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.15); }
+
+        /* ── Footer ── */
+        .footer {
+            padding: 24px 60px;
+            text-align: center;
+            color: #aaa;
+            font-size: 13px;
+            border-top: 1px solid #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <div class="navbar">
+        <div class="logo">
+            <div class="logo-icon">📋</div>
+            ApplyTrack
+        </div>
+        <div class="nav-links">
+            <a href="/login">Log in</a>
+            <a href="/register" class="btn-primary">Sign up for free</a>
+        </div>
+    </div>
+
+    <!-- Hero -->
+    <div class="hero">
+        <div class="hero-left">
+            <div class="hero-tag">🚀 Free for Students</div>
+            <h1>Less Hassle,<br><span>More Interviews</span></h1>
+            <p>ApplyTrack helps you organize your job search, track every application, and never miss a deadline — all in one place.</p>
+            <div class="hero-buttons">
+                <a href="/register" class="btn-purple">Sign Up for Free</a>
+                <a href="/login" class="btn-outline">Log In</a>
+            </div>
+        </div>
+        <div class="hero-right">
+            <div class="shape shape-1"></div>
+            <div class="shape shape-2"></div>
+            <div class="shape shape-3"></div>
+            <div class="preview-card">
+                <div class="preview-header">
+                    <span>📋 My Job Search 2025</span>
+                </div>
+                <div class="preview-body">
+                    <div class="preview-cols">
+                        <div class="col-applied">
+                            <h4>Applied</h4>
+                            <div class="preview-item">
+                                <div class="co">Google</div>
+                                <div class="pos">SWE Intern</div>
+                            </div>
+                            <div class="preview-item">
+                                <div class="co">Meta</div>
+                                <div class="pos">Data Analyst</div>
+                            </div>
+                        </div>
+                        <div class="col-interview">
+                            <h4>Interview</h4>
+                            <div class="preview-item">
+                                <div class="co">Apple</div>
+                                <div class="pos">iOS Developer</div>
+                            </div>
+                        </div>
+                        <div class="col-offer">
+                            <h4>Offer 🎉</h4>
+                            <div class="preview-item">
+                                <div class="co">Microsoft</div>
+                                <div class="pos">PM Intern</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Bar -->
+    <div class="stats-bar">
+        <div class="stat-item">
+            <h3>10K+</h3>
+            <p>Applications Tracked</p>
+        </div>
+        <div class="stat-item">
+            <h3>500+</h3>
+            <p>Students Using</p>
+        </div>
+        <div class="stat-item">
+            <h3>3x</h3>
+            <p>More Interviews</p>
+        </div>
+        <div class="stat-item">
+            <h3>Free</h3>
+            <p>Always & Forever</p>
+        </div>
+    </div>
+
+    <!-- Features -->
+    <div class="features">
+        <div class="features-title">Everything You Need to Land the Job</div>
+        <div class="features-sub">Built for students who are serious about their career</div>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon icon-purple">🎯</div>
+                <h3>Our Mission</h3>
+                <p>Help students and job seekers stay organized during their job search journey, reducing stress and increasing success rates.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon icon-blue">🌟</div>
+                <h3>Our Goal</h3>
+                <p>Make job hunting simple, transparent, and data-driven — so you always know where you stand and what to do next.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon icon-green">⚡</div>
+                <h3>What We Offer</h3>
+                <p>Track applications, update statuses, visualize your progress with charts, and manage your entire job search in one place.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="cta">
+        <h2>Ready to Land Your Dream Job?</h2>
+        <p>Join thousands of students who are already tracking smarter.</p>
+        <a href="/register" class="btn-white">Get Started for Free →</a>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        © 2025 ApplyTrack · Built with ❤️ for students
+    </div>
+
+</body>
+</html>

@@ -34,7 +34,7 @@ def login():
         success, message = login_web(username, password)
         if success:
             session['username'] = username
-            return redirect(url_for('dashboard'))
+            return redirect(url_for('welcome'))
         else:
             return render_template('login.html', error=message)
     success_msg = request.args.get('success')
@@ -45,6 +45,12 @@ def login():
 def logout():
     session.pop('username', None)
     return redirect(url_for('index'))
+# ─── Welcome ───────────────────────────────────────
+@app.route('/welcome')
+def welcome():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+    return render_template('welcome.html', username=session['username'])
 
 # ─── Dashboard ──────────────────────────────────────
 @app.route('/dashboard')
@@ -231,5 +237,27 @@ def stats():
                            applications=applications,
                            weekly_labels=weekly_labels,
                            weekly_values=weekly_values)
+@app.route('/jobsearch')
+def jobsearch():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+    username = session['username']
+    applications = load_applications(username)
+    return render_template('jobsearch.html', 
+                           username=username,
+                           applications=applications)
+@app.route('/settings')
+def settings():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+    return render_template('settings.html', username=session['username'])
+@app.route('/test')
+def test():
+    return render_template('test.html')
+@app.route('/test_dashboard')
+def test_dashboard():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+    return render_template('test_dashboard.html', username=session['username'])
 if __name__ == '__main__':
     app.run(debug=True)

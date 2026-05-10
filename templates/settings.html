@@ -1,0 +1,662 @@
+{% extends "base.html" %}
+
+{% block title %}Settings — ApplyTrack{% endblock %}
+{% block page_title %}Settings{% endblock %}
+
+{% block extra_head %}
+<style>
+    .settings-layout {
+        display: grid;
+        grid-template-columns: 220px 1fr;
+        gap: 20px;
+        align-items: start;
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    /* Left nav */
+    .settings-nav {
+        background: white;
+        border-radius: 14px;
+        padding: 8px;
+        box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+        border: 1px solid #f0f0f0;
+        position: sticky;
+        top: 20px;
+    }
+    .settings-nav-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 12px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 13px;
+        font-weight: 500;
+        color: #555;
+        transition: all 0.15s;
+        margin-bottom: 2px;
+    }
+    .settings-nav-item:hover { background: #f5f3ff; color: #7c3aed; }
+    .settings-nav-item.active { background: #f5f3ff; color: #7c3aed; font-weight: 700; }
+    .settings-nav-icon { font-size: 16px; width: 20px; text-align: center; }
+    .settings-nav-divider {
+        font-size: 10px;
+        font-weight: 700;
+        color: #c4b5fd;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        padding: 10px 12px 4px;
+    }
+
+    /* Right content */
+    .settings-content { display: flex; flex-direction: column; gap: 16px; }
+    .settings-section {
+        background: white;
+        border-radius: 14px;
+        overflow: hidden;
+        box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+        border: 1px solid #f0f0f0;
+    }
+    .settings-section-header {
+        padding: 18px 24px;
+        border-bottom: 1px solid #f5f3ff;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .settings-section-header h3 {
+        font-size: 15px;
+        font-weight: 700;
+        color: #1a1a2e;
+    }
+    .settings-section-header p {
+        font-size: 12px;
+        color: #aaa;
+        margin-top: 2px;
+    }
+    .section-icon {
+        width: 38px; height: 38px;
+        border-radius: 10px;
+        background: #f5f3ff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        flex-shrink: 0;
+    }
+    .settings-body { padding: 20px 24px; }
+
+    /* Setting row */
+    .setting-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px 0;
+        border-bottom: 1px solid #faf9ff;
+    }
+    .setting-row:last-child { border-bottom: none; }
+    .setting-info h4 { font-size: 13px; font-weight: 700; color: #1a1a2e; margin-bottom: 3px; }
+    .setting-info p { font-size: 12px; color: #aaa; }
+
+    /* Toggle switch */
+    .toggle {
+        position: relative;
+        width: 44px; height: 24px;
+        flex-shrink: 0;
+    }
+    .toggle input { opacity: 0; width: 0; height: 0; }
+    .toggle-slider {
+        position: absolute;
+        cursor: pointer;
+        inset: 0;
+        background: #e0e0e0;
+        border-radius: 24px;
+        transition: 0.3s;
+    }
+    .toggle-slider:before {
+        content: '';
+        position: absolute;
+        width: 18px; height: 18px;
+        left: 3px; bottom: 3px;
+        background: white;
+        border-radius: 50%;
+        transition: 0.3s;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+    }
+    .toggle input:checked + .toggle-slider { background: #7c3aed; }
+    .toggle input:checked + .toggle-slider:before { transform: translateX(20px); }
+
+    /* Profile avatar */
+    .profile-avatar-section {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        margin-bottom: 20px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid #faf9ff;
+    }
+    .big-avatar {
+        width: 64px; height: 64px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #7c3aed, #a78bfa);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 26px;
+        font-weight: 800;
+        flex-shrink: 0;
+    }
+    .avatar-info h3 { font-size: 16px; font-weight: 700; color: #1a1a2e; }
+    .avatar-info p { font-size: 13px; color: #888; margin-top: 3px; }
+    .btn-change-avatar {
+        background: #f5f3ff;
+        color: #7c3aed;
+        border: 1px solid #e9d5ff;
+        padding: 7px 16px;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 700;
+        cursor: pointer;
+        margin-top: 8px;
+        transition: all 0.15s;
+    }
+    .btn-change-avatar:hover { background: #ede9fe; }
+
+    /* Input fields */
+    .settings-input {
+        width: 100%;
+        padding: 10px 14px;
+        border: 1px solid #e9d5ff;
+        border-radius: 8px;
+        font-size: 13px;
+        margin-top: 6px;
+        transition: all 0.2s;
+        font-family: inherit;
+    }
+    .settings-input:focus {
+        outline: none;
+        border-color: #7c3aed;
+        box-shadow: 0 0 0 3px rgba(124,58,237,0.1);
+    }
+    .settings-label {
+        font-size: 11px;
+        font-weight: 700;
+        color: #7c3aed;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        display: block;
+        margin-bottom: 2px;
+    }
+    .form-group { margin-bottom: 14px; }
+
+    /* Save button */
+    .btn-save {
+        background: #7c3aed;
+        color: white;
+        border: none;
+        padding: 11px 28px;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.2s;
+        box-shadow: 0 2px 8px rgba(124,58,237,0.25);
+    }
+    .btn-save:hover { background: #6d28d9; transform: translateY(-1px); }
+    .btn-danger-outline {
+        background: white;
+        color: #dc2626;
+        border: 1px solid #fecaca;
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.15s;
+    }
+    .btn-danger-outline:hover { background: #fee2e2; }
+
+    /* Theme cards */
+    .theme-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+    .theme-card {
+        border-radius: 10px;
+        height: 60px;
+        cursor: pointer;
+        border: 2px solid transparent;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+    }
+    .theme-card:hover { transform: scale(1.05); }
+    .theme-card.selected { border-color: #7c3aed; box-shadow: 0 0 0 3px rgba(124,58,237,0.2); }
+    .theme-purple { background: linear-gradient(135deg, #7c3aed, #a78bfa); }
+    .theme-blue { background: linear-gradient(135deg, #2563eb, #60a5fa); }
+    .theme-green { background: linear-gradient(135deg, #059669, #34d399); }
+    .theme-dark { background: linear-gradient(135deg, #1a1a2e, #374151); }
+
+    /* Danger zone */
+    .danger-zone {
+        border: 1px solid #fecaca;
+        border-radius: 14px;
+        overflow: hidden;
+    }
+    .danger-zone .settings-section-header { border-bottom-color: #fee2e2; }
+    .danger-zone .section-icon { background: #fee2e2; }
+
+    /* Toast */
+    .settings-toast {
+        display: none;
+        position: fixed;
+        bottom: 30px; right: 30px;
+        background: #7c3aed;
+        color: white;
+        padding: 12px 20px;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 600;
+        box-shadow: 0 4px 16px rgba(124,58,237,0.3);
+        z-index: 999;
+        align-items: center;
+        gap: 8px;
+    }
+    .settings-toast.show { display: flex; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="settings-layout">
+
+    <!-- Left Nav -->
+    <div class="settings-nav">
+        <div class="settings-nav-divider">Account</div>
+        <div class="settings-nav-item active" onclick="showSection('profile', this)">
+            <span class="settings-nav-icon">👤</span> Profile
+        </div>
+        <div class="settings-nav-item" onclick="showSection('security', this)">
+            <span class="settings-nav-icon">🔒</span> Security
+        </div>
+        <div class="settings-nav-divider">Preferences</div>
+        <div class="settings-nav-item" onclick="showSection('appearance', this)">
+            <span class="settings-nav-icon">🎨</span> Appearance
+        </div>
+        <div class="settings-nav-item" onclick="showSection('notifications', this)">
+            <span class="settings-nav-icon">🔔</span> Notifications
+        </div>
+        <div class="settings-nav-item" onclick="showSection('privacy', this)">
+            <span class="settings-nav-icon">🛡️</span> Privacy
+        </div>
+        <div class="settings-nav-divider">Data</div>
+        <div class="settings-nav-item" onclick="showSection('export', this)">
+            <span class="settings-nav-icon">📤</span> Export Data
+        </div>
+        <div class="settings-nav-item" onclick="showSection('danger', this)">
+            <span class="settings-nav-icon">⚠️</span> Danger Zone
+        </div>
+    </div>
+
+    <!-- Right Content -->
+    <div class="settings-content">
+
+        <!-- Profile -->
+        <div class="settings-section" id="section-profile">
+            <div class="settings-section-header">
+                <div class="section-icon">👤</div>
+                <div>
+                    <h3>Profile</h3>
+                    <p>Manage your personal information</p>
+                </div>
+            </div>
+            <div class="settings-body">
+                <div class="profile-avatar-section">
+                    <div class="big-avatar">{{ username[0].upper() if username else 'U' }}</div>
+                    <div class="avatar-info">
+                        <h3>{{ username }}</h3>
+                        <p>ApplyTrack Member</p>
+                        <button class="btn-change-avatar" onclick="openAvatarPicker()" style="position:relative;">
+                            Change Avatar
+                        </button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="settings-label">Username</label>
+                    <input type="text" class="settings-input" value="{{ username }}" readonly
+                           style="background:#faf9ff; color:#888;">
+                </div>
+                <div class="form-group">
+                    <label class="settings-label">Display Name</label>
+                    <input type="text" class="settings-input" placeholder="How should we call you?">
+                </div>
+                <div class="form-group">
+                    <label class="settings-label">Email</label>
+                    <input type="email" class="settings-input" placeholder="your@email.com">
+                </div>
+                <div class="form-group">
+                    <label class="settings-label">Job Title Target</label>
+                    <input type="text" class="settings-input" placeholder="e.g. Software Engineer Intern">
+                </div>
+                <button class="btn-save" onclick="showToast('Profile saved!')">Save Changes</button>
+            </div>
+        </div>
+
+        <!-- Security -->
+        <div class="settings-section" id="section-security" style="display:none;">
+            <div class="settings-section-header">
+                <div class="section-icon">🔒</div>
+                <div>
+                    <h3>Security</h3>
+                    <p>Manage your password and account security</p>
+                </div>
+            </div>
+            <div class="settings-body">
+                <div class="form-group">
+                    <label class="settings-label">Current Password</label>
+                    <input type="password" class="settings-input" id="currentPwd" placeholder="••••••••">
+                </div>
+                <div class="form-group">
+                    <label class="settings-label">New Password</label>
+                    <input type="password" class="settings-input" id="newPwd" placeholder="••••••••">
+                </div>
+                <div class="form-group">
+                    <label class="settings-label">Confirm New Password</label>
+                    <input type="password" class="settings-input" id="confirmPwd" placeholder="••••••••">
+                </div>
+<button class="btn-save" onclick="changePassword()">Update Password</button>
+            </div>
+        </div>
+
+        <!-- Appearance -->
+        <div class="settings-section" id="section-appearance" style="display:none;">
+            <div class="settings-section-header">
+                <div class="section-icon">🎨</div>
+                <div>
+                    <h3>Appearance</h3>
+                    <p>Customize how ApplyTrack looks</p>
+                </div>
+            </div>
+            <div class="settings-body">
+                <div class="form-group">
+                    <label class="settings-label">Theme Color</label>
+                    <div class="theme-grid" style="margin-top:10px;">
+                        <div class="theme-card theme-purple selected" onclick="selectTheme(this, 0)">✓</div>
+                        <div class="theme-card theme-blue" onclick="selectTheme(this, 1)"></div>
+                        <div class="theme-card theme-green" onclick="selectTheme(this, 2)"></div>
+                        <div class="theme-card theme-dark" onclick="selectTheme(this, 3)"></div>
+                    </div>
+                </div>
+                <div class="setting-row">
+                    <div class="setting-info">
+                        <h4>Compact Sidebar</h4>
+                        <p>Start with the sidebar collapsed by default</p>
+                    </div>
+                    <label class="toggle">
+                        <input type="checkbox" onchange="showToast('Preference saved!')">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="setting-row">
+                    <div class="setting-info">
+                        <h4>Show Confetti on Welcome</h4>
+                        <p>Display confetti animation on the welcome page</p>
+                    </div>
+                    <label class="toggle">
+                        <input type="checkbox" checked onchange="showToast('Preference saved!')">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Notifications -->
+        <div class="settings-section" id="section-notifications" style="display:none;">
+            <div class="settings-section-header">
+                <div class="section-icon">🔔</div>
+                <div>
+                    <h3>Notifications</h3>
+                    <p>Control what notifications you receive</p>
+                </div>
+            </div>
+            <div class="settings-body">
+                <div class="setting-row">
+                    <div class="setting-info"><h4>Application Reminders</h4><p>Get reminded about pending applications</p></div>
+                    <label class="toggle">
+                        <input type="checkbox" id="notif_reminders" checked onchange="saveNotification('reminders', this.checked)">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="setting-row">
+                    <div class="setting-info"><h4>Weekly Summary</h4><p>Receive a weekly digest of your progress</p></div>
+                    <label class="toggle">
+                        <input type="checkbox" id="notif_weekly" onchange="saveNotification('weekly', this.checked)">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="setting-row">
+                    <div class="setting-info"><h4>Interview Alerts</h4><p>Get notified when status moves to interview</p></div>
+                    <label class="toggle">
+                        <input type="checkbox" id="notif_interview" checked onchange="saveNotification('interview', this.checked)">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="setting-row">
+                    <div class="setting-info"><h4>Offer Celebrations 🎉</h4><p>Special notification when you receive an offer</p></div>
+                    <label class="toggle">
+                        <input type="checkbox" id="notif_offer" checked onchange="saveNotification('offer', this.checked)">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Privacy -->
+        <div class="settings-section" id="section-privacy" style="display:none;">
+            <div class="settings-section-header">
+                <div class="section-icon">🛡️</div>
+                <div>
+                    <h3>Privacy</h3>
+                    <p>Control your data and privacy settings</p>
+                </div>
+            </div>
+            <div class="settings-body">
+                <div class="setting-row">
+                    <div class="setting-info">
+                        <h4>Analytics</h4>
+                        <p>Help us improve by sharing anonymous usage data</p>
+                    </div>
+                    <label class="toggle">
+                        <input type="checkbox" checked onchange="showToast('Saved!')">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="setting-row">
+                    <div class="setting-info">
+                        <h4>Public Profile</h4>
+                        <p>Allow others to view your job search progress</p>
+                    </div>
+                    <label class="toggle">
+                        <input type="checkbox" onchange="showToast('Saved!')">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Export -->
+        <div class="settings-section" id="section-export" style="display:none;">
+            <div class="settings-section-header">
+                <div class="section-icon">📤</div>
+                <div>
+                    <h3>Export Data</h3>
+                    <p>Download all your application data</p>
+                </div>
+            </div>
+            <div class="settings-body">
+                <div class="setting-row">
+                    <div class="setting-info">
+                        <h4>Export Applications (JSON)</h4>
+                        <p>Download all your applications as a JSON file</p>
+                    </div>
+                    <a href="/export" class="btn-save" style="text-decoration:none; padding:9px 18px;">
+                        ⬇️ Export
+                    </a>
+                </div>
+                <div class="setting-row">
+                    <div class="setting-info">
+                        <h4>Export Resume (PDF)</h4>
+                        <p>Download your resume as a PDF</p>
+                    </div>
+                    <a href="/resume" class="btn-save" style="text-decoration:none; padding:9px 18px;">
+                        ⬇️ Export
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Danger Zone -->
+        <div class="settings-section danger-zone" id="section-danger" style="display:none;">
+            <div class="settings-section-header">
+                <div class="section-icon">⚠️</div>
+                <div>
+                    <h3>Danger Zone</h3>
+                    <p>Irreversible actions — proceed with caution</p>
+                </div>
+            </div>
+            <div class="settings-body">
+                <div class="setting-row">
+                    <div class="setting-info">
+                        <h4>Clear All Applications</h4>
+                        <p>Delete all your application records permanently</p>
+                    </div>
+                    <button class="btn-danger-outline" onclick="if(confirm('Are you sure? This cannot be undone!')) showToast('All applications cleared!')">
+                        🗑️ Clear All
+                    </button>
+                </div>
+                <div class="setting-row">
+                    <div class="setting-info">
+                        <h4>Delete Account</h4>
+                        <p>Permanently delete your account and all data</p>
+                    </div>
+                    <button class="btn-danger-outline" onclick="if(confirm('This will permanently delete your account!')) window.location.href='/logout'">
+                        ❌ Delete Account
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="settings-toast" id="settingsToast"></div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+// Theme color system
+const themeColors = {
+    0: { primary: '#7c3aed', light: '#f5f3ff', mid: '#ede9fe', text: '#6d28d9' },
+    1: { primary: '#2563eb', light: '#eff6ff', mid: '#dbeafe', text: '#1d4ed8' },
+    2: { primary: '#059669', light: '#f0fdf4', mid: '#d1fae5', text: '#047857' },
+    3: { primary: '#1a1a2e', light: '#f1f5f9', mid: '#e2e8f0', text: '#374151' }
+};
+
+function applyTheme(idx) {
+    const t = themeColors[idx];
+    document.documentElement.style.setProperty('--primary', t.primary);
+    localStorage.setItem('themeIdx', idx);
+}
+
+function selectTheme(el, idx) {
+    document.querySelectorAll('.theme-card').forEach((c, i) => {
+        c.classList.remove('selected');
+        c.textContent = '';
+    });
+    el.classList.add('selected');
+    el.textContent = '✓';
+    applyTheme(idx);
+    showToast('Theme saved! Refresh to apply everywhere.');
+}
+
+// Avatar emoji picker
+const avatarEmojis = ['😊','🚀','💪','🌟','🦁','🐯','🦊','🐺','🎯','💡','🔥','⚡'];
+function openAvatarPicker() {
+    const existing = document.getElementById('avatarPicker');
+    if (existing) { existing.remove(); return; }
+    const picker = document.createElement('div');
+    picker.id = 'avatarPicker';
+    picker.style.cssText = 'display:flex;flex-wrap:wrap;gap:8px;padding:12px;background:white;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,0.15);position:absolute;z-index:999;margin-top:8px;width:220px;';
+    avatarEmojis.forEach(emoji => {
+        const btn = document.createElement('button');
+        btn.textContent = emoji;
+        btn.style.cssText = 'font-size:24px;border:none;background:none;cursor:pointer;padding:4px;border-radius:6px;transition:background 0.15s;';
+        btn.onclick = () => {
+            document.querySelector('.big-avatar').textContent = emoji;
+            localStorage.setItem('avatar', emoji);
+            picker.remove();
+            showToast('Avatar updated!');
+        };
+        btn.onmouseover = () => btn.style.background = '#f5f3ff';
+        btn.onmouseout = () => btn.style.background = 'none';
+        picker.appendChild(btn);
+    });
+    document.querySelector('.btn-change-avatar').after(picker);
+}
+
+// Password validation
+function changePassword() {
+    const current = document.getElementById('currentPwd').value;
+    const newPwd = document.getElementById('newPwd').value;
+    const confirm = document.getElementById('confirmPwd').value;
+    if (!current || !newPwd || !confirm) { showToast('Please fill all fields!', true); return; }
+    if (newPwd !== confirm) { showToast('Passwords do not match!', true); return; }
+    if (newPwd.length < 6) { showToast('Password must be at least 6 characters!', true); return; }
+    showToast('Password updated successfully!');
+}
+
+// Notifications
+function saveNotification(key, val) {
+    localStorage.setItem('notif_' + key, val);
+    showToast('Notification preference saved!');
+}
+
+// Load saved preferences
+window.addEventListener('load', () => {
+    const savedTheme = localStorage.getItem('themeIdx');
+    if (savedTheme !== null) {
+        const cards = document.querySelectorAll('.theme-card');
+        cards.forEach((c, i) => {
+            c.classList.remove('selected'); c.textContent = '';
+        });
+        if (cards[savedTheme]) {
+            cards[savedTheme].classList.add('selected');
+            cards[savedTheme].textContent = '✓';
+        }
+    }
+    const savedAvatar = localStorage.getItem('avatar');
+    if (savedAvatar) document.querySelector('.big-avatar').textContent = savedAvatar;
+
+    // Load notification prefs
+    ['reminders','weekly','interview','offer'].forEach(key => {
+        const el = document.getElementById('notif_' + key);
+        if (el) el.checked = localStorage.getItem('notif_' + key) !== 'false';
+    });
+});
+
+function showSection(name, el) {
+    document.querySelectorAll('.settings-nav-item').forEach(i => i.classList.remove('active'));
+    document.querySelectorAll('.settings-section').forEach(s => s.style.display = 'none');
+    el.classList.add('active');
+    document.getElementById('section-' + name).style.display = 'block';
+}
+
+function showToast(msg, isError = false) {
+    const toast = document.getElementById('settingsToast');
+    toast.textContent = (isError ? '❌ ' : '✅ ') + msg;
+    toast.style.background = isError ? '#dc2626' : '#7c3aed';
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2500);
+}
+</script>
+{% endblock %}

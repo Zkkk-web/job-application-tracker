@@ -1,173 +1,304 @@
 {% extends "base.html" %}
 
 {% block title %}Email Drafts — ApplyTrack{% endblock %}
-
+{% block page_title %}Email Drafts{% endblock %}
 {% block nav_emails %}active{% endblock %}
 
 {% block extra_head %}
 <style>
-    body { background: #f0f2f5; }
-    .page-title {
-        font-size: 24px;
-        font-weight: 700;
-        color: #2c3e50;
-        margin-bottom: 6px;
-    }
-    .page-sub {
-        color: #888;
-        font-size: 14px;
-        margin-bottom: 24px;
-    }
-    .template-grid {
+    .ed-layout {
         display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 14px;
-        margin-bottom: 24px;
+        grid-template-columns: 280px 1fr;
+        gap: 20px;
+        align-items: start;
     }
-    .template-card {
-        background: white;
-        border-radius: 12px;
-        padding: 20px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.07);
-        cursor: pointer;
-        border: 2px solid transparent;
-        transition: all 0.2s;
-        text-align: center;
-    }
-    .template-card:hover, .template-card.active {
-        border-color: #2c3e50;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 16px rgba(0,0,0,0.12);
-    }
-    .template-card .icon { font-size: 32px; margin-bottom: 10px; }
-    .template-card h4 {
-        font-size: 13px;
-        font-weight: 700;
-        color: #2c3e50;
-        margin-bottom: 6px;
-    }
-    .template-card p { font-size: 11px; color: #aaa; line-height: 1.5; }
-    .composer {
+
+    /* Left Panel - Templates */
+    .template-panel {
         background: white;
         border-radius: 14px;
-        padding: 28px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        overflow: hidden;
+        box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+        border: 1px solid #f0f0f0;
     }
-    .composer h3 {
-        font-size: 16px;
+    .template-panel-header {
+        padding: 16px 20px;
+        border-bottom: 1px solid #f5f3ff;
+    }
+    .template-panel-header h3 {
+        font-size: 13px;
         font-weight: 700;
-        color: #2c3e50;
-        margin-bottom: 18px;
+        color: #1a1a2e;
+        margin-bottom: 2px;
     }
-    .field-row {
-        display: grid;
-        grid-template-columns: 80px 1fr;
+    .template-panel-header p {
+        font-size: 11px;
+        color: #aaa;
+    }
+    .template-list { padding: 8px; }
+    .template-item {
+        display: flex;
         align-items: center;
         gap: 12px;
-        margin-bottom: 12px;
+        padding: 12px;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.15s;
+        border: 1px solid transparent;
+        margin-bottom: 4px;
     }
-    .field-row label { font-size: 13px; font-weight: 600; color: #888; }
-    .field-row input {
+    .template-item:hover { background: #f5f3ff; }
+    .template-item.active {
+        background: #f5f3ff;
+        border-color: #e9d5ff;
+    }
+    .template-icon {
+        width: 38px; height: 38px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        flex-shrink: 0;
+    }
+    .t-purple { background: #f5f3ff; }
+    .t-blue { background: #eff6ff; }
+    .t-green { background: #f0fdf4; }
+    .t-orange { background: #fff7ed; }
+    .template-info h4 {
+        font-size: 13px;
+        font-weight: 700;
+        color: #1a1a2e;
+        margin-bottom: 2px;
+    }
+    .template-info p {
+        font-size: 11px;
+        color: #aaa;
+        line-height: 1.4;
+    }
+
+    /* Right Panel - Composer */
+    .composer-panel {
+        background: white;
+        border-radius: 14px;
+        overflow: hidden;
+        box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+        border: 1px solid #f0f0f0;
+    }
+    .composer-header {
+        padding: 16px 24px;
+        border-bottom: 1px solid #f5f3ff;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .composer-header h3 {
+        font-size: 15px;
+        font-weight: 700;
+        color: #1a1a2e;
+    }
+    .composer-header p { font-size: 12px; color: #aaa; margin-top: 2px; }
+    .composer-body { padding: 24px; }
+
+    .field-group { margin-bottom: 16px; }
+    .field-group label {
+        font-size: 11px;
+        font-weight: 700;
+        color: #7c3aed;
+        display: block;
+        margin-bottom: 6px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    .field-group input {
         width: 100%;
-        padding: 10px 14px;
-        border: 1px solid #eee;
+        padding: 11px 14px;
+        border: 1px solid #e9d5ff;
         border-radius: 8px;
         font-size: 13px;
-        background: #f8f9fa;
+        margin-bottom: 0;
+        transition: all 0.2s;
+        font-family: inherit;
     }
-    .email-body {
+    .field-group input:focus {
+        outline: none;
+        border-color: #7c3aed;
+        box-shadow: 0 0 0 3px rgba(124,58,237,0.1);
+    }
+    .field-group textarea {
         width: 100%;
         padding: 14px;
-        border: 1px solid #eee;
+        border: 1px solid #e9d5ff;
         border-radius: 8px;
         font-size: 13px;
-        background: #f8f9fa;
+        margin-bottom: 0;
         resize: vertical;
-        height: 220px;
+        height: 280px;
         line-height: 1.7;
-        margin-top: 4px;
+        font-family: inherit;
+        transition: all 0.2s;
     }
-    .action-bar { display: flex; gap: 12px; margin-top: 16px; }
+    .field-group textarea:focus {
+        outline: none;
+        border-color: #7c3aed;
+        box-shadow: 0 0 0 3px rgba(124,58,237,0.1);
+    }
+
+    .composer-footer {
+        padding: 16px 24px;
+        border-top: 1px solid #f5f3ff;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
     .btn-copy {
-        background: #2c3e50;
+        background: #7c3aed;
         color: white;
-        padding: 10px 24px;
+        padding: 10px 22px;
         border: none;
         border-radius: 8px;
         cursor: pointer;
         font-size: 13px;
-        font-weight: 600;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.2s;
+        box-shadow: 0 2px 8px rgba(124,58,237,0.25);
     }
+    .btn-copy:hover { background: #6d28d9; transform: translateY(-1px); }
     .btn-clear {
-        background: #f0f0f0;
-        color: #666;
-        padding: 10px 24px;
-        border: none;
+        background: #f5f3ff;
+        color: #7c3aed;
+        padding: 10px 22px;
+        border: 1px solid #e9d5ff;
         border-radius: 8px;
         cursor: pointer;
         font-size: 13px;
+        font-weight: 700;
+        transition: all 0.15s;
     }
-    .btn-copy:hover { background: #34495e; }
+    .btn-clear:hover { background: #ede9fe; }
+
+    /* Empty state */
+    .composer-empty {
+        padding: 60px 24px;
+        text-align: center;
+        color: #ccc;
+    }
+    .composer-empty div { font-size: 48px; margin-bottom: 16px; }
+    .composer-empty p { font-size: 14px; }
+
+    /* Toast */
     .toast {
         display: none;
         position: fixed;
-        bottom: 30px;
-        right: 30px;
-        background: #27ae60;
+        bottom: 30px; right: 30px;
+        background: #7c3aed;
         color: white;
-        padding: 12px 24px;
-        border-radius: 8px;
-        font-size: 14px;
-        box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+        padding: 12px 20px;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 600;
+        box-shadow: 0 4px 16px rgba(124,58,237,0.3);
+        z-index: 999;
+        align-items: center;
+        gap: 8px;
     }
+    .toast.show { display: flex; }
 </style>
 {% endblock %}
 
 {% block content %}
-<div style="max-width:960px;">
-    <div class="page-title">✉️ Email Drafts</div>
-    <div class="page-sub">Choose a template and customize your email in seconds</div>
+<div style="max-width:100%;">
 
-    <div class="template-grid">
-        <div class="template-card" onclick="loadTemplate('followup', this)">
-            <div class="icon">📨</div>
-            <h4>Follow-up</h4>
-            <p>After submitting your application</p>
-        </div>
-        <div class="template-card" onclick="loadTemplate('thankyou', this)">
-            <div class="icon">🙏</div>
-            <h4>Thank You</h4>
-            <p>After an interview</p>
-        </div>
-        <div class="template-card" onclick="loadTemplate('withdraw', this)">
-            <div class="icon">🚫</div>
-            <h4>Withdraw</h4>
-            <p>Withdraw your application</p>
-        </div>
-        <div class="template-card" onclick="loadTemplate('negotiate', this)">
-            <div class="icon">💰</div>
-            <h4>Negotiate</h4>
-            <p>Negotiate your offer</p>
-        </div>
+    <div style="margin-bottom:20px;">
+        <h2 style="font-size:22px; font-weight:800; color:#1a1a2e; margin-bottom:4px;">✉️ Email Drafts</h2>
+        <p style="font-size:13px; color:#aaa;">Select a template and customize your email in seconds</p>
     </div>
 
-    <div class="composer">
-        <h3>✏️ Compose Email</h3>
-        <div class="field-row">
-            <label>To</label>
-            <input type="text" id="email-to" placeholder="recruiter@company.com">
+    <div class="ed-layout">
+
+        <!-- Left: Templates -->
+        <div class="template-panel">
+            <div class="template-panel-header">
+                <h3>Templates</h3>
+                <p>Click to load a template</p>
+            </div>
+            <div class="template-list">
+                <div class="template-item active" onclick="loadTemplate('followup', this)">
+                    <div class="template-icon t-purple">📨</div>
+                    <div class="template-info">
+                        <h4>Follow-up</h4>
+                        <p>After submitting your application</p>
+                    </div>
+                </div>
+                <div class="template-item" onclick="loadTemplate('thankyou', this)">
+                    <div class="template-icon t-blue">🙏</div>
+                    <div class="template-info">
+                        <h4>Thank You</h4>
+                        <p>After an interview</p>
+                    </div>
+                </div>
+                <div class="template-item" onclick="loadTemplate('withdraw', this)">
+                    <div class="template-icon t-orange">🚫</div>
+                    <div class="template-info">
+                        <h4>Withdraw</h4>
+                        <p>Withdraw your application</p>
+                    </div>
+                </div>
+                <div class="template-item" onclick="loadTemplate('negotiate', this)">
+                    <div class="template-icon t-green">💰</div>
+                    <div class="template-info">
+                        <h4>Salary Negotiate</h4>
+                        <p>Negotiate your offer professionally</p>
+                    </div>
+                </div>
+                <div class="template-item" onclick="loadTemplate('referral', this)">
+                    <div class="template-icon t-purple">🤝</div>
+                    <div class="template-info">
+                        <h4>Referral Request</h4>
+                        <p>Ask someone for a referral</p>
+                    </div>
+                </div>
+                <div class="template-item" onclick="loadTemplate('cold', this)">
+                    <div class="template-icon t-blue">📬</div>
+                    <div class="template-info">
+                        <h4>Cold Outreach</h4>
+                        <p>Reach out to someone new</p>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="field-row">
-            <label>Subject</label>
-            <input type="text" id="email-subject" placeholder="Click a template above to get started">
+
+        <!-- Right: Composer -->
+        <div class="composer-panel">
+            <div class="composer-header">
+                <div>
+                    <h3 id="composer-title">📨 Follow-up Email</h3>
+                    <p id="composer-desc">After submitting your application</p>
+                </div>
+            </div>
+            <div class="composer-body">
+                <div class="field-group">
+                    <label>To</label>
+                    <input type="text" id="email-to" placeholder="recruiter@company.com">
+                </div>
+                <div class="field-group">
+                    <label>Subject</label>
+                    <input type="text" id="email-subject">
+                </div>
+                <div class="field-group">
+                    <label>Body</label>
+                    <textarea id="email-body"></textarea>
+                </div>
+            </div>
+            <div class="composer-footer">
+                <button class="btn-copy" onclick="copyEmail()">📋 Copy to Clipboard</button>
+                <button class="btn-clear" onclick="clearEmail()">🗑️ Clear</button>
+            </div>
         </div>
-        <div style="margin-top:4px;">
-            <textarea class="email-body" id="email-body" placeholder="Your email body will appear here after selecting a template..."></textarea>
-        </div>
-        <div class="action-bar">
-            <button class="btn-copy" onclick="copyEmail()">📋 Copy to Clipboard</button>
-            <button class="btn-clear" onclick="clearEmail()">🗑️ Clear</button>
-        </div>
+
     </div>
 </div>
 
@@ -178,36 +309,62 @@
 <script>
     const templates = {
         followup: {
-            subject: "Follow-up on My Application - [Position] at [Company]",
-            body: `Dear Hiring Manager,\n\nI hope this message finds you well. I recently submitted my application for the [Position] role at [Company] and wanted to follow up to express my continued interest.\n\nI am very enthusiastic about the possibility of joining your team. Please let me know if you need any additional information.\n\nThank you for your time and consideration.\n\nBest regards,\n[Your Name]`
+            title: '📨 Follow-up Email',
+            desc: 'After submitting your application',
+            subject: "Follow-up on My Application – [Position] at [Company]",
+            body: `Dear Hiring Manager,\n\nI hope this message finds you well. I recently submitted my application for the [Position] role at [Company] and wanted to follow up to express my continued interest in the opportunity.\n\nI am very enthusiastic about the possibility of joining your team. Please let me know if you need any additional information from my end.\n\nThank you for your time and consideration.\n\nBest regards,\n[Your Name]`
         },
         thankyou: {
-            subject: "Thank You - [Position] Interview at [Company]",
+            title: '🙏 Thank You Email',
+            desc: 'After an interview',
+            subject: "Thank You – [Position] Interview at [Company]",
             body: `Dear [Interviewer's Name],\n\nThank you so much for taking the time to interview me for the [Position] role at [Company]. I really enjoyed our conversation and learning more about the team.\n\nThe discussion reinforced my enthusiasm for this opportunity, and I look forward to hearing about the next steps.\n\nBest regards,\n[Your Name]`
         },
         withdraw: {
-            subject: "Withdrawal of Application - [Position] at [Company]",
+            title: '🚫 Withdraw Application',
+            desc: 'Withdraw your application',
+            subject: "Withdrawal of Application – [Position] at [Company]",
             body: `Dear Hiring Manager,\n\nI am writing to formally withdraw my application for the [Position] role at [Company].\n\nAfter careful consideration, I have decided to pursue a different opportunity. I have great respect for [Company] and hope our paths may cross in the future.\n\nThank you for your time and consideration.\n\nBest regards,\n[Your Name]`
         },
         negotiate: {
-            subject: "Offer Discussion - [Position] at [Company]",
-            body: `Dear [Hiring Manager's Name],\n\nThank you for the offer for the [Position] role at [Company]. I am very excited about this opportunity.\n\nAfter reviewing the offer, I would like to discuss the possibility of adjusting the base salary to [desired amount], based on my research and experience.\n\nI am open to discussion and look forward to finding a mutually beneficial arrangement.\n\nBest regards,\n[Your Name]`
+            title: '💰 Salary Negotiation',
+            desc: 'Negotiate your offer professionally',
+            subject: "Offer Discussion – [Position] at [Company]",
+            body: `Dear [Hiring Manager's Name],\n\nThank you for the offer for the [Position] role at [Company]. I am very excited about this opportunity.\n\nAfter reviewing the offer, I would like to discuss the possibility of adjusting the base salary to [desired amount], based on my research and experience in the field.\n\nI am open to discussion and look forward to finding a mutually beneficial arrangement.\n\nBest regards,\n[Your Name]`
+        },
+        referral: {
+            title: '🤝 Referral Request',
+            desc: 'Ask someone for a referral',
+            subject: "Referral Request – [Position] at [Company]",
+            body: `Dear [Name],\n\nI hope you're doing well! I'm reaching out because I'm very interested in the [Position] role at [Company] and noticed you work there.\n\nI would be incredibly grateful if you could refer me for this position or share any insights about the team and culture.\n\nI've attached my resume for your reference. Please let me know if you'd be comfortable with this — I truly appreciate your time!\n\nBest regards,\n[Your Name]`
+        },
+        cold: {
+            title: '📬 Cold Outreach',
+            desc: 'Reach out to someone new',
+            subject: "Interested in Opportunities at [Company]",
+            body: `Dear [Name],\n\nI hope this message finds you well. My name is [Your Name] and I'm a [Your Role/Student] with experience in [Your Field].\n\nI've been following [Company]'s work in [area] and I'm very impressed by [specific achievement or product]. I would love to learn more about potential opportunities to contribute to your team.\n\nWould you be open to a brief 15-minute call to discuss how my background might align with [Company]'s needs?\n\nThank you for your time!\n\nBest regards,\n[Your Name]`
         }
     };
 
+    // Load follow-up by default
+    loadTemplate('followup', document.querySelector('.template-item.active'));
+
     function loadTemplate(type, el) {
-        document.querySelectorAll('.template-card').forEach(c => c.classList.remove('active'));
+        document.querySelectorAll('.template-item').forEach(c => c.classList.remove('active'));
         el.classList.add('active');
-        document.getElementById('email-subject').value = templates[type].subject;
-        document.getElementById('email-body').value = templates[type].body;
+        const t = templates[type];
+        document.getElementById('composer-title').textContent = t.title;
+        document.getElementById('composer-desc').textContent = t.desc;
+        document.getElementById('email-subject').value = t.subject;
+        document.getElementById('email-body').value = t.body;
     }
 
     function copyEmail() {
         const text = `To: ${document.getElementById('email-to').value}\nSubject: ${document.getElementById('email-subject').value}\n\n${document.getElementById('email-body').value}`;
         navigator.clipboard.writeText(text).then(() => {
             const toast = document.getElementById('toast');
-            toast.style.display = 'block';
-            setTimeout(() => toast.style.display = 'none', 2500);
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2500);
         });
     }
 
@@ -215,7 +372,6 @@
         document.getElementById('email-to').value = '';
         document.getElementById('email-subject').value = '';
         document.getElementById('email-body').value = '';
-        document.querySelectorAll('.template-card').forEach(c => c.classList.remove('active'));
     }
 </script>
 {% endblock %}

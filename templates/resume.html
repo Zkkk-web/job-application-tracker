@@ -1,116 +1,283 @@
 {% extends "base.html" %}
-
 {% block title %}Resume Builder — ApplyTrack{% endblock %}
-
+{% block page_title %}Resume Builder{% endblock %}
 {% block nav_resume %}active{% endblock %}
 
 {% block extra_head %}
 <style>
-    body { background: #f0f2f5; }
-    .resume-preview {
-        background: white;
-        border-radius: 12px;
-        padding: 40px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-        max-width: 700px;
+    .rb-wrap {
+        max-width: 860px;
         margin: 0 auto;
     }
-    .resume-name { font-size: 28px; font-weight: 700; color: #2c3e50; }
-    .resume-contact { color: #888; font-size: 13px; margin: 6px 0 20px; }
-    .resume-section { margin-top: 24px; border-top: 2px solid #f0f0f0; padding-top: 16px; }
-    .resume-section h3 {
-        font-size: 14px;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        color: #3498db;
-        margin-bottom: 12px;
+    .rb-header { margin-bottom: 24px; }
+    .rb-header h2 { font-size: 22px; font-weight: 800; color: #1a1a2e; margin-bottom: 4px; }
+    .rb-header p { font-size: 13px; color: #aaa; }
+
+    .rb-tabs {
+        display: flex; gap: 0;
+        border-bottom: 2px solid #f0f0f0; margin-bottom: 24px;
     }
-    textarea {
-        width: 100%;
-        padding: 10px;
-        border: 1px solid #ddd;
-        border-radius: 6px;
-        font-size: 13px;
-        resize: vertical;
+    .rb-tab {
+        padding: 10px 20px; font-size: 13px; font-weight: 600; color: #888;
+        cursor: pointer; border-bottom: 2px solid transparent;
+        margin-bottom: -2px; transition: all 0.15s;
     }
-    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .rb-tab.active { color: #7c3aed; border-bottom-color: #7c3aed; }
+    .rb-tab:hover { color: #7c3aed; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    .builder-layout {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+    }
+    .builder-form {
+        background: white; border-radius: 14px; padding: 24px;
+        box-shadow: 0 1px 6px rgba(0,0,0,0.06); border: 1px solid #f0f0f0;
+    }
+    .builder-form h3 {
+        font-size: 15px; font-weight: 700; color: #1a1a2e;
+        margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid #f0f0f0;
+    }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .form-group { margin-bottom: 14px; }
+    .form-group label {
+        font-size: 11px; font-weight: 700; color: #7c3aed;
+        display: block; margin-bottom: 5px;
+        text-transform: uppercase; letter-spacing: 0.5px;
+    }
+    .form-group input, .form-group textarea {
+        width: 100%; padding: 10px 12px;
+        border: 1px solid #e9d5ff; border-radius: 8px;
+        font-size: 13px; margin-bottom: 0;
+        font-family: inherit; resize: vertical; transition: all 0.2s;
+    }
+    .form-group input:focus, .form-group textarea:focus {
+        outline: none; border-color: #7c3aed;
+        box-shadow: 0 0 0 3px rgba(124,58,237,0.1);
+    }
+    .section-divider {
+        font-size: 11px; font-weight: 700; color: #7c3aed;
+        text-transform: uppercase; letter-spacing: 1px;
+        padding: 12px 0 8px; border-top: 1px solid #f0f0f0; margin-top: 4px;
+    }
+    .print-btn {
+        background: #7c3aed; color: white; border: none;
+        padding: 12px; border-radius: 10px; font-size: 14px;
+        font-weight: 700; cursor: pointer; width: 100%; margin-top: 8px;
+        transition: all 0.2s; box-shadow: 0 2px 8px rgba(124,58,237,0.25);
+    }
+    .print-btn:hover { background: #6d28d9; transform: translateY(-1px); }
+
+    .resume-preview {
+        background: white; border-radius: 14px; padding: 28px;
+        box-shadow: 0 1px 6px rgba(0,0,0,0.06); border: 1px solid #f0f0f0;
+        position: sticky; top: 20px;
+    }
+    .preview-name { font-size: 22px; font-weight: 800; color: #1a1a2e; margin-bottom: 4px; }
+    .preview-contact { font-size: 12px; color: #888; margin-bottom: 16px; }
+    .preview-section { margin-top: 14px; padding-top: 12px; border-top: 2px solid #f5f3ff; }
+    .preview-section h4 {
+        font-size: 10px; font-weight: 700; color: #7c3aed;
+        text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px;
+    }
+    .preview-section p { font-size: 12px; color: #555; line-height: 1.6; white-space: pre-wrap; }
+    .skill-tag {
+        display: inline-block; background: #f5f3ff; color: #7c3aed;
+        font-size: 10px; font-weight: 700; padding: 2px 8px;
+        border-radius: 4px; margin: 2px;
+    }
+
     @media print {
-        .navbar, .btn, .card { display: none; }
-        .resume-preview { box-shadow: none; }
+        .sidebar, .top-bar, .builder-form, .rb-tabs, .rb-header { display: none !important; }
+        .builder-layout { grid-template-columns: 1fr; }
+        .resume-preview { box-shadow: none; border: none; position: static; }
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="card" style="margin-bottom:24px;">
-    <h2>📄 Resume Builder</h2>
-    <p style="color:#888; margin-top:8px; margin-bottom:20px;">Fill in your details and print your resume!</p>
-    <div class="form-row">
-        <div>
-            <label>Full Name</label>
-            <input type="text" id="name" placeholder="Your Name" oninput="updatePreview()">
-        </div>
-        <div>
-            <label>Email</label>
-            <input type="text" id="email" placeholder="email@example.com" oninput="updatePreview()">
-        </div>
+<div class="rb-wrap">
+    <div class="rb-header">
+        <h2>📄 Resume Builder</h2>
+        <p>Fill in your details on the left — preview updates live on the right</p>
     </div>
-    <div class="form-row">
-        <div>
-            <label>Phone</label>
-            <input type="text" id="phone" placeholder="+1 234 567 8900" oninput="updatePreview()">
-        </div>
-        <div>
-            <label>LinkedIn / GitHub</label>
-            <input type="text" id="linkedin" placeholder="linkedin.com/in/yourname" oninput="updatePreview()">
-        </div>
-    </div>
-    <label>Summary</label>
-    <textarea id="summary" rows="3" placeholder="Brief professional summary..." oninput="updatePreview()"></textarea>
-    <label>Education</label>
-    <textarea id="education" rows="3" placeholder="University, Degree, Year..." oninput="updatePreview()"></textarea>
-    <label>Experience</label>
-    <textarea id="experience" rows="4" placeholder="Company, Role, Duration, Responsibilities..." oninput="updatePreview()"></textarea>
-    <label>Skills</label>
-    <textarea id="skills" rows="2" placeholder="Python, Flask, HTML, CSS..." oninput="updatePreview()"></textarea>
-    <br><br>
-    <button onclick="window.print()">🖨️ Print Resume</button>
-</div>
 
-<div class="resume-preview" id="resume-preview">
-    <div class="resume-name" id="prev-name">Your Name</div>
-    <div class="resume-contact" id="prev-contact">email | phone | linkedin</div>
-    <div class="resume-section">
-        <h3>Summary</h3>
-        <p id="prev-summary" style="font-size:13px; color:#555;">Your summary will appear here.</p>
+    <div class="rb-tabs">
+        <div class="rb-tab active" onclick="switchTab('build', this)">✏️ Build</div>
+        <div class="rb-tab" onclick="switchTab('preview', this)">👁️ Full Preview</div>
     </div>
-    <div class="resume-section">
-        <h3>Education</h3>
-        <p id="prev-education" style="font-size:13px; color:#555;">Your education will appear here.</p>
+
+    <!-- Build Tab -->
+    <div class="tab-content active" id="tab-build">
+        <div class="builder-layout">
+            <!-- Form -->
+            <div class="builder-form">
+                <h3>📋 Your Information</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" id="name" placeholder="John Doe" oninput="updatePreview()">
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="text" id="email" placeholder="john@email.com" oninput="updatePreview()">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Phone</label>
+                        <input type="text" id="phone" placeholder="+1 234 567 8900" oninput="updatePreview()">
+                    </div>
+                    <div class="form-group">
+                        <label>Location</label>
+                        <input type="text" id="location" placeholder="New York, NY" oninput="updatePreview()">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>LinkedIn</label>
+                        <input type="text" id="linkedin" placeholder="linkedin.com/in/john" oninput="updatePreview()">
+                    </div>
+                    <div class="form-group">
+                        <label>GitHub</label>
+                        <input type="text" id="github" placeholder="github.com/john" oninput="updatePreview()">
+                    </div>
+                </div>
+                <div class="section-divider">Summary</div>
+                <div class="form-group">
+                    <label>Professional Summary</label>
+                    <textarea id="summary" rows="3" placeholder="Brief professional summary..." oninput="updatePreview()"></textarea>
+                </div>
+                <div class="section-divider">Education</div>
+                <div class="form-group">
+                    <label>Education</label>
+                    <textarea id="education" rows="3" placeholder="University, Degree, Year, GPA..." oninput="updatePreview()"></textarea>
+                </div>
+                <div class="section-divider">Experience</div>
+                <div class="form-group">
+                    <label>Work Experience</label>
+                    <textarea id="experience" rows="4" placeholder="Company, Role, Duration, Key achievements..." oninput="updatePreview()"></textarea>
+                </div>
+                <div class="section-divider">Skills & Projects</div>
+                <div class="form-group">
+                    <label>Skills (comma separated)</label>
+                    <input type="text" id="skills" placeholder="Python, Flask, React, SQL..." oninput="updatePreview()">
+                </div>
+                <div class="form-group">
+                    <label>Projects</label>
+                    <textarea id="projects" rows="3" placeholder="Project name, description, tech used..." oninput="updatePreview()"></textarea>
+                </div>
+                <button class="print-btn" onclick="window.print()">🖨️ Export as PDF</button>
+            </div>
+
+            <!-- Live Preview -->
+            <div class="resume-preview">
+                <div class="preview-name" id="prev-name">Your Name</div>
+                <div class="preview-contact" id="prev-contact" style="color:#aaa;">email · phone · location</div>
+                <div class="preview-section">
+                    <h4>Summary</h4>
+                    <p id="prev-summary" style="color:#ccc;">Your summary will appear here.</p>
+                </div>
+                <div class="preview-section">
+                    <h4>Education</h4>
+                    <p id="prev-education" style="color:#ccc;">Your education will appear here.</p>
+                </div>
+                <div class="preview-section">
+                    <h4>Experience</h4>
+                    <p id="prev-experience" style="color:#ccc;">Your experience will appear here.</p>
+                </div>
+                <div class="preview-section">
+                    <h4>Skills</h4>
+                    <div id="prev-skills-tags"><span style="font-size:12px; color:#ccc;">Your skills will appear here.</span></div>
+                </div>
+                <div class="preview-section">
+                    <h4>Projects</h4>
+                    <p id="prev-projects" style="color:#ccc;">Your projects will appear here.</p>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="resume-section">
-        <h3>Experience</h3>
-        <p id="prev-experience" style="font-size:13px; color:#555;">Your experience will appear here.</p>
-    </div>
-    <div class="resume-section">
-        <h3>Skills</h3>
-        <p id="prev-skills" style="font-size:13px; color:#555;">Your skills will appear here.</p>
+
+    <!-- Full Preview Tab -->
+    <div class="tab-content" id="tab-preview">
+        <div class="resume-preview" style="max-width:680px; margin:0 auto;">
+            <div class="preview-name" id="prev-name-2">Your Name</div>
+            <div class="preview-contact" id="prev-contact-2" style="color:#aaa;">email · phone · location</div>
+            <div class="preview-section">
+                <h4>Summary</h4>
+                <p id="prev-summary-2" style="color:#ccc;">Your summary will appear here.</p>
+            </div>
+            <div class="preview-section">
+                <h4>Education</h4>
+                <p id="prev-education-2" style="color:#ccc;">Your education will appear here.</p>
+            </div>
+            <div class="preview-section">
+                <h4>Experience</h4>
+                <p id="prev-experience-2" style="color:#ccc;">Your experience will appear here.</p>
+            </div>
+            <div class="preview-section">
+                <h4>Skills</h4>
+                <div id="prev-skills-tags-2"></div>
+            </div>
+            <div class="preview-section">
+                <h4>Projects</h4>
+                <p id="prev-projects-2" style="color:#ccc;">Your projects will appear here.</p>
+            </div>
+            <button class="print-btn" onclick="window.print()">🖨️ Export as PDF</button>
+        </div>
     </div>
 </div>
 {% endblock %}
 
 {% block extra_scripts %}
 <script>
-    function updatePreview() {
-        document.getElementById('prev-name').textContent = document.getElementById('name').value || 'Your Name';
-        document.getElementById('prev-contact').textContent =
-            (document.getElementById('email').value || 'email') + ' | ' +
-            (document.getElementById('phone').value || 'phone') + ' | ' +
-            (document.getElementById('linkedin').value || 'linkedin');
-        document.getElementById('prev-summary').textContent = document.getElementById('summary').value || 'Your summary will appear here.';
-        document.getElementById('prev-education').textContent = document.getElementById('education').value || 'Your education will appear here.';
-        document.getElementById('prev-experience').textContent = document.getElementById('experience').value || 'Your experience will appear here.';
-        document.getElementById('prev-skills').textContent = document.getElementById('skills').value || 'Your skills will appear here.';
-    }
+function switchTab(tab, el) {
+    document.querySelectorAll('.rb-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('tab-' + tab).classList.add('active');
+}
+
+function updatePreview() {
+    const name = document.getElementById('name').value || 'Your Name';
+    const email = document.getElementById('email').value;
+    const phone = document.getElementById('phone').value;
+    const location = document.getElementById('location').value;
+    const linkedin = document.getElementById('linkedin').value;
+    const github = document.getElementById('github').value;
+    const summary = document.getElementById('summary').value;
+    const education = document.getElementById('education').value;
+    const experience = document.getElementById('experience').value;
+    const skills = document.getElementById('skills').value;
+    const projects = document.getElementById('projects').value;
+
+    const contact = [email, phone, location, linkedin, github].filter(Boolean).join(' · ') || 'email · phone · location';
+
+    ['', '-2'].forEach(s => {
+        const n = document.getElementById('prev-name' + s);
+        if (n) n.textContent = name;
+        const c = document.getElementById('prev-contact' + s);
+        if (c) { c.textContent = contact; c.style.color = email ? '#555' : '#aaa'; }
+        const su = document.getElementById('prev-summary' + s);
+        if (su) { su.textContent = summary || 'Your summary will appear here.'; su.style.color = summary ? '#555' : '#ccc'; }
+        const ed = document.getElementById('prev-education' + s);
+        if (ed) { ed.textContent = education || 'Your education will appear here.'; ed.style.color = education ? '#555' : '#ccc'; }
+        const ex = document.getElementById('prev-experience' + s);
+        if (ex) { ex.textContent = experience || 'Your experience will appear here.'; ex.style.color = experience ? '#555' : '#ccc'; }
+        const pr = document.getElementById('prev-projects' + s);
+        if (pr) { pr.textContent = projects || 'Your projects will appear here.'; pr.style.color = projects ? '#555' : '#ccc'; }
+        const st = document.getElementById('prev-skills-tags' + s);
+        if (st) {
+            if (skills) {
+                st.innerHTML = skills.split(',').map(sk => sk.trim()).filter(Boolean)
+                    .map(sk => `<span class="skill-tag">${sk}</span>`).join('');
+            } else {
+                st.innerHTML = '<span style="font-size:12px; color:#ccc;">Your skills will appear here.</span>';
+            }
+        }
+    });
+}
 </script>
 {% endblock %}

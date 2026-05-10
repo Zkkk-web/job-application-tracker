@@ -1,141 +1,305 @@
 {% extends "base.html" %}
 
 {% block title %}Kanban Board — ApplyTrack{% endblock %}
-
+{% block page_title %}Kanban Board{% endblock %}
 {% block nav_board %}active{% endblock %}
+{% block nav_kanban %}active{% endblock %}
 
 {% block extra_head %}
 <style>
-    body { background: #f0f2f5; }
-    .page-title {
-        font-size: 24px;
-        font-weight: 700;
-        color: #2c3e50;
-        margin-bottom: 24px;
-    }
-    .kanban-wrapper {
-        display: grid;
-        grid-template-columns: repeat(6, 1fr);
-        gap: 14px;
-        overflow-x: auto;
-        padding-bottom: 20px;
-    }
-    .kanban-col {
-        background: #f8f9fa;
-        border-radius: 14px;
-        padding: 14px;
-        min-height: 500px;
-    }
-    .col-header {
+    /* Top bar */
+    .board-topbar {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        margin-bottom: 14px;
-        padding-bottom: 10px;
-        border-bottom: 2px solid rgba(0,0,0,0.06);
+        margin-bottom: 20px;
     }
-    .col-title {
+    .board-title {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .board-title h2 {
+        font-size: 16px;
+        font-weight: 700;
+        color: #1a1a2e;
+    }
+    .board-tabs {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        background: #f5f3ff;
+        padding: 4px;
+        border-radius: 10px;
+    }
+    .board-tab {
+        padding: 7px 16px;
+        border-radius: 7px;
+        font-size: 13px;
+        font-weight: 600;
+        color: #888;
+        cursor: pointer;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.15s;
+    }
+    .board-tab.active {
+        background: white;
+        color: #7c3aed;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    }
+    .board-tab:hover { color: #7c3aed; }
+    .btn-create {
+        background: #7c3aed;
+        color: white;
+        padding: 9px 18px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        box-shadow: 0 2px 8px rgba(124,58,237,0.25);
+        transition: all 0.2s;
+    }
+    .btn-create:hover { background: #6d28d9; transform: translateY(-1px); }
+
+    /* Kanban board */
+    .kanban-board {
+        display: flex;
+        gap: 12px;
+        overflow-x: auto;
+        padding-bottom: 20px;
+        min-height: calc(100vh - 200px);
+    }
+    .kanban-col {
+        flex: 0 0 240px;
+        display: flex;
+        flex-direction: column;
+        background: #f8f9fa;
+        border-radius: 12px;
+        overflow: hidden;
+    }
+    .col-head {
+        padding: 14px 16px 12px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid #f0f0f0;
+        background: white;
+    }
+    .col-head-left {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .col-head-icon { font-size: 16px; }
+    .col-head-title {
         font-size: 12px;
         font-weight: 700;
         text-transform: uppercase;
-        letter-spacing: 1px;
+        letter-spacing: 0.8px;
+        color: #1a1a2e;
     }
-    .col-count {
+    .col-head-count {
+        font-size: 11px;
+        color: #aaa;
+        font-weight: 500;
+    }
+    .col-head-dots {
+        color: #ccc;
+        font-size: 16px;
+        cursor: pointer;
+        padding: 2px 4px;
+        border-radius: 4px;
+    }
+    .col-head-dots:hover { background: #f0f0f0; color: #888; }
+
+    /* Add button row */
+    .col-add {
+        padding: 10px 12px;
+        border-bottom: 1px solid #f0f0f0;
         background: white;
-        border-radius: 20px;
-        padding: 2px 10px;
-        font-size: 12px;
-        font-weight: 700;
-        box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    }
+    .col-add-btn {
+        width: 100%;
+        padding: 7px;
+        border-radius: 7px;
+        border: 1px dashed #d8b4fe;
+        background: transparent;
+        color: #a78bfa;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        transition: all 0.15s;
+        text-decoration: none;
+    }
+    .col-add-btn:hover { background: #f5f3ff; border-color: #7c3aed; color: #7c3aed; }
+
+    /* Cards */
+    .col-body {
+        flex: 1;
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        overflow-y: auto;
     }
     .app-card {
         background: white;
         border-radius: 10px;
         padding: 14px;
-        margin-bottom: 10px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.07);
-        border-top: 3px solid #ddd;
-        transition: transform 0.2s, box-shadow 0.2s;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+        border: 1px solid #f0f0f0;
+        border-left: 3px solid #ddd;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-decoration: none;
     }
     .app-card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+        box-shadow: 0 4px 12px rgba(124,58,237,0.12);
+        border-color: #e9d5ff;
+        transform: translateY(-1px);
     }
-    .app-card .company {
-        font-weight: 700;
+    .app-card-company {
         font-size: 13px;
-        color: #2c3e50;
-        margin-bottom: 4px;
+        font-weight: 700;
+        color: #1a1a2e;
+        margin-bottom: 3px;
     }
-    .app-card .position {
+    .app-card-position {
         font-size: 12px;
-        color: #666;
-        margin-bottom: 8px;
+        color: #7c3aed;
+        font-weight: 500;
+        margin-bottom: 10px;
     }
-    .app-card .date {
+    .app-card-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .app-card-date {
         font-size: 11px;
         color: #aaa;
         display: flex;
         align-items: center;
-        gap: 4px;
+        gap: 3px;
     }
-    .empty-state {
+    .app-card-action {
+        font-size: 11px;
+        color: #a78bfa;
+        background: #f5f3ff;
+        padding: 3px 8px;
+        border-radius: 4px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.15s;
+    }
+    .app-card-action:hover { background: #ede9fe; color: #7c3aed; }
+
+    /* Empty state */
+    .col-empty {
+        padding: 24px 12px;
         text-align: center;
         color: #ccc;
         font-size: 12px;
-        padding: 30px 10px;
     }
-    .empty-state div { font-size: 28px; margin-bottom: 8px; }
+    .col-empty div { font-size: 24px; margin-bottom: 6px; }
 
-    .col-pending .col-title { color: #7f8c8d; }
-    .col-pending .app-card { border-top-color: #95a5a6; }
-    .col-applied .col-title { color: #2980b9; }
-    .col-applied .app-card { border-top-color: #3498db; }
-    .col-written .col-title { color: #d68910; }
-    .col-written .app-card { border-top-color: #f39c12; }
-    .col-interview .col-title { color: #7d3c98; }
-    .col-interview .app-card { border-top-color: #9b59b6; }
-    .col-offer .col-title { color: #1e8449; }
-    .col-offer .app-card { border-top-color: #27ae60; }
-    .col-rejected .col-title { color: #c0392b; }
-    .col-rejected .app-card { border-top-color: #e74c3c; }
+    /* Column color accents */
+    .col-pending .app-card { border-left-color: #95a5a6; }
+    .col-applied .app-card { border-left-color: #3498db; }
+    .col-written .app-card { border-left-color: #f39c12; }
+    .col-interview .app-card { border-left-color: #7c3aed; }
+    .col-offer .app-card { border-left-color: #27ae60; }
+    .col-rejected .app-card { border-left-color: #e74c3c; }
+
+    .col-pending .col-head-title { color: #7f8c8d; }
+    .col-applied .col-head-title { color: #2980b9; }
+    .col-written .col-head-title { color: #d68910; }
+    .col-interview .col-head-title { color: #7c3aed; }
+    .col-offer .col-head-title { color: #1e8449; }
+    .col-rejected .col-head-title { color: #c0392b; }
 </style>
 {% endblock %}
 
 {% block content %}
-<div style="max-width:1400px;">
-    <div class="page-title">🗂️ Kanban Board</div>
-    <div class="kanban-wrapper">
+<div style="max-width:100%;">
+
+    <!-- Top bar -->
+    <div class="board-topbar">
+        <div class="board-title">
+            <h2>🗂️ Job Search 2025</h2>
+        </div>
+        <div style="display:flex; align-items:center; gap:12px;">
+            <div class="board-tabs">
+                <a href="/board" class="board-tab active">📋 Board</a>
+            </div>
+            <a href="/add" class="btn-create">+ Create</a>
+        </div>
+    </div>
+
+    <!-- Kanban -->
+    <div class="kanban-board">
         {% for status, col_class, emoji in [
-            ('Pending', 'col-pending', '📋'),
-            ('Applied', 'col-applied', '📤'),
-            ('Written Test', 'col-written', '✏️'),
-            ('Interview', 'col-interview', '🎤'),
-            ('Offer', 'col-offer', '🎉'),
-            ('Rejected', 'col-rejected', '❌')
+            ('Pending',      'col-pending',   '📌'),
+            ('Applied',      'col-applied',   '📤'),
+            ('Written Test', 'col-written',   '✏️'),
+            ('Interview',    'col-interview', '🎤'),
+            ('Offer',        'col-offer',     '🏆'),
+            ('Rejected',     'col-rejected',  '❌')
         ] %}
         {% set apps = applications | selectattr('status', 'equalto', status) | list %}
         <div class="kanban-col {{ col_class }}">
-            <div class="col-header">
-                <span class="col-title">{{ emoji }} {{ status }}</span>
-                <span class="col-count">{{ apps | length }}</span>
-            </div>
-            {% if apps %}
-                {% for app in apps %}
-                <div class="app-card">
-                    <div class="company">{{ app.company }}</div>
-                    <div class="position">{{ app.position }}</div>
-                    <div class="date">📅 {{ app.date }}</div>
+
+            <!-- Column header -->
+            <div class="col-head">
+                <div class="col-head-left">
+                    <span class="col-head-icon">{{ emoji }}</span>
+                    <div>
+                        <div class="col-head-title">{{ status }}</div>
+                        <div class="col-head-count">{{ apps | length }} job{{ 's' if apps | length != 1 }}</div>
+                    </div>
                 </div>
-                {% endfor %}
-            {% else %}
-            <div class="empty-state">
-                <div>○</div>
-                No applications
+                <span class="col-head-dots">···</span>
             </div>
-            {% endif %}
+
+            <!-- Add button -->
+            <div class="col-add">
+                <a href="/add" class="col-add-btn">+ Add</a>
+            </div>
+
+            <!-- Cards -->
+            <div class="col-body">
+                {% if apps %}
+    {% for app in apps %}
+            <a href="/update/{{ loop.index0 }}" class="app-card">
+                <div class="app-card-company">{{ app.company }}</div>
+                <div class="app-card-position">{{ app.position }}</div>
+                <div class="app-card-footer">
+                    <div class="app-card-date">📅 {{ app.date }}</div>
+                    <span class="app-card-action">Edit →</span>
+                </div>
+                    </a>
+                    {% endfor %}
+                {% else %}
+                <div class="col-empty">
+                    <div>○</div>
+                    No applications
+                </div>
+                {% endif %}
+            </div>
+
         </div>
         {% endfor %}
     </div>
+
 </div>
 {% endblock %}

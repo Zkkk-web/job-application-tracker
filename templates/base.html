@@ -4,15 +4,304 @@
   <meta charset="UTF-8">
   <title>{% block title %}ApplyTrack{% endblock %}</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='side_menu.css') }}">
   {% block extra_head %}{% endblock %}
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', sans-serif; background: #f8f9fa; display: flex; height: 100vh; overflow: hidden; }
+
+    /* ── Sidebar ── */
+    .sidebar {
+        width: 220px;
+        background: white;
+        border-right: 1px solid #f0f0f0;
+        display: flex;
+        flex-direction: column;
+        padding: 20px 0;
+        flex-shrink: 0;
+        transition: width 0.25s ease;
+        position: relative;
+        z-index: 100;
+    }
+    .sidebar.collapsed { width: 60px; }
+
+    /* Toggle button - outside overflow */
+    .toggle-btn {
+    position: absolute;
+    top: 22px;
+    right: -14px;
+    width: 28px; height: 28px;
+    background: white;
+    border: 1.5px solid #e9d5ff;
+    border-radius: 50% !important;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    color: #7c3aed;
+    box-shadow: 0 2px 8px rgba(124,58,237,0.15);
+    z-index: 200;
+    transition: transform 0.25s, background 0.2s;
+    padding: 0;
+    line-height: 1;
+    aspect-ratio: 1;
+    }
+    .toggle-btn:hover { background: #f5f3ff; }
+    .sidebar.collapsed .toggle-btn { transform: rotate(180deg); }
+
+    .sidebar-inner {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        overflow: hidden;
+    }
+
+    .sidebar-logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 0 14px 20px;
+        border-bottom: 1px solid #f0f0f0;
+        margin-bottom: 12px;
+        white-space: nowrap;
+    }
+    .logo-icon {
+        background: linear-gradient(135deg, #7c3aed, #a78bfa);
+        color: white;
+        width: 32px; height: 32px;
+        border-radius: 8px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 16px; flex-shrink: 0;
+    }
+    .logo-text { font-weight: 800; font-size: 15px; color: #7c3aed; transition: opacity 0.2s; white-space: nowrap; }
+    .sidebar.collapsed .logo-text { opacity: 0; pointer-events: none; }
+
+    .nav-section { padding: 0 8px; margin-bottom: 8px; }
+    .nav-label {
+        font-size: 10px; font-weight: 700; color: #c4b5fd;
+        text-transform: uppercase; letter-spacing: 1px;
+        padding: 8px 8px 4px; white-space: nowrap;
+        transition: opacity 0.2s;
+    }
+    .sidebar.collapsed .nav-label { opacity: 0; }
+
+    .nav-item {
+        display: flex; align-items: center; gap: 10px;
+        padding: 10px 8px; border-radius: 8px;
+        text-decoration: none; color: #6b7280;
+        font-size: 13px; font-weight: 500;
+        transition: all 0.15s; margin-bottom: 2px;
+        white-space: nowrap; overflow: hidden;
+        position: relative;
+    }
+    .nav-item:hover { background: #f5f3ff; color: #7c3aed; }
+    .nav-item.active { background: #f5f3ff; color: #7c3aed; font-weight: 700; }
+    .nav-icon { font-size: 17px; width: 24px; text-align: center; flex-shrink: 0; }
+    .nav-text { transition: opacity 0.2s; white-space: nowrap; }
+    .sidebar.collapsed .nav-text { opacity: 0; }
+
+    .sidebar.collapsed .nav-item:hover::after {
+        content: attr(data-label);
+        position: absolute; left: 52px; top: 50%;
+        transform: translateY(-50%);
+        background: #1a1a2e; color: white;
+        padding: 5px 10px; border-radius: 6px;
+        font-size: 12px; white-space: nowrap;
+        pointer-events: none; z-index: 999;
+    }
+
+    .tracker-section { padding: 0 8px; margin-bottom: 8px; }
+    .tracker-header {
+        display: flex; align-items: center;
+        justify-content: space-between; padding: 8px 8px 4px;
+    }
+    .tracker-header span {
+        font-size: 10px; font-weight: 700; color: #c4b5fd;
+        text-transform: uppercase; letter-spacing: 1px;
+        white-space: nowrap; transition: opacity 0.2s;
+    }
+    .sidebar.collapsed .tracker-header span { opacity: 0; }
+    .tracker-header a { color: #7c3aed; font-size: 16px; text-decoration: none; flex-shrink: 0; }
+
+    .sidebar-bottom {
+        margin-top: auto; padding: 10px 8px;
+        border-top: 1px solid #f0f0f0;
+    }
+    .user-row {
+        display: flex; align-items: center;
+        justify-content: space-between; padding: 6px 4px;
+    }
+    .user-info { display: flex; align-items: center; gap: 8px; overflow: hidden; }
+    .user-avatar {
+        width: 30px; height: 30px; border-radius: 50%;
+        background: linear-gradient(135deg, #7c3aed, #a78bfa);
+        color: white; display: flex; align-items: center;
+        justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0;
+    }
+    .user-name { font-size: 12px; font-weight: 600; color: #333; white-space: nowrap; transition: opacity 0.2s; }
+    .sidebar.collapsed .user-name { opacity: 0; }
+    .logout-icon { font-size: 14px; color: #aaa; text-decoration: none; flex-shrink: 0; }
+
+    /* ── Main ── */
+    .main-content { flex: 1; overflow-y: auto; display: flex; flex-direction: column; min-width: 0; }
+    .top-bar {
+        background: white; border-bottom: 1px solid #f0f0f0;
+        padding: 14px 32px; display: flex; align-items: center;
+        justify-content: space-between; flex-shrink: 0;
+    }
+    .breadcrumb { font-size: 13px; color: #aaa; }
+    .breadcrumb span { color: #7c3aed; font-weight: 700; }
+    .top-actions { display: flex; align-items: center; gap: 12px; }
+    .btn-add-top {
+        background: #7c3aed; color: white; padding: 8px 18px;
+        border-radius: 8px; text-decoration: none; font-size: 13px; font-weight: 700;
+        box-shadow: 0 2px 8px rgba(124,58,237,0.25); transition: all 0.2s;
+    }
+    .btn-add-top:hover { background: #6d28d9; transform: translateY(-1px); }
+    .top-user { font-size: 13px; color: #7c3aed; font-weight: 600; }
+    .page-body { flex: 1; padding: 28px 32px; overflow-y: auto; }
+
+    /* ── Common Components ── */
+    .card {
+        background: white; border-radius: 14px; padding: 24px;
+        margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+        border: 1px solid #f0f0f0;
+    }
+    .card h2 { font-size: 17px; font-weight: 700; color: #1a1a2e; margin-bottom: 16px; }
+    .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 20px; }
+    .stat-card {
+        background: white; border-radius: 12px; padding: 20px;
+        text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        border-top: 3px solid #7c3aed;
+    }
+    .stat-card h3 { font-size: 28px; font-weight: 800; color: #7c3aed; margin-bottom: 4px; }
+    .stat-card p { font-size: 11px; color: #888; text-transform: uppercase; letter-spacing: 0.5px; }
+
+    table { width: 100%; border-collapse: collapse; }
+    th {
+        background: #faf9ff; padding: 12px 16px; text-align: left;
+        font-size: 11px; font-weight: 700; color: #7c3aed;
+        text-transform: uppercase; letter-spacing: 0.5px;
+        border-bottom: 2px solid #ede9fe;
+    }
+    td { padding: 13px 16px; font-size: 13px; color: #333; border-bottom: 1px solid #f9f9f9; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #faf9ff; }
+
+    .status-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; }
+    .status-Pending { background: #f0f0f0; color: #666; }
+    .status-Applied { background: #dbeafe; color: #2563eb; }
+    .status-Written-Test { background: #fef3c7; color: #d97706; }
+    .status-Interview { background: #ede9fe; color: #7c3aed; }
+    .status-Offer { background: #d1fae5; color: #059669; }
+    .status-Rejected { background: #fee2e2; color: #dc2626; }
+
+    .btn { display: inline-block; padding: 8px 16px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 13px; cursor: pointer; border: none; }
+    .btn-warning { background: #f5f3ff; color: #7c3aed; }
+    .btn-warning:hover { background: #ede9fe; }
+    .btn-danger { background: #fee2e2; color: #dc2626; }
+    .btn-danger:hover { background: #fecaca; }
+    .btn-success { background: #7c3aed; color: white; }
+    .btn-success:hover { background: #6d28d9; }
+
+    input, select, textarea {
+        width: 100%; padding: 10px 14px;
+        border: 1px solid #e9d5ff; border-radius: 8px;
+        font-size: 13px; margin-bottom: 14px; transition: border 0.2s; font-family: inherit;
+    }
+    input:focus, select:focus, textarea:focus {
+        outline: none; border-color: #7c3aed; box-shadow: 0 0 0 3px rgba(124,58,237,0.1);
+    }
+    label { font-size: 12px; font-weight: 700; color: #7c3aed; display: block; margin-bottom: 5px; }
+    button[type=submit] {
+        background: #7c3aed; color: white; border: none; padding: 11px 24px;
+        border-radius: 8px; font-size: 14px; font-weight: 700; cursor: pointer;
+        transition: all 0.2s; box-shadow: 0 2px 8px rgba(124,58,237,0.25);
+    }
+    button[type=submit]:hover { background: #6d28d9; transform: translateY(-1px); }
+
+    .alert { padding: 12px 16px; border-radius: 8px; margin-bottom: 16px; font-size: 13px; }
+    .alert-error { background: #fee2e2; color: #dc2626; border: 1px solid #fecaca; }
+    .alert-success { background: #d1fae5; color: #059669; border: 1px solid #a7f3d0; }
+
+    /* Logout modal */
+    .logout-overlay {
+        display: none; position: fixed; inset: 0;
+        background: rgba(0,0,0,0.4); z-index: 999;
+        align-items: center; justify-content: center;
+    }
+    .logout-overlay.active { display: flex; }
+    .logout-modal {
+        background: white; border-radius: 16px; padding: 32px;
+        max-width: 360px; width: 90%; text-align: center;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    }
+    .logout-title { font-size: 18px; font-weight: 700; color: #1a1a2e; margin-bottom: 8px; }
+    .logout-sub { font-size: 13px; color: #888; margin-bottom: 24px; }
+    .logout-buttons { display: flex; gap: 12px; justify-content: center; }
+    .logout-confirm { background: #e74c3c; color: white; padding: 10px 24px; border-radius: 8px; text-decoration: none; font-weight: 700; }
+    .logout-cancel { background: #f5f3ff; color: #7c3aed; padding: 10px 24px; border-radius: 8px; border: none; cursor: pointer; font-weight: 700; }
+
+    /* Help widget */
+    .help-btn {
+        position: fixed; bottom: 24px; right: 24px;
+        width: 48px; height: 48px; background: #7c3aed;
+        border-radius: 50%; display: flex; align-items: center;
+        justify-content: center; font-size: 20px; cursor: pointer;
+        box-shadow: 0 4px 16px rgba(124,58,237,0.4); z-index: 998;
+        transition: all 0.2s;
+    }
+    .help-btn:hover { transform: scale(1.1); background: #6d28d9; }
+    .help-widget {
+        position: fixed; bottom: 84px; right: 24px;
+        width: 320px; background: white; border-radius: 16px;
+        box-shadow: 0 8px 40px rgba(0,0,0,0.15);
+        z-index: 997; overflow: hidden;
+        display: none; flex-direction: column;
+        max-height: 500px;
+    }
+    .help-widget.open { display: flex; }
+    .help-header {
+        background: linear-gradient(135deg, #7c3aed, #a78bfa);
+        padding: 20px; color: white;
+        display: flex; justify-content: space-between; align-items: flex-start;
+    }
+    .help-hi { font-size: 18px; font-weight: 800; margin-bottom: 2px; }
+    .help-sub { font-size: 13px; opacity: 0.85; }
+    .help-tabs-bar {
+        display: flex; border-bottom: 1px solid #f0f0f0; background: white;
+    }
+    .help-tab-btn {
+        flex: 1; padding: 10px 4px; text-align: center;
+        font-size: 11px; font-weight: 600; color: #aaa;
+        cursor: pointer; border-bottom: 2px solid transparent;
+        transition: all 0.15s;
+    }
+    .help-tab-btn.active { color: #7c3aed; border-bottom-color: #7c3aed; }
+    .help-tab-content { display: none; padding: 12px; overflow-y: auto; flex: 1; }
+    .help-tab-content.active { display: block; }
+    .help-item {
+        display: flex; align-items: center; gap: 12px; padding: 10px;
+        border-radius: 10px; cursor: pointer; transition: all 0.15s;
+        border: 1px solid #f0f0f0; margin-bottom: 8px;
+    }
+    .help-item:hover { background: #f5f3ff; border-color: #e9d5ff; }
+    .help-item-icon {
+        width: 34px; height: 34px; background: #f5f3ff;
+        border-radius: 8px; display: flex; align-items: center;
+        justify-content: center; font-size: 15px; flex-shrink: 0;
+    }
+    .help-item-title { font-size: 13px; font-weight: 700; color: #1a1a2e; }
+    .help-item-desc { font-size: 11px; color: #aaa; margin-top: 1px; }
+    .help-item-arrow { color: #7c3aed; margin-left: auto; font-size: 14px; }
+    .msg-empty { text-align: center; padding: 30px; color: #ccc; }
+    .msg-empty div { font-size: 36px; margin-bottom: 10px; }
+    .msg-empty p { font-size: 13px; }
+  </style>
 </head>
 <body>
 
-  <!-- overlay (clicking it closes the menu) -->
-  <div class="menu-overlay" id="menuOverlay" onclick="closeMenu()"></div>
-
-  <!-- logout confirm modal -->
+  <!-- Logout modal -->
   <div class="logout-overlay" id="logoutOverlay">
     <div class="logout-modal">
       <p class="logout-title">Log out of ApplyTrack?</p>
@@ -24,67 +313,166 @@
     </div>
   </div>
 
-  <!-- side menu -->
-  <nav class="sidemenu" id="sidemenu">
-    <div class="menu-header">
-      <strong>Menu</strong>
-    </div>
-    <div class="menu-nav">
-      <div class="menu-section">Main</div>
-      <a href="/dashboard"         class="menu-item {% block nav_dashboard %}{% endblock %}">Dashboard</a>
-      <a href="/board"    class="menu-item {% block nav_board %}{% endblock %}">Kanban board</a>
-      <a href="/calendar" class="menu-item {% block nav_calendar %}{% endblock %}">Calendar</a>
+  <!-- Sidebar -->
+  <div class="sidebar" id="sidebar">
+    <button class="toggle-btn" onclick="toggleSidebar()">‹</button>
+    <div class="sidebar-inner">
+      <div class="sidebar-logo">
+        <div class="logo-icon">📋</div>
+        <span class="logo-text">ApplyTrack</span>
+      </div>
 
-      <div class="menu-section">Tools</div>
-      <a href="/resume" class="menu-item {% block nav_resume %}{% endblock %}">Resume builder</a>
-      <a href="/email-drafts" class="menu-item {% block nav_emails %}{% endblock %}">Email drafts</a>
-      <a href="/stats"  class="menu-item {% block nav_stats %}{% endblock %}">Stats</a>
-    </div>
-    <div class="menu-footer">{{ username }}</div>
-  </nav>
+      <div class="nav-section">
+        <div class="nav-label">Main</div>
+        <a href="/welcome" class="nav-item {% block nav_welcome %}{% endblock %}" data-label="Welcome">
+          <span class="nav-icon">🏠</span><span class="nav-text">Welcome</span>
+        </a>
+        <a href="/dashboard" class="nav-item {% block nav_dashboard %}{% endblock %}" data-label="Dashboard">
+          <span class="nav-icon">📊</span><span class="nav-text">Dashboard</span>
+        </a>
+        <a href="/stats" class="nav-item {% block nav_stats %}{% endblock %}" data-label="Statistics">
+          <span class="nav-icon">📈</span><span class="nav-text">Statistics</span>
+        </a>
+        <a href="/resume" class="nav-item {% block nav_resume %}{% endblock %}" data-label="Resume Builder">
+          <span class="nav-icon">📄</span><span class="nav-text">Resume Builder</span>
+        </a>
+      </div>
 
-  <!-- top navbar -->
-  <div class="navbar">
-    <button class="hamburger" id="hamburger" onclick="toggleMenu()">
-      <span></span><span></span><span></span>
-    </button>
-    <h1>📋 Job Application Tracker</h1>
-    <div>
-      <span style="margin-right:16px;">{{ username }}</span>
-      <a href="/add">+ Add Application</a>
-      <a href="#" onclick="openLogout(); return false;">Logout</a>
+      <div class="tracker-section">
+        <div class="tracker-header">
+          <span>My Trackers</span>
+          <a href="/add">+</a>
+        </div>
+        <a href="/jobsearch" class="nav-item {% block nav_jobsearch %}{% endblock %}" data-label="Job Search 2026">
+          <span class="nav-icon" style="font-size:10px; color:#7c3aed;">●</span>
+          <span class="nav-text">Job Search 2026</span>
+        </a>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-label">Tools</div>
+        <a href="/board" class="nav-item {% block nav_kanban %}{% endblock %}" data-label="Kanban Board">
+          <span class="nav-icon">🗂️</span><span class="nav-text">Kanban Board</span>
+        </a>
+        <a href="/calendar" class="nav-item {% block nav_calendar %}{% endblock %}" data-label="Calendar">
+          <span class="nav-icon">📅</span><span class="nav-text">Calendar</span>
+        </a>
+        <a href="/email-drafts" class="nav-item {% block nav_emails %}{% endblock %}" data-label="Email Drafts">
+          <span class="nav-icon">✉️</span><span class="nav-text">Email Drafts</span>
+        </a>
+      </div>
+
+      <div class="sidebar-bottom">
+        <a href="/settings" class="nav-item {% block nav_settings %}{% endblock %}" data-label="Settings">
+          <span class="nav-icon">⚙️</span><span class="nav-text">Settings</span>
+        </a>
+        <div class="user-row">
+          <div class="user-info">
+            <div class="user-avatar">{{ username[0].upper() if username else 'U' }}</div>
+            <span class="user-name">{{ username }}</span>
+          </div>
+          <a href="#" class="logout-icon nav-text" onclick="openLogout(); return false;" style="font-size:18px; color:#aaa; text-decoration:none;">→</a>
+        </div>
+      </div>
     </div>
   </div>
 
-  <!-- page content -->
-  <div class="container">
-    {% block content %}{% endblock %}
+  <!-- Main -->
+  <div class="main-content">
+    <div class="top-bar">
+      <div class="breadcrumb">Home › <span>{% block page_title %}Page{% endblock %}</span></div>
+      <div class="top-actions">
+        <span class="top-user">👋 {{ username }}</span>
+        <a href="/add" class="btn-add-top">+ Add Application</a>
+      </div>
+    </div>
+    <div class="page-body">
+      {% block content %}{% endblock %}
+    </div>
   </div>
 
-  <script src="{{ url_for('static', filename='js/animations.js') }}"></script>
+  <!-- Help Widget -->
+<div class="help-btn" onclick="toggleHelp()">💬</div>
+<div class="help-widget" id="helpWidget">
+    <div class="help-header">
+        <div>
+            <div class="help-hi">Hi {{ username }} 👋</div>
+            <div class="help-sub">How can we help?</div>
+        </div>
+        <button onclick="toggleHelp()" style="background:none;border:none;color:white;font-size:20px;cursor:pointer;line-height:1;">×</button>
+    </div>
+    <div class="help-tabs-bar">
+        <div class="help-tab-btn active" onclick="switchHelp('messages', this)">💬 Messages</div>
+        <div class="help-tab-btn" onclick="switchHelp('contact', this)">📬 Contact Us</div>
+    </div>
+    <div class="help-tab-content active" id="help-messages" style="min-height:200px;">
+        <div class="msg-empty">
+            <div>💬</div>
+            <p style="font-weight:700; color:#555; margin-bottom:4px;">No messages yet</p>
+            <p>Messages will appear here</p>
+        </div>
+    </div>
+    <div class="help-tab-content" id="help-contact" style="min-height:200px; padding:16px;">
+        <p style="font-size:13px; font-weight:700; color:#1a1a2e; margin-bottom:16px;">Get in touch with us 👋</p>
+        <div class="help-item">
+            <div class="help-item-icon">🐙</div>
+            <div>
+                <div class="help-item-title">Bacy Zhu</div>
+                <div class="help-item-desc">github.com/Zkkk-web</div>
+            </div>
+            <a href="https://github.com/Zkkk-web" target="_blank" class="help-item-arrow" style="text-decoration:none;">→</a>
+        </div>
+        <div class="help-item">
+            <div class="help-item-icon">🐙</div>
+            <div>
+                <div class="help-item-title">Partner</div>
+                <div class="help-item-desc">github.com/h-19w</div>
+            </div>
+            <a href="https://github.com/h-19w" target="_blank" class="help-item-arrow" style="text-decoration:none;">→</a>
+        </div>
+        <div class="help-item">
+            <div class="help-item-icon">✉️</div>
+            <div>
+                <div class="help-item-title">Email Bacy</div>
+                <div class="help-item-desc">zhukeb@kean.edu</div>
+            </div>
+            <a href="mailto:zhukeb@kean.edu" class="help-item-arrow" style="text-decoration:none;">→</a>
+        </div>
+        <div class="help-item">
+            <div class="help-item-icon">✉️</div>
+            <div>
+                <div class="help-item-title">Email Partner</div>
+                <div class="help-item-desc">kwong@kean.edu</div>
+            </div>
+            <a href="mailto:kwong@kean.edu" class="help-item-arrow" style="text-decoration:none;">→</a>
+        </div>
+    </div>
+</div>
+
   <script>
-    function toggleMenu() {
-      const open = document.getElementById('sidemenu').classList.toggle('open');
-      document.getElementById('menuOverlay').classList.toggle('visible', open);
-      document.getElementById('hamburger').classList.toggle('open', open);
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('collapsed');
+      localStorage.setItem('sidebarCollapsed', document.getElementById('sidebar').classList.contains('collapsed'));
     }
-    function closeMenu() {
-      document.getElementById('sidemenu').classList.remove('open');
-      document.getElementById('menuOverlay').classList.remove('visible');
-      document.getElementById('hamburger').classList.remove('open');
-    }
-    function openLogout() {
-      document.getElementById('logoutOverlay').classList.add('active');
-    }
-    function closeLogout() {
-      document.getElementById('logoutOverlay').classList.remove('active');
-    }
+    function openLogout() { document.getElementById('logoutOverlay').classList.add('active'); }
+    function closeLogout() { document.getElementById('logoutOverlay').classList.remove('active'); }
     document.getElementById('logoutOverlay').addEventListener('click', function(e) {
       if (e.target === this) closeLogout();
     });
+    if (localStorage.getItem('sidebarCollapsed') === 'true') {
+      document.getElementById('sidebar').classList.add('collapsed');
+    }
+    function toggleHelp() {
+      document.getElementById('helpWidget').classList.toggle('open');
+    }
+    function switchHelp(tab, el) {
+      document.querySelectorAll('.help-tab-btn').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.help-tab-content').forEach(t => t.classList.remove('active'));
+      el.classList.add('active');
+      document.getElementById('help-' + tab).classList.add('active');
+    }
   </script>
   {% block extra_scripts %}{% endblock %}
 
 </body>
 </html>
-

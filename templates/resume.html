@@ -5,116 +5,158 @@
 
 {% block extra_head %}
 <style>
-    .rb-wrap {
-        max-width: 860px;
-        margin: 0 auto;
-    }
-    .rb-header { margin-bottom: 24px; }
-    .rb-header h2 { font-size: 22px; font-weight: 800; color: #1a1a2e; margin-bottom: 4px; }
-    .rb-header p { font-size: 13px; color: #aaa; }
+    .rb-wrap { max-width: 100%; }
 
-    .rb-tabs {
-        display: flex; gap: 0;
-        border-bottom: 2px solid #f0f0f0; margin-bottom: 24px;
+    /* Template picker */
+    .template-picker {
+        display: flex; gap: 12px; margin-bottom: 24px; overflow-x: auto; padding-bottom: 4px;
     }
-    .rb-tab {
-        padding: 10px 20px; font-size: 13px; font-weight: 600; color: #888;
-        cursor: pointer; border-bottom: 2px solid transparent;
-        margin-bottom: -2px; transition: all 0.15s;
+    .template-thumb {
+        flex-shrink: 0; width: 110px; border-radius: 10px; overflow: hidden;
+        border: 2px solid #f0f0f0; cursor: pointer; transition: all 0.2s;
+        background: white; box-shadow: 0 2px 8px rgba(0,0,0,0.06);
     }
+    .template-thumb:hover { border-color: #7c3aed; transform: translateY(-2px); }
+    .template-thumb.active { border-color: #7c3aed; box-shadow: 0 4px 16px rgba(124,58,237,0.2); }
+    .template-thumb-preview { height: 75px; padding: 8px; position: relative; }
+    .template-thumb-label { padding: 6px 8px; font-size: 10px; font-weight: 700; color: #555; border-top: 1px solid #f0f0f0; text-align: center; }
+
+    /* Tabs */
+    .rb-tabs { display: flex; border-bottom: 2px solid #f0f0f0; margin-bottom: 24px; }
+    .rb-tab { padding: 10px 20px; font-size: 13px; font-weight: 600; color: #888; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all 0.15s; }
     .rb-tab.active { color: #7c3aed; border-bottom-color: #7c3aed; }
-    .rb-tab:hover { color: #7c3aed; }
     .tab-content { display: none; }
     .tab-content.active { display: block; }
 
-    .builder-layout {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 24px;
-    }
-    .builder-form {
-        background: white; border-radius: 14px; padding: 24px;
-        box-shadow: 0 1px 6px rgba(0,0,0,0.06); border: 1px solid #f0f0f0;
-    }
-    .builder-form h3 {
-        font-size: 15px; font-weight: 700; color: #1a1a2e;
-        margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid #f0f0f0;
-    }
-    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    /* Layout */
+    .builder-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .builder-form { background: white; border-radius: 14px; padding: 24px; box-shadow: 0 1px 6px rgba(0,0,0,0.06); border: 1px solid #f0f0f0; max-height: calc(100vh - 200px); overflow-y: auto; }
+    .section-divider { font-size: 11px; font-weight: 700; color: #7c3aed; text-transform: uppercase; letter-spacing: 1px; padding: 14px 0 8px; border-top: 1px solid #f0f0f0; margin-top: 4px; }
     .form-group { margin-bottom: 14px; }
-    .form-group label {
-        font-size: 11px; font-weight: 700; color: #7c3aed;
-        display: block; margin-bottom: 5px;
-        text-transform: uppercase; letter-spacing: 0.5px;
-    }
-    .form-group input, .form-group textarea {
-        width: 100%; padding: 10px 12px;
-        border: 1px solid #e9d5ff; border-radius: 8px;
-        font-size: 13px; margin-bottom: 0;
-        font-family: inherit; resize: vertical; transition: all 0.2s;
-    }
-    .form-group input:focus, .form-group textarea:focus {
-        outline: none; border-color: #7c3aed;
-        box-shadow: 0 0 0 3px rgba(124,58,237,0.1);
-    }
-    .section-divider {
-        font-size: 11px; font-weight: 700; color: #7c3aed;
-        text-transform: uppercase; letter-spacing: 1px;
-        padding: 12px 0 8px; border-top: 1px solid #f0f0f0; margin-top: 4px;
-    }
-    .print-btn {
-        background: #7c3aed; color: white; border: none;
-        padding: 12px; border-radius: 10px; font-size: 14px;
-        font-weight: 700; cursor: pointer; width: 100%; margin-top: 8px;
-        transition: all 0.2s; box-shadow: 0 2px 8px rgba(124,58,237,0.25);
-    }
+    .form-group label { font-size: 11px; font-weight: 700; color: #7c3aed; display: block; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .form-group input, .form-group textarea { width: 100%; padding: 10px 12px; border: 1px solid #e9d5ff; border-radius: 8px; font-size: 13px; margin-bottom: 0; font-family: inherit; resize: vertical; transition: all 0.2s; }
+    .form-group input:focus, .form-group textarea:focus { outline: none; border-color: #7c3aed; box-shadow: 0 0 0 3px rgba(124,58,237,0.1); }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+    /* Skills tags input */
+    .skills-input-wrap { border: 1px solid #e9d5ff; border-radius: 8px; padding: 8px 10px; min-height: 44px; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; cursor: text; transition: all 0.2s; }
+    .skills-input-wrap:focus-within { border-color: #7c3aed; box-shadow: 0 0 0 3px rgba(124,58,237,0.1); }
+    .skill-tag { background: #f5f3ff; color: #7c3aed; padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; display: flex; align-items: center; gap: 4px; }
+    .skill-tag button { background: none; border: none; color: #a78bfa; cursor: pointer; font-size: 14px; padding: 0; line-height: 1; }
+    .skill-tag button:hover { color: #7c3aed; }
+    .skills-real-input { border: none; outline: none; font-size: 12px; min-width: 100px; flex: 1; font-family: inherit; padding: 2px; }
+
+    .print-btn { background: #7c3aed; color: white; border: none; padding: 12px; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; width: 100%; margin-top: 8px; transition: all 0.2s; box-shadow: 0 2px 8px rgba(124,58,237,0.25); }
     .print-btn:hover { background: #6d28d9; transform: translateY(-1px); }
 
-    .resume-preview {
-        background: white; border-radius: 14px; padding: 28px;
-        box-shadow: 0 1px 6px rgba(0,0,0,0.06); border: 1px solid #f0f0f0;
-        position: sticky; top: 20px;
-    }
-    .preview-name { font-size: 22px; font-weight: 800; color: #1a1a2e; margin-bottom: 4px; }
-    .preview-contact { font-size: 12px; color: #888; margin-bottom: 16px; }
-    .preview-section { margin-top: 14px; padding-top: 12px; border-top: 2px solid #f5f3ff; }
-    .preview-section h4 {
-        font-size: 10px; font-weight: 700; color: #7c3aed;
-        text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px;
-    }
-    .preview-section p { font-size: 12px; color: #555; line-height: 1.6; white-space: pre-wrap; }
-    .skill-tag {
-        display: inline-block; background: #f5f3ff; color: #7c3aed;
-        font-size: 10px; font-weight: 700; padding: 2px 8px;
-        border-radius: 4px; margin: 2px;
-    }
+    /* Preview */
+    .resume-preview { background: white; border-radius: 14px; box-shadow: 0 1px 6px rgba(0,0,0,0.06); border: 1px solid #f0f0f0; position: sticky; top: 80px; overflow: hidden; }
+    .preview-inner { padding: 32px; max-height: calc(100vh - 180px); overflow-y: auto; }
+
+    /* Template: Classic */
+    .tpl-classic .prev-name { font-size: 22px; font-weight: 800; color: #1a1a2e; margin-bottom: 4px; }
+    .tpl-classic .prev-contact { font-size: 11px; color: #888; margin-bottom: 16px; }
+    .tpl-classic .prev-section { margin-top: 14px; padding-top: 10px; border-top: 2px solid #f5f3ff; }
+    .tpl-classic .prev-section h4 { font-size: 10px; font-weight: 800; color: #7c3aed; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 6px; }
+    .tpl-classic .prev-section p { font-size: 12px; color: #555; line-height: 1.6; white-space: pre-wrap; }
+
+    /* Template: Modern */
+    .tpl-modern { background: white; }
+    .tpl-modern .prev-header { background: linear-gradient(135deg,#7c3aed,#a78bfa); padding: 20px; margin: -32px -32px 20px; }
+    .tpl-modern .prev-name { font-size: 20px; font-weight: 800; color: white; }
+    .tpl-modern .prev-contact { font-size: 11px; color: rgba(255,255,255,0.8); margin-top: 4px; }
+    .tpl-modern .prev-section { margin-top: 14px; }
+    .tpl-modern .prev-section h4 { font-size: 10px; font-weight: 800; color: #7c3aed; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 6px; padding-bottom: 4px; border-bottom: 1px solid #e9d5ff; }
+    .tpl-modern .prev-section p { font-size: 12px; color: #555; line-height: 1.6; white-space: pre-wrap; }
+
+    /* Template: Minimal */
+    .tpl-minimal .prev-name { font-size: 24px; font-weight: 900; color: #1a1a2e; letter-spacing: -0.5px; }
+    .tpl-minimal .prev-contact { font-size: 11px; color: #aaa; margin: 4px 0 16px; letter-spacing: 0.5px; }
+    .tpl-minimal .prev-section { margin-top: 16px; padding-top: 12px; border-top: 1px solid #f0f0f0; }
+    .tpl-minimal .prev-section h4 { font-size: 9px; font-weight: 800; color: #1a1a2e; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px; }
+    .tpl-minimal .prev-section p { font-size: 12px; color: #666; line-height: 1.6; white-space: pre-wrap; }
 
     @media print {
-        .sidebar, .top-bar, .builder-form, .rb-tabs, .rb-header { display: none !important; }
+        .sidebar, .top-bar, .builder-form, .rb-tabs, .template-picker { display: none !important; }
         .builder-layout { grid-template-columns: 1fr; }
         .resume-preview { box-shadow: none; border: none; position: static; }
+        .preview-inner { max-height: none; }
     }
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="rb-wrap">
-    <div class="rb-header">
-        <h2>📄 Resume Builder</h2>
-        <p>Fill in your details on the left — preview updates live on the right</p>
+
+    <!-- Template Picker -->
+    <div style="margin-bottom:8px; font-size:11px; font-weight:700; color:#7c3aed; text-transform:uppercase; letter-spacing:1px;">Choose Template</div>
+    <div class="template-picker">
+        <!-- Classic -->
+        <div class="template-thumb active" onclick="switchTemplate('classic',this)">
+            <div class="template-thumb-preview" style="background:#faf9ff;">
+                <div style="height:8px;background:#7c3aed;border-radius:2px;margin-bottom:4px;width:60%;"></div>
+                <div style="height:3px;background:#e9d5ff;border-radius:1px;margin-bottom:6px;width:80%;"></div>
+                <div style="height:2px;background:#f0f0f0;border-radius:1px;margin-bottom:3px;"></div>
+                <div style="height:2px;background:#f0f0f0;border-radius:1px;margin-bottom:3px;width:90%;"></div>
+                <div style="height:2px;background:#f0f0f0;border-radius:1px;width:70%;"></div>
+            </div>
+            <div class="template-thumb-label">Classic</div>
+        </div>
+        <!-- Modern -->
+        <div class="template-thumb" onclick="switchTemplate('modern',this)">
+            <div class="template-thumb-preview" style="background:white;">
+                <div style="background:linear-gradient(135deg,#7c3aed,#a78bfa);height:28px;border-radius:4px;margin-bottom:6px;padding:6px 8px;">
+                    <div style="height:5px;background:rgba(255,255,255,0.9);border-radius:2px;width:60%;"></div>
+                    <div style="height:3px;background:rgba(255,255,255,0.5);border-radius:1px;width:80%;margin-top:3px;"></div>
+                </div>
+                <div style="height:2px;background:#f0f0f0;border-radius:1px;margin-bottom:3px;"></div>
+                <div style="height:2px;background:#f0f0f0;border-radius:1px;width:85%;"></div>
+            </div>
+            <div class="template-thumb-label">Modern</div>
+        </div>
+        <!-- Minimal -->
+        <div class="template-thumb" onclick="switchTemplate('minimal',this)">
+            <div class="template-thumb-preview" style="background:white;">
+                <div style="height:10px;background:#1a1a2e;border-radius:2px;margin-bottom:3px;width:55%;"></div>
+                <div style="height:2px;background:#e0e0e0;border-radius:1px;margin-bottom:8px;width:75%;"></div>
+                <div style="height:1px;background:#f0f0f0;margin-bottom:4px;"></div>
+                <div style="height:2px;background:#f0f0f0;border-radius:1px;margin-bottom:2px;"></div>
+                <div style="height:2px;background:#f0f0f0;border-radius:1px;width:80%;"></div>
+            </div>
+            <div class="template-thumb-label">Minimal</div>
+        </div>
+        <!-- Bold -->
+        <div class="template-thumb" onclick="switchTemplate('bold',this)">
+            <div class="template-thumb-preview" style="background:#1a1a2e;">
+                <div style="height:8px;background:#a78bfa;border-radius:2px;margin-bottom:4px;width:70%;"></div>
+                <div style="height:3px;background:rgba(255,255,255,0.3);border-radius:1px;margin-bottom:6px;"></div>
+                <div style="height:2px;background:rgba(255,255,255,0.15);border-radius:1px;margin-bottom:2px;"></div>
+                <div style="height:2px;background:rgba(255,255,255,0.15);border-radius:1px;width:85%;"></div>
+            </div>
+            <div class="template-thumb-label">Bold Dark</div>
+        </div>
+        <!-- Elegant -->
+        <div class="template-thumb" onclick="switchTemplate('elegant',this)">
+            <div class="template-thumb-preview" style="background:white;border-left:3px solid #7c3aed;">
+                <div style="height:8px;background:#2c3e50;border-radius:2px;margin-bottom:4px;width:65%;"></div>
+                <div style="height:2px;background:#e9d5ff;border-radius:1px;margin-bottom:6px;width:80%;"></div>
+                <div style="height:2px;background:#f0f0f0;border-radius:1px;margin-bottom:2px;"></div>
+                <div style="height:2px;background:#f0f0f0;border-radius:1px;width:90%;"></div>
+            </div>
+            <div class="template-thumb-label">Elegant</div>
+        </div>
     </div>
 
+    <!-- Tabs -->
     <div class="rb-tabs">
-        <div class="rb-tab active" onclick="switchTab('build', this)">✏️ Build</div>
-        <div class="rb-tab" onclick="switchTab('preview', this)">👁️ Full Preview</div>
+        <div class="rb-tab active" onclick="switchTab('build',this)">✏️ Edit</div>
+        <div class="rb-tab" onclick="switchTab('preview',this)">👁️ Full Preview</div>
     </div>
 
     <!-- Build Tab -->
     <div class="tab-content active" id="tab-build">
         <div class="builder-layout">
-            <!-- Form -->
             <div class="builder-form">
-                <h3>📋 Your Information</h3>
                 <div class="form-row">
                     <div class="form-group">
                         <label>Full Name</label>
@@ -158,13 +200,18 @@
                 <div class="section-divider">Experience</div>
                 <div class="form-group">
                     <label>Work Experience</label>
-                    <textarea id="experience" rows="4" placeholder="Company, Role, Duration, Key achievements..." oninput="updatePreview()"></textarea>
+                    <textarea id="experience" rows="4" placeholder="Company, Role, Duration, Achievements..." oninput="updatePreview()"></textarea>
                 </div>
-                <div class="section-divider">Skills & Projects</div>
+                <div class="section-divider">Skills</div>
                 <div class="form-group">
-                    <label>Skills (comma separated)</label>
-                    <input type="text" id="skills" placeholder="Python, Flask, React, SQL..." oninput="updatePreview()">
+                    <label>Skills <span style="font-weight:400;text-transform:none;letter-spacing:0;color:#aaa;">(Press Enter or comma to add)</span></label>
+                    <div class="skills-input-wrap" id="skillsWrap" onclick="document.getElementById('skillInput').focus()">
+                        <div id="skillTags"></div>
+                        <input type="text" id="skillInput" class="skills-real-input" placeholder="e.g. Python...">
+                    </div>
+                    <input type="hidden" id="skillsHidden">
                 </div>
+                <div class="section-divider">Projects</div>
                 <div class="form-group">
                     <label>Projects</label>
                     <textarea id="projects" rows="3" placeholder="Project name, description, tech used..." oninput="updatePreview()"></textarea>
@@ -174,58 +221,72 @@
 
             <!-- Live Preview -->
             <div class="resume-preview">
-                <div class="preview-name" id="prev-name">Your Name</div>
-                <div class="preview-contact" id="prev-contact" style="color:#aaa;">email · phone · location</div>
-                <div class="preview-section">
-                    <h4>Summary</h4>
-                    <p id="prev-summary" style="color:#ccc;">Your summary will appear here.</p>
-                </div>
-                <div class="preview-section">
-                    <h4>Education</h4>
-                    <p id="prev-education" style="color:#ccc;">Your education will appear here.</p>
-                </div>
-                <div class="preview-section">
-                    <h4>Experience</h4>
-                    <p id="prev-experience" style="color:#ccc;">Your experience will appear here.</p>
-                </div>
-                <div class="preview-section">
-                    <h4>Skills</h4>
-                    <div id="prev-skills-tags"><span style="font-size:12px; color:#ccc;">Your skills will appear here.</span></div>
-                </div>
-                <div class="preview-section">
-                    <h4>Projects</h4>
-                    <p id="prev-projects" style="color:#ccc;">Your projects will appear here.</p>
+                <div class="preview-inner" id="previewInner">
+                    <!-- Classic (default) -->
+                    <div class="tpl-classic" id="tpl-classic">
+                        <div class="prev-name" id="pc-name">Your Name</div>
+                        <div class="prev-contact" id="pc-contact" style="color:#ccc;">email · phone · location</div>
+                        <div class="prev-section"><h4>Summary</h4><p id="pc-summary" style="color:#ccc;">Your summary...</p></div>
+                        <div class="prev-section"><h4>Education</h4><p id="pc-education" style="color:#ccc;">Your education...</p></div>
+                        <div class="prev-section"><h4>Experience</h4><p id="pc-experience" style="color:#ccc;">Your experience...</p></div>
+                        <div class="prev-section"><h4>Skills</h4><div id="pc-skills"><span style="font-size:12px;color:#ccc;">Your skills...</span></div></div>
+                        <div class="prev-section"><h4>Projects</h4><p id="pc-projects" style="color:#ccc;">Your projects...</p></div>
+                    </div>
+                    <!-- Modern -->
+                    <div class="tpl-modern" id="tpl-modern" style="display:none;">
+                        <div class="prev-header">
+                            <div class="prev-name" id="pm-name">Your Name</div>
+                            <div class="prev-contact" id="pm-contact">email · phone · location</div>
+                        </div>
+                        <div class="prev-section"><h4>Summary</h4><p id="pm-summary" style="color:#ccc;">Your summary...</p></div>
+                        <div class="prev-section"><h4>Education</h4><p id="pm-education" style="color:#ccc;">Your education...</p></div>
+                        <div class="prev-section"><h4>Experience</h4><p id="pm-experience" style="color:#ccc;">Your experience...</p></div>
+                        <div class="prev-section"><h4>Skills</h4><div id="pm-skills"></div></div>
+                        <div class="prev-section"><h4>Projects</h4><p id="pm-projects" style="color:#ccc;">Your projects...</p></div>
+                    </div>
+                    <!-- Minimal -->
+                    <div class="tpl-minimal" id="tpl-minimal" style="display:none;">
+                        <div class="prev-name" id="pmin-name">Your Name</div>
+                        <div class="prev-contact" id="pmin-contact" style="color:#ccc;">email · phone · location</div>
+                        <div class="prev-section"><h4>Summary</h4><p id="pmin-summary" style="color:#ccc;">Your summary...</p></div>
+                        <div class="prev-section"><h4>Education</h4><p id="pmin-education" style="color:#ccc;">Your education...</p></div>
+                        <div class="prev-section"><h4>Experience</h4><p id="pmin-experience" style="color:#ccc;">Your experience...</p></div>
+                        <div class="prev-section"><h4>Skills</h4><div id="pmin-skills"></div></div>
+                        <div class="prev-section"><h4>Projects</h4><p id="pmin-projects" style="color:#ccc;">Your projects...</p></div>
+                    </div>
+                    <!-- Bold Dark -->
+                    <div id="tpl-bold" style="display:none;background:#1a1a2e;border-radius:8px;padding:24px;">
+                        <div style="font-size:22px;font-weight:900;color:#a78bfa;margin-bottom:4px;" id="pb-name">Your Name</div>
+                        <div style="font-size:11px;color:rgba(255,255,255,0.5);margin-bottom:18px;" id="pb-contact">email · phone</div>
+                        <div style="margin-top:14px;"><div style="font-size:10px;font-weight:800;color:#a78bfa;text-transform:uppercase;letter-spacing:2px;margin-bottom:6px;">Summary</div><p style="font-size:12px;color:rgba(255,255,255,0.7);line-height:1.6;white-space:pre-wrap;" id="pb-summary"></p></div>
+                        <div style="margin-top:14px;border-top:1px solid rgba(255,255,255,0.1);padding-top:12px;"><div style="font-size:10px;font-weight:800;color:#a78bfa;text-transform:uppercase;letter-spacing:2px;margin-bottom:6px;">Education</div><p style="font-size:12px;color:rgba(255,255,255,0.7);line-height:1.6;white-space:pre-wrap;" id="pb-education"></p></div>
+                        <div style="margin-top:14px;border-top:1px solid rgba(255,255,255,0.1);padding-top:12px;"><div style="font-size:10px;font-weight:800;color:#a78bfa;text-transform:uppercase;letter-spacing:2px;margin-bottom:6px;">Experience</div><p style="font-size:12px;color:rgba(255,255,255,0.7);line-height:1.6;white-space:pre-wrap;" id="pb-experience"></p></div>
+                        <div style="margin-top:14px;border-top:1px solid rgba(255,255,255,0.1);padding-top:12px;"><div style="font-size:10px;font-weight:800;color:#a78bfa;text-transform:uppercase;letter-spacing:2px;margin-bottom:6px;">Skills</div><div id="pb-skills"></div></div>
+                    </div>
+                    <!-- Elegant -->
+                    <div id="tpl-elegant" style="display:none;border-left:4px solid #7c3aed;padding-left:20px;">
+                        <div style="font-size:22px;font-weight:800;color:#2c3e50;margin-bottom:4px;" id="pe-name">Your Name</div>
+                        <div style="font-size:11px;color:#888;margin-bottom:16px;" id="pe-contact">email · phone · location</div>
+                        <div style="margin-top:14px;"><div style="font-size:10px;font-weight:800;color:#7c3aed;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px;border-bottom:1px solid #e9d5ff;padding-bottom:4px;">Summary</div><p style="font-size:12px;color:#555;line-height:1.6;white-space:pre-wrap;" id="pe-summary"></p></div>
+                        <div style="margin-top:14px;"><div style="font-size:10px;font-weight:800;color:#7c3aed;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px;border-bottom:1px solid #e9d5ff;padding-bottom:4px;">Education</div><p style="font-size:12px;color:#555;line-height:1.6;white-space:pre-wrap;" id="pe-education"></p></div>
+                        <div style="margin-top:14px;"><div style="font-size:10px;font-weight:800;color:#7c3aed;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px;border-bottom:1px solid #e9d5ff;padding-bottom:4px;">Experience</div><p style="font-size:12px;color:#555;line-height:1.6;white-space:pre-wrap;" id="pe-experience"></p></div>
+                        <div style="margin-top:14px;"><div style="font-size:10px;font-weight:800;color:#7c3aed;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px;border-bottom:1px solid #e9d5ff;padding-bottom:4px;">Skills</div><div id="pe-skills"></div></div>
+                        <div style="margin-top:14px;"><div style="font-size:10px;font-weight:800;color:#7c3aed;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px;border-bottom:1px solid #e9d5ff;padding-bottom:4px;">Projects</div><p style="font-size:12px;color:#555;line-height:1.6;white-space:pre-wrap;" id="pe-projects"></p></div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Full Preview Tab -->
+    <!-- Preview Tab -->
     <div class="tab-content" id="tab-preview">
-        <div class="resume-preview" style="max-width:680px; margin:0 auto;">
-            <div class="preview-name" id="prev-name-2">Your Name</div>
-            <div class="preview-contact" id="prev-contact-2" style="color:#aaa;">email · phone · location</div>
-            <div class="preview-section">
-                <h4>Summary</h4>
-                <p id="prev-summary-2" style="color:#ccc;">Your summary will appear here.</p>
+        <div style="max-width:680px; margin:0 auto;">
+            <div class="resume-preview">
+                <div class="preview-inner" id="fullPreview" style="max-height:none;">
+                    <p style="color:#ccc;text-align:center;font-size:13px;">Fill in the Edit tab to see your full resume here.</p>
+                </div>
             </div>
-            <div class="preview-section">
-                <h4>Education</h4>
-                <p id="prev-education-2" style="color:#ccc;">Your education will appear here.</p>
-            </div>
-            <div class="preview-section">
-                <h4>Experience</h4>
-                <p id="prev-experience-2" style="color:#ccc;">Your experience will appear here.</p>
-            </div>
-            <div class="preview-section">
-                <h4>Skills</h4>
-                <div id="prev-skills-tags-2"></div>
-            </div>
-            <div class="preview-section">
-                <h4>Projects</h4>
-                <p id="prev-projects-2" style="color:#ccc;">Your projects will appear here.</p>
-            </div>
-            <button class="print-btn" onclick="window.print()">🖨️ Export as PDF</button>
+            <button class="print-btn" onclick="window.print()" style="margin-top:16px;">🖨️ Export as PDF</button>
         </div>
     </div>
 </div>
@@ -233,11 +294,64 @@
 
 {% block extra_scripts %}
 <script>
+let currentTemplate = 'classic';
+let skills = [];
+
+// Skills tag input
+document.getElementById('skillInput').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' || e.key === ',') {
+        e.preventDefault();
+        addSkill(this.value.trim());
+        this.value = '';
+    } else if (e.key === 'Backspace' && this.value === '' && skills.length > 0) {
+        removeSkill(skills.length - 1);
+    }
+});
+
+function addSkill(val) {
+    if (!val || skills.includes(val)) return;
+    skills.push(val);
+    renderSkillTags();
+    updatePreview();
+}
+
+function removeSkill(idx) {
+    skills.splice(idx, 1);
+    renderSkillTags();
+    updatePreview();
+}
+
+function renderSkillTags() {
+    const wrap = document.getElementById('skillTags');
+    wrap.innerHTML = skills.map((s, i) =>
+        `<span class="skill-tag">${s}<button onclick="removeSkill(${i})">×</button></span>`
+    ).join('');
+}
+
+function getSkillsHTML(color='#7c3aed', bg='#f5f3ff') {
+    if (!skills.length) return '<span style="font-size:12px;color:#ccc;">Your skills...</span>';
+    return skills.map(s =>
+        `<span style="background:${bg};color:${color};padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;display:inline-block;margin:2px;">${s}</span>`
+    ).join('');
+}
+
+function switchTemplate(name, el) {
+    document.querySelectorAll('.template-thumb').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    currentTemplate = name;
+    ['classic','modern','minimal','bold','elegant'].forEach(t => {
+        const el = document.getElementById('tpl-' + t);
+        if (el) el.style.display = t === name ? 'block' : 'none';
+    });
+    updatePreview();
+}
+
 function switchTab(tab, el) {
     document.querySelectorAll('.rb-tab').forEach(t => t.classList.remove('active'));
     document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
     el.classList.add('active');
     document.getElementById('tab-' + tab).classList.add('active');
+    if (tab === 'preview') syncFullPreview();
 }
 
 function updatePreview() {
@@ -247,37 +361,45 @@ function updatePreview() {
     const location = document.getElementById('location').value;
     const linkedin = document.getElementById('linkedin').value;
     const github = document.getElementById('github').value;
+    const contact = [email, phone, location, linkedin, github].filter(Boolean).join(' · ') || 'email · phone · location';
     const summary = document.getElementById('summary').value;
     const education = document.getElementById('education').value;
     const experience = document.getElementById('experience').value;
-    const skills = document.getElementById('skills').value;
     const projects = document.getElementById('projects').value;
 
-    const contact = [email, phone, location, linkedin, github].filter(Boolean).join(' · ') || 'email · phone · location';
+    const prefixes = {
+        classic: 'pc', modern: 'pm', minimal: 'pmin', bold: 'pb', elegant: 'pe'
+    };
+    const p = prefixes[currentTemplate];
+    if (!p) return;
 
-    ['', '-2'].forEach(s => {
-        const n = document.getElementById('prev-name' + s);
-        if (n) n.textContent = name;
-        const c = document.getElementById('prev-contact' + s);
-        if (c) { c.textContent = contact; c.style.color = email ? '#555' : '#aaa'; }
-        const su = document.getElementById('prev-summary' + s);
-        if (su) { su.textContent = summary || 'Your summary will appear here.'; su.style.color = summary ? '#555' : '#ccc'; }
-        const ed = document.getElementById('prev-education' + s);
-        if (ed) { ed.textContent = education || 'Your education will appear here.'; ed.style.color = education ? '#555' : '#ccc'; }
-        const ex = document.getElementById('prev-experience' + s);
-        if (ex) { ex.textContent = experience || 'Your experience will appear here.'; ex.style.color = experience ? '#555' : '#ccc'; }
-        const pr = document.getElementById('prev-projects' + s);
-        if (pr) { pr.textContent = projects || 'Your projects will appear here.'; pr.style.color = projects ? '#555' : '#ccc'; }
-        const st = document.getElementById('prev-skills-tags' + s);
-        if (st) {
-            if (skills) {
-                st.innerHTML = skills.split(',').map(sk => sk.trim()).filter(Boolean)
-                    .map(sk => `<span class="skill-tag">${sk}</span>`).join('');
-            } else {
-                st.innerHTML = '<span style="font-size:12px; color:#ccc;">Your skills will appear here.</span>';
-            }
-        }
-    });
+    const set = (id, val, fallback='', color='#555') => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.textContent = val || fallback;
+        el.style.color = val ? color : '#ccc';
+    };
+
+    set(p+'-name', name, 'Your Name', currentTemplate==='bold'?'#a78bfa':'#1a1a2e');
+    set(p+'-contact', contact, 'email · phone · location', currentTemplate==='bold'?'rgba(255,255,255,0.5)':'#888');
+    set(p+'-summary', summary, 'Your summary...');
+    set(p+'-education', education, 'Your education...');
+    set(p+'-experience', experience, 'Your experience...');
+    set(p+'-projects', projects, 'Your projects...');
+
+    const skillEl = document.getElementById(p+'-skills');
+    if (skillEl) {
+        skillEl.innerHTML = getSkillsHTML(
+            currentTemplate==='bold'?'#a78bfa':'#7c3aed',
+            currentTemplate==='bold'?'rgba(167,139,250,0.15)':'#f5f3ff'
+        );
+    }
+}
+
+function syncFullPreview() {
+    // Clone current preview into full preview
+    const src = document.getElementById('previewInner').innerHTML;
+    document.getElementById('fullPreview').innerHTML = src;
 }
 </script>
 {% endblock %}

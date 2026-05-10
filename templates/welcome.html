@@ -1,341 +1,135 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Welcome - ApplyTrack</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', sans-serif; background: #fff; display: flex; height: 100vh; overflow: hidden; }
+{% extends "base.html" %}
+{% block title %}Welcome — ApplyTrack{% endblock %}
+{% block page_title %}Welcome{% endblock %}
+{% block nav_welcome %}active{% endblock %}
 
-        /* ── Sidebar ── */
-        .sidebar {
-            width: 220px;
-            background: white;
-            border-right: 1px solid #f0f0f0;
-            display: flex;
-            flex-direction: column;
-            padding: 20px 0;
-            flex-shrink: 0;
-        }
-        .sidebar-logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 0 20px 24px;
-            border-bottom: 1px solid #f0f0f0;
-            margin-bottom: 12px;
-        }
-        .logo-icon {
-            background: linear-gradient(135deg, #7c3aed, #a78bfa);
-            color: white;
-            width: 32px; height: 32px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
-        }
-        .sidebar-logo span { font-weight: 800; font-size: 15px; color: #7c3aed; }
-        .nav-section { padding: 0 12px; margin-bottom: 8px; }
-        .nav-label {
-            font-size: 11px; font-weight: 700; color: #bbb;
-            text-transform: uppercase; letter-spacing: 1px;
-            padding: 8px 8px 4px;
-        }
-        .nav-item {
-            display: flex; align-items: center; gap: 10px;
-            padding: 10px 12px; border-radius: 8px;
-            text-decoration: none; color: #555;
-            font-size: 14px; font-weight: 500;
-            transition: all 0.15s; margin-bottom: 2px;
-        }
-        .nav-item:hover { background: #f5f3ff; color: #7c3aed; }
-        .nav-item.active { background: #f5f3ff; color: #7c3aed; font-weight: 700; }
-        .nav-item .icon { font-size: 16px; width: 20px; text-align: center; }
-        .tracker-section { padding: 0 12px; margin-bottom: 8px; }
-        .tracker-header {
-            display: flex; align-items: center;
-            justify-content: space-between; padding: 8px 8px 4px;
-        }
-        .tracker-header span {
-            font-size: 11px; font-weight: 700; color: #bbb;
-            text-transform: uppercase; letter-spacing: 1px;
-        }
-        .tracker-header a { color: #7c3aed; font-size: 18px; text-decoration: none; }
-        .tracker-item {
-            display: flex; align-items: center; gap: 10px;
-            padding: 8px 12px; border-radius: 8px;
-            text-decoration: none; color: #555; font-size: 13px;
-        }
-        .tracker-item:hover { background: #f5f3ff; color: #7c3aed; }
-        .tracker-dot { width: 8px; height: 8px; border-radius: 50%; background: #7c3aed; }
-        .sidebar-bottom { margin-top: auto; padding: 12px; border-top: 1px solid #f0f0f0; }
-        .upgrade-card {
-            background: linear-gradient(135deg, #f5f3ff, #ede9fe);
-            border-radius: 12px; padding: 14px; margin-bottom: 12px;
-        }
-        .upgrade-title { font-size: 13px; font-weight: 700; color: #7c3aed; margin-bottom: 4px; }
-        .upgrade-sub { font-size: 11px; color: #888; margin-bottom: 10px; }
-        .upgrade-btn {
-            background: #f59e0b; color: white; border: none;
-            padding: 7px 14px; border-radius: 6px;
-            font-size: 12px; font-weight: 700; cursor: pointer; width: 100%;
-        }
-        .user-row { display: flex; align-items: center; justify-content: space-between; padding: 8px; }
-        .user-info { display: flex; align-items: center; gap: 8px; }
-        .user-avatar {
-            width: 30px; height: 30px; border-radius: 50%;
-            background: #7c3aed; color: white;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 13px; font-weight: 700;
-        }
-        .user-name { font-size: 13px; font-weight: 600; color: #333; }
+{% block extra_head %}
+<style>
+    .confetti-bg {
+        position: absolute; top: 0; left: 0;
+        width: 100%; height: 300px;
+        overflow: hidden; z-index: 0; pointer-events: none;
+    }
+    .welcome-layout {
+        position: relative; z-index: 1;
+        display: flex; gap: 40px;
+        padding: 28px 32px 40px;
+        align-items: flex-start;
+    }
+    .welcome-left { flex: 1; }
+    .welcome-left h2 { font-size: 15px; color: #7c3aed; font-weight: 600; margin-bottom: 4px; }
+    .welcome-left h1 { font-size: 42px; font-weight: 900; color: #1a1a2e; margin-bottom: 16px; line-height: 1.1; }
+    .welcome-left p { font-size: 14px; color: #666; line-height: 1.7; max-width: 380px; }
+    .welcome-left .btn-start {
+        display: inline-block; margin-top: 20px;
+        background: #7c3aed; color: white;
+        padding: 11px 26px; border-radius: 10px;
+        text-decoration: none; font-weight: 700; font-size: 14px;
+        box-shadow: 0 4px 14px rgba(124,58,237,0.3); transition: all 0.2s;
+    }
+    .welcome-left .btn-start:hover { background: #6d28d9; transform: translateY(-1px); }
+    .checklist { flex: 1.2; }
+    .check-item {
+        background: white; border: 1px solid #f0f0f0;
+        border-radius: 12px; padding: 16px 18px; margin-bottom: 10px;
+        display: flex; align-items: flex-start; gap: 14px;
+        cursor: pointer; transition: all 0.2s;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    }
+    .check-item:hover { border-color: #e9d5ff; box-shadow: 0 4px 12px rgba(124,58,237,0.08); }
+    .check-circle {
+        width: 22px; height: 22px; border-radius: 50%;
+        border: 2px solid #d8b4fe; flex-shrink: 0; margin-top: 2px;
+        display: flex; align-items: center; justify-content: center; transition: all 0.2s;
+    }
+    .check-circle.checked { background: #7c3aed; border-color: #7c3aed; color: white; font-size: 12px; }
+    .check-content h4 { font-size: 14px; font-weight: 700; color: #1a1a2e; margin-bottom: 3px; }
+    .check-content p { font-size: 12px; color: #888; line-height: 1.5; }
+    .check-tag {
+        display: inline-block; background: #f5f3ff; color: #7c3aed;
+        font-size: 11px; font-weight: 600; padding: 3px 10px;
+        border-radius: 20px; margin-top: 6px; text-decoration: none;
+    }
+</style>
+{% endblock %}
 
-        /* ── Main ── */
-        .main { flex: 1; overflow-y: auto; position: relative; }
-        .confetti-bg {
-            position: absolute; top: 0; left: 0;
-            width: 100%; height: 100%;
-            overflow: hidden; z-index: 0; pointer-events: none;
-        }
-        .breadcrumb {
-            position: relative; z-index: 1;
-            padding: 16px 40px; font-size: 13px; color: #aaa;
-        }
-        .breadcrumb span { color: #555; font-weight: 600; }
-        .welcome-layout {
-            position: relative; z-index: 1;
-            display: flex; gap: 40px;
-            padding: 20px 40px 40px;
-            align-items: flex-start;
-        }
-        .welcome-left { flex: 1; }
-        .welcome-left h2 { font-size: 16px; color: #7c3aed; font-weight: 600; margin-bottom: 4px; }
-        .welcome-left h1 {
-            font-size: 48px; font-weight: 900;
-            color: #1a1a2e; margin-bottom: 20px; line-height: 1.1;
-        }
-        .welcome-left p { font-size: 14px; color: #666; line-height: 1.7; max-width: 380px; }
-        .welcome-left .btn-start {
-            display: inline-block; margin-top: 24px;
-            background: #7c3aed; color: white;
-            padding: 12px 28px; border-radius: 10px;
-            text-decoration: none; font-weight: 700; font-size: 14px;
-            box-shadow: 0 4px 14px rgba(124,58,237,0.3);
-            transition: all 0.2s;
-        }
-        .welcome-left .btn-start:hover { background: #6d28d9; transform: translateY(-1px); }
-        .checklist { flex: 1.2; }
-        .check-item {
-            background: white; border: 1px solid #f0f0f0;
-            border-radius: 12px; padding: 18px 20px;
-            margin-bottom: 10px;
-            display: flex; align-items: flex-start; gap: 14px;
-            cursor: pointer; transition: all 0.2s;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
-        }
-        .check-item:hover { border-color: #e9d5ff; box-shadow: 0 4px 12px rgba(124,58,237,0.08); }
-        .check-circle {
-            width: 22px; height: 22px; border-radius: 50%;
-            border: 2px solid #d8b4fe; flex-shrink: 0;
-            margin-top: 2px;
-            display: flex; align-items: center; justify-content: center;
-            transition: all 0.2s;
-        }
-        .check-circle.checked { background: #7c3aed; border-color: #7c3aed; color: white; font-size: 12px; }
-        .check-content h4 { font-size: 14px; font-weight: 700; color: #1a1a2e; margin-bottom: 4px; }
-        .check-content p { font-size: 12px; color: #888; line-height: 1.5; }
-        .check-tag {
-            display: inline-block; background: #f5f3ff; color: #7c3aed;
-            font-size: 11px; font-weight: 600;
-            padding: 3px 10px; border-radius: 20px; margin-top: 8px;
-            text-decoration: none;
-        }
-        .check-tag:hover { background: #ede9fe; }
-    </style>
-</head>
-<body>
+{% block content %}
+<div class="confetti-bg"><canvas id="confetti"></canvas></div>
 
-    <!-- Sidebar -->
-    <div class="sidebar">
-        <button onclick="toggleSidebar()" style="
-        position:absolute; top:22px; right:-14px;
-        width:28px; height:28px; background:white;
-        border:1.5px solid #e9d5ff; border-radius:50%;
-        cursor:pointer; display:flex; align-items:center; justify-content:center;
-        font-size:11px; color:#7c3aed;
-        box-shadow:0 2px 8px rgba(124,58,237,0.15);
-        z-index:200; transition:transform 0.25s;
-        padding:0; line-height:1;
-        " id="sideToggleBtn">‹</button>
-
-        <div class="sidebar-logo">
-            <div class="logo-icon">📋</div>
-            <span>ApplyTrack</span>
-        </div>
-        <div class="nav-section">
-            <div class="nav-label">Main</div>
-            <a href="/welcome" class="nav-item active">
-                <span class="icon">🏠</span> Welcome
-            </a>
-            <a href="/dashboard" class="nav-item">
-                <span class="icon">📊</span> Dashboard
-            </a>
-            <a href="/stats" class="nav-item">
-                <span class="icon">📈</span> Statistics
-            </a>
-            <a href="/resume" class="nav-item">
-                <span class="icon">📄</span> Resume Builder
-            </a>
-        </div>
-        <div class="tracker-section">
-            <div class="tracker-header">
-                <span>My Trackers</span>
-                <a href="/add">+</a>
+<div class="welcome-layout">
+    <div class="welcome-left">
+        <h2>Welcome back,</h2>
+        <h1>{{ username }}!</h1>
+        <p>Start tracking your job applications, build your resume, and organize your entire job search in one place.</p>
+        <a href="/dashboard" class="btn-start">Go to Dashboard →</a>
+    </div>
+    <div class="checklist">
+        <div class="check-item">
+            <div class="check-circle checked">✓</div>
+            <div class="check-content">
+                <h4>Create your Account</h4>
+                <p>You're all set! Your account is ready to go.</p>
             </div>
-            <a href="/board" class="tracker-item">
-                <div class="tracker-dot"></div>
-                Job Search 2025
-            </a>
         </div>
-        <div class="nav-section">
-            <div class="nav-label">Tools</div>
-            <a href="/board" class="nav-item">
-                <span class="icon">🗂️</span> Kanban Board
-            </a>
-            <a href="/calendar" class="nav-item">
-                <span class="icon">📅</span> Calendar
-            </a>
-            <a href="/email-drafts" class="nav-item">
-                <span class="icon">✉️</span> Email Drafts
-            </a>
-        </div>
-        <div class="sidebar-bottom">
-            <div class="upgrade-card">
-                <div class="upgrade-title">⭐ Pro Features</div>
-                <div class="upgrade-sub">Unlock AI resume tools</div>
-                <button class="upgrade-btn">Coming Soon</button>
+        <div class="check-item" onclick="toggleCheck(this)">
+            <div class="check-circle"></div>
+            <div class="check-content">
+                <h4>Add your First Application</h4>
+                <p>Start tracking by adding a company you've applied to.</p>
+                <a href="/add" class="check-tag">→ Add Application</a>
             </div>
-            <div class="user-row">
-                <div class="user-info">
-                    <div class="user-avatar">{{ username[0].upper() }}</div>
-                    <div class="user-name">{{ username }}</div>
-                </div>
-                <a href="/logout" style="font-size:13px; color:#aaa; text-decoration:none;">🚪</a>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+            <div class="check-circle"></div>
+            <div class="check-content">
+                <h4>Build your Resume</h4>
+                <p>Fill in your resume details to use with every application.</p>
+                <a href="/resume" class="check-tag">→ Resume Builder</a>
+            </div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+            <div class="check-circle"></div>
+            <div class="check-content">
+                <h4>Explore the Kanban Board</h4>
+                <p>Visualize your applications by status.</p>
+                <a href="/board" class="check-tag">→ Kanban Board</a>
+            </div>
+        </div>
+        <div class="check-item" onclick="toggleCheck(this)">
+            <div class="check-circle"></div>
+            <div class="check-content">
+                <h4>View your Statistics</h4>
+                <p>See charts and insights about your job search progress.</p>
+                <a href="/stats" class="check-tag">→ Statistics</a>
             </div>
         </div>
     </div>
+</div>
+{% endblock %}
 
-    <!-- Main -->
-    <div class="main">
-        <div class="confetti-bg">
-            <canvas id="confetti"></canvas>
-        </div>
-
-        <div class="breadcrumb">Home › <span>Welcome</span></div>
-
-        <div class="welcome-layout">
-            <div class="welcome-left">
-                <h2>Welcome back,</h2>
-                <h1>{{ username }}!</h1>
-                <p>Start tracking your job applications, build your resume, and organize your entire job search in one place.</p>
-                <a href="/dashboard" class="btn-start">Go to Dashboard →</a>
-            </div>
-
-            <div class="checklist">
-                <div class="check-item">
-                    <div class="check-circle checked">✓</div>
-                    <div class="check-content">
-                        <h4>Create your Account</h4>
-                        <p>You're all set! Your account is ready to go.</p>
-                    </div>
-                </div>
-                <div class="check-item" onclick="toggleCheck(this)">
-                    <div class="check-circle"></div>
-                    <div class="check-content">
-                        <h4>Add your First Application</h4>
-                        <p>Start tracking by adding a company you've applied to or plan to apply.</p>
-                        <a href="/add" class="check-tag">→ Add Application</a>
-                    </div>
-                </div>
-                <div class="check-item" onclick="toggleCheck(this)">
-                    <div class="check-circle"></div>
-                    <div class="check-content">
-                        <h4>Build your Resume</h4>
-                        <p>Fill in your resume details to use with every application.</p>
-                        <a href="/resume" class="check-tag">→ Resume Builder</a>
-                    </div>
-                </div>
-                <div class="check-item" onclick="toggleCheck(this)">
-                    <div class="check-circle"></div>
-                    <div class="check-content">
-                        <h4>Explore the Kanban Board</h4>
-                        <p>Visualize your applications by status — from Pending to Offer.</p>
-                        <a href="/board" class="check-tag">→ Kanban Board</a>
-                    </div>
-                </div>
-                <div class="check-item" onclick="toggleCheck(this)">
-                    <div class="check-circle"></div>
-                    <div class="check-content">
-                        <h4>View your Statistics</h4>
-                        <p>See charts and insights about your job search progress.</p>
-                        <a href="/stats" class="check-tag">→ Statistics</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        function toggleCheck(item) {
-            const circle = item.querySelector('.check-circle');
-            if (circle.classList.contains('checked')) {
-                circle.classList.remove('checked');
-                circle.textContent = '';
-            } else {
-                circle.classList.add('checked');
-                circle.textContent = '✓';
-            }
-        }
-        function toggleSidebar() {
-            const s = document.getElementById('sidebar');
-            s.classList.toggle('collapsed');
-            document.getElementById('sideToggleBtn').style.transform =
-                s.classList.contains('collapsed') ? 'rotate(180deg)' : '';
-            localStorage.setItem('sidebarCollapsed', s.classList.contains('collapsed'));
-        }
-        if (localStorage.getItem('sidebarCollapsed') === 'true') {
-            document.getElementById('sidebar').classList.add('collapsed');
-            document.getElementById('sideToggleBtn').style.transform = 'rotate(180deg)';
-        }
-        const canvas = document.getElementById('confetti');
-        const ctx = canvas.getContext('2d');
-        canvas.width = canvas.offsetWidth;
-        canvas.height = canvas.offsetHeight;
-        const colors = ['#7c3aed','#a78bfa','#f59e0b','#34d399','#f87171','#60a5fa'];
-        Array.from({length: 60}, () => ({
-            x: Math.random() * canvas.width,
-            y: Math.random() * canvas.height,
-            size: Math.random() * 12 + 4,
-            color: colors[Math.floor(Math.random() * colors.length)],
-            rotation: Math.random() * Math.PI * 2,
-            opacity: Math.random() * 0.3 + 0.1,
-            shape: Math.random() > 0.5 ? 'rect' : 'circle'
-        })).forEach(p => {
-            ctx.save();
-            ctx.globalAlpha = p.opacity;
-            ctx.fillStyle = p.color;
-            ctx.translate(p.x, p.y);
-            ctx.rotate(p.rotation);
-            if (p.shape === 'circle') {
-                ctx.beginPath();
-                ctx.arc(0, 0, p.size/2, 0, Math.PI*2);
-                ctx.fill();
-            } else {
-                ctx.fillRect(-p.size/2, -p.size/4, p.size, p.size/2);
-            }
-            ctx.restore();
-        });
-    </script>
-</body>
-</html>
+{% block extra_scripts %}
+<script>
+function toggleCheck(item) {
+    const circle = item.querySelector('.check-circle');
+    circle.classList.toggle('checked');
+    circle.textContent = circle.classList.contains('checked') ? '✓' : '';
+}
+const canvas = document.getElementById('confetti');
+const ctx = canvas.getContext('2d');
+canvas.width = canvas.offsetWidth || window.innerWidth;
+canvas.height = 300;
+const colors = ['#7c3aed','#a78bfa','#f59e0b','#34d399','#f87171','#60a5fa','#C855F7'];
+Array.from({length: 50}, () => ({
+    x: Math.random()*canvas.width, y: Math.random()*canvas.height,
+    size: Math.random()*12+4, color: colors[Math.floor(Math.random()*colors.length)],
+    rotation: Math.random()*Math.PI*2, opacity: Math.random()*0.25+0.06,
+    shape: Math.random()>0.5?'rect':'circle'
+})).forEach(p => {
+    ctx.save(); ctx.globalAlpha=p.opacity; ctx.fillStyle=p.color;
+    ctx.translate(p.x,p.y); ctx.rotate(p.rotation);
+    if(p.shape==='circle'){ctx.beginPath();ctx.arc(0,0,p.size/2,0,Math.PI*2);ctx.fill();}
+    else{ctx.fillRect(-p.size/2,-p.size/4,p.size,p.size/2);}
+    ctx.restore();
+});
+</script>
+{% endblock %}

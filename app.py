@@ -20,7 +20,8 @@ def register():
         password = request.form['password']
         success, message = register_web(username, password)
         if success:
-            return redirect(url_for('login', success=message))
+            session['username'] = username
+            return redirect(url_for('welcome'))
         else:
             return render_template('register.html', error=message)
     return render_template('register.html')
@@ -251,13 +252,12 @@ def settings():
     if 'username' not in session:
         return redirect(url_for('login'))
     return render_template('settings.html', username=session['username'])
-@app.route('/test')
-def test():
-    return render_template('test.html')
-@app.route('/test_dashboard')
-def test_dashboard():
+@app.route('/clear_applications', methods=['POST'])
+def clear_applications():
     if 'username' not in session:
         return redirect(url_for('login'))
-    return render_template('test_dashboard.html', username=session['username'])
+    username = session['username']
+    save_applications(username, [])
+    return '', 204
 if __name__ == '__main__':
     app.run(debug=True)

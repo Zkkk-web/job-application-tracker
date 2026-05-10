@@ -6,241 +6,263 @@
 {% block extra_head %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <style>
-    .stats-header { margin-bottom: 24px; }
-    .stats-header h2 { font-size: 22px; font-weight: 800; color: #1a1a2e; margin-bottom: 4px; }
-    .stats-header p { font-size: 13px; color: #aaa; }
+    .stats-confetti { position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:0; overflow:hidden; }
+    .stats-content { position:relative; z-index:1; }
 
-    /* Dopamine stat cards */
-    .dopamine-grid {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 14px;
-        margin-bottom: 20px;
-    }
-    .dopamine-card {
-        border-radius: 16px;
-        padding: 20px 22px;
-        color: white;
-        position: relative;
-        overflow: hidden;
-        transition: transform 0.2s;
-    }
-    .dopamine-card:hover { transform: translateY(-3px); }
-    .dopamine-card::after {
-        content: '';
-        position: absolute;
-        top: -20px; right: -20px;
-        width: 80px; height: 80px;
-        border-radius: 50%;
-        background: rgba(255,255,255,0.15);
-    }
-    .dc-1 { background: linear-gradient(135deg, #FF6B6B, #FF8E53); }
-    .dc-2 { background: linear-gradient(135deg, #C855F7, #a78bfa); }
-    .dc-3 { background: linear-gradient(135deg, #6BCB77, #4D96FF); }
-    .dc-4 { background: linear-gradient(135deg, #4D96FF, #00D2FF); }
-    .dopamine-card .dc-icon { font-size: 22px; margin-bottom: 10px; }
-    .dopamine-card .dc-val { font-size: 36px; font-weight: 900; margin-bottom: 4px; line-height: 1; }
-    .dopamine-card .dc-label { font-size: 12px; opacity: 0.85; font-weight: 500; }
+    /* Header */
+    .stats-header { display:flex; align-items:flex-end; justify-content:space-between; margin-bottom:28px; }
+    .stats-header-left h2 { font-size:24px; font-weight:900; color:#1a1a2e; margin-bottom:4px; }
+    .stats-header-left p { font-size:13px; color:#aaa; }
+    .stats-header-right { display:flex; gap:8px; }
+    .header-chip { background:#f5f3ff; color:#7c3aed; font-size:12px; font-weight:700; padding:6px 14px; border-radius:20px; border:1px solid #e9d5ff; }
 
-    /* Charts layout */
-    .charts-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
-    .chart-full { margin-bottom: 16px; }
+    /* Top KPI row */
+    .kpi-row { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:20px; }
+    .kpi-card {
+        background:white; border-radius:16px; padding:22px 24px;
+        border:1px solid #f0f0f0; box-shadow:0 1px 8px rgba(0,0,0,0.05);
+        position:relative; overflow:hidden; transition:all 0.2s; cursor:default;
+    }
+    .kpi-card:hover { transform:translateY(-3px); box-shadow:0 8px 24px rgba(0,0,0,0.1); }
+    .kpi-card::before {
+        content:''; position:absolute; top:0; left:0; right:0; height:3px; border-radius:16px 16px 0 0;
+    }
+    .kpi-1::before { background:linear-gradient(90deg,#FF6B6B,#FF8E53); }
+    .kpi-2::before { background:linear-gradient(90deg,#C855F7,#a78bfa); }
+    .kpi-3::before { background:linear-gradient(90deg,#6BCB77,#4D96FF); }
+    .kpi-4::before { background:linear-gradient(90deg,#4D96FF,#00D2FF); }
+    .kpi-icon { font-size:20px; margin-bottom:12px; }
+    .kpi-val { font-size:38px; font-weight:900; color:#1a1a2e; line-height:1; margin-bottom:6px; }
+    .kpi-label { font-size:12px; color:#94a3b8; font-weight:600; text-transform:uppercase; letter-spacing:0.5px; }
+    .kpi-accent { position:absolute; bottom:-10px; right:-10px; width:60px; height:60px; border-radius:50%; opacity:0.06; }
+    .kpi-1 .kpi-accent { background:#FF6B6B; }
+    .kpi-2 .kpi-accent { background:#C855F7; }
+    .kpi-3 .kpi-accent { background:#6BCB77; }
+    .kpi-4 .kpi-accent { background:#4D96FF; }
 
-    .chart-panel {
-        background: white; border-radius: 16px; padding: 22px;
-        box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-        border: 1px solid #f0f0f0;
+    /* Main grid */
+    .main-grid { display:grid; grid-template-columns:1.2fr 1fr; gap:16px; margin-bottom:16px; }
+
+    /* Panel */
+    .panel {
+        background:white; border-radius:16px; padding:24px;
+        border:1px solid #f0f0f0; box-shadow:0 1px 8px rgba(0,0,0,0.05);
     }
-    .chart-panel-head {
-        display: flex; align-items: center;
-        justify-content: space-between; margin-bottom: 18px;
-    }
-    .chart-panel-head h3 { font-size: 14px; font-weight: 700; color: #1a1a2e; }
-    .chart-panel-head .chip {
-        font-size: 11px; background: #f5f3ff; color: #7c3aed;
-        padding: 4px 10px; border-radius: 20px; font-weight: 600;
-    }
+    .panel-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; }
+    .panel-head h3 { font-size:14px; font-weight:800; color:#1a1a2e; }
+    .panel-head .chip { font-size:11px; background:#f5f3ff; color:#7c3aed; padding:4px 10px; border-radius:20px; font-weight:700; border:1px solid #e9d5ff; }
 
     /* Funnel */
-    .funnel-bars { display: flex; gap: 10px; align-items: flex-end; height: 160px; }
-    .funnel-item { flex: 1; display: flex; flex-direction: column; align-items: center; }
-    .funnel-bar-wrap { width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 120px; }
-    .funnel-pct {
-        font-size: 11px; font-weight: 800; color: white;
-        background: #1a1a2e; padding: 2px 6px; border-radius: 4px; margin-bottom: 4px;
+    .funnel-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:16px; }
+    .funnel-col { text-align:center; }
+    .funnel-bar-track { height:120px; display:flex; align-items:flex-end; justify-content:center; margin-bottom:8px; }
+    .funnel-bar-inner { width:100%; border-radius:8px 8px 0 0; min-height:8px; position:relative; }
+    .funnel-pct-label {
+        position:absolute; top:-24px; left:50%; transform:translateX(-50%);
+        font-size:11px; font-weight:800; background:#1a1a2e; color:white;
+        padding:2px 7px; border-radius:6px; white-space:nowrap;
     }
-    .funnel-bar { width: 100%; border-radius: 8px 8px 0 0; }
-    .funnel-label { font-size: 10px; color: #888; margin-top: 8px; font-weight: 600; text-align: center; }
-    .funnel-count { font-size: 15px; font-weight: 800; color: #1a1a2e; margin-top: 2px; }
+    .funnel-col-label { font-size:11px; font-weight:700; color:#64748b; margin-bottom:2px; }
+    .funnel-col-count { font-size:20px; font-weight:900; color:#1a1a2e; }
+    .funnel-rates { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:4px; }
+    .rate-pill { border-radius:10px; padding:10px; text-align:center; }
+    .rate-pill .rv { font-size:17px; font-weight:900; }
+    .rate-pill .rl { font-size:10px; color:#94a3b8; margin-top:2px; font-weight:600; }
 
     /* Status breakdown */
-    .status-row {
-        display: flex; align-items: center; gap: 10px;
-        padding: 10px 0; border-bottom: 1px solid #faf9ff;
-    }
-    .status-row:last-child { border-bottom: none; }
-    .status-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
-    .status-name { font-size: 13px; color: #555; flex: 1; font-weight: 500; }
-    .status-bar-bg { flex: 2; height: 7px; background: #f0f0f0; border-radius: 4px; overflow: hidden; }
-    .status-bar-fill { height: 100%; border-radius: 4px; }
-    .status-count { font-size: 14px; font-weight: 800; color: #1a1a2e; min-width: 24px; text-align: right; }
+    .status-row { display:flex; align-items:center; gap:12px; padding:11px 0; border-bottom:1px solid #f8f9fa; }
+    .status-row:last-child { border-bottom:none; }
+    .status-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+    .status-name { font-size:13px; color:#374151; flex:1; font-weight:500; }
+    .status-bar-track { flex:2; height:6px; background:#f1f5f9; border-radius:3px; overflow:hidden; }
+    .status-bar-fill { height:100%; border-radius:3px; transition:width 0.6s ease; }
+    .status-count { font-size:13px; font-weight:800; color:#1a1a2e; min-width:20px; text-align:right; }
+    .status-pct { font-size:11px; color:#aaa; min-width:32px; text-align:right; }
 
-    .empty-panel {
-        background: white; border-radius: 16px; padding: 60px;
-        text-align: center; box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-    }
-    .empty-panel .ei { font-size: 48px; margin-bottom: 16px; }
-    .empty-panel p { color: #aaa; font-size: 14px; margin-bottom: 20px; }
-    .empty-panel a {
-        background: #7c3aed; color: white; padding: 10px 24px;
-        border-radius: 8px; text-decoration: none; font-weight: 700;
-    }
+    /* Bottom row */
+    .bottom-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; }
+
+    .empty-panel { background:white; border-radius:16px; padding:80px; text-align:center; box-shadow:0 1px 8px rgba(0,0,0,0.05); }
+    .empty-panel .ei { font-size:56px; margin-bottom:16px; }
+    .empty-panel h3 { font-size:18px; font-weight:700; color:#1a1a2e; margin-bottom:8px; }
+    .empty-panel p { color:#aaa; font-size:14px; margin-bottom:24px; }
+    .empty-panel a { background:#7c3aed; color:white; padding:12px 28px; border-radius:10px; text-decoration:none; font-weight:700; font-size:14px; }
 </style>
 {% endblock %}
 
 {% block content %}
-<div style="max-width:900px; margin:0 auto">
+<canvas id="statsConfetti" class="stats-confetti"></canvas>
+<div class="stats-content">
+
+    <!-- Header -->
     <div class="stats-header">
-        <h2>📊 Statistics</h2>
-        <p>Your job search performance — visualized</p>
+        <div class="stats-header-left">
+            <h2>📊 Statistics</h2>
+            <p>Your job search performance — visualized</p>
+        </div>
+        <div class="stats-header-right">
+            <span class="header-chip">Job Search 2026</span>
+        </div>
     </div>
 
     {% if stats.total == 0 %}
     <div class="empty-panel">
         <div class="ei">📭</div>
-        <p>No applications yet. Add some to see statistics!</p>
+        <h3>No data yet</h3>
+        <p>Add some applications to start seeing your statistics!</p>
         <a href="/add">+ Add Application</a>
     </div>
     {% else %}
 
-    <!-- Dopamine stat cards -->
-    <div class="dopamine-grid">
-        <div class="dopamine-card dc-1">
-            <div class="dc-icon">📤</div>
-            <div class="dc-val">{{ stats.total }}</div>
-            <div class="dc-label">Total Applied</div>
+    <!-- KPI Row -->
+    <div class="kpi-row">
+        <div class="kpi-card kpi-1">
+            <div class="kpi-icon">📤</div>
+            <div class="kpi-val">{{ stats.total }}</div>
+            <div class="kpi-label">Total Applied</div>
+            <div class="kpi-accent"></div>
         </div>
-        <div class="dopamine-card dc-2">
-            <div class="dc-icon">🎤</div>
-            <div class="dc-val">{{ stats.interviews }}</div>
-            <div class="dc-label">Interviews</div>
+        <div class="kpi-card kpi-2">
+            <div class="kpi-icon">🎤</div>
+            <div class="kpi-val">{{ stats.interviews }}</div>
+            <div class="kpi-label">Interviews</div>
+            <div class="kpi-accent"></div>
         </div>
-        <div class="dopamine-card dc-3">
-            <div class="dc-icon">🏆</div>
-            <div class="dc-val">{{ stats.offers }}</div>
-            <div class="dc-label">Offers Received</div>
+        <div class="kpi-card kpi-3">
+            <div class="kpi-icon">🏆</div>
+            <div class="kpi-val">{{ stats.offers }}</div>
+            <div class="kpi-label">Offers</div>
+            <div class="kpi-accent"></div>
         </div>
-        <div class="dopamine-card dc-4">
-            <div class="dc-icon">📈</div>
-            <div class="dc-val">{{ stats.interview_rate }}%</div>
-            <div class="dc-label">Interview Rate</div>
+        <div class="kpi-card kpi-4">
+            <div class="kpi-icon">📈</div>
+            <div class="kpi-val">{{ stats.interview_rate }}%</div>
+            <div class="kpi-label">Interview Rate</div>
+            <div class="kpi-accent"></div>
         </div>
     </div>
 
-    <!-- Row 1: Funnel + Status breakdown -->
-    <div class="charts-row">
-        <div class="chart-panel">
-            <div class="chart-panel-head">
-                <h3>🔥 Job Search Funnel</h3>
+    <!-- Main Grid: Funnel + Status -->
+    <div class="main-grid">
+
+        <!-- Funnel -->
+        <div class="panel">
+            <div class="panel-head">
+                <h3>Job Search Funnel</h3>
                 <span class="chip">{{ stats.total }} total</span>
             </div>
             {% set max_val = stats.total if stats.total > 0 else 1 %}
-            <div class="funnel-bars">
+            <div class="funnel-grid">
                 {% for label, count, color in [
                     ('Applied', stats.total, 'linear-gradient(180deg,#FF6B6B,#FF8E53)'),
                     ('Interview', stats.interviews, 'linear-gradient(180deg,#C855F7,#a78bfa)'),
                     ('Offer', stats.offers, 'linear-gradient(180deg,#6BCB77,#4D96FF)')
                 ] %}
                 {% set pct = (count / max_val * 100) | int %}
-                {% set h = [pct, 8] | max %}
-                <div class="funnel-item">
-                    <div class="funnel-bar-wrap">
-                        {% if loop.index > 1 %}
-                        <div class="funnel-pct">{{ pct }}%</div>
-                        {% endif %}
-                        <div class="funnel-bar" style="height:{{ h }}%; background:{{ color }};"></div>
+                {% set h = [pct, 6] | max %}
+                <div class="funnel-col">
+                    <div class="funnel-bar-track">
+                        <div class="funnel-bar-inner" style="height:{{ h }}%; background:{{ color }};">
+                            {% if loop.index > 1 %}
+                            <div class="funnel-pct-label">{{ pct }}%</div>
+                            {% endif %}
+                        </div>
                     </div>
-                    <div class="funnel-label">{{ label }}</div>
-                    <div class="funnel-count">{{ count }}</div>
+                    <div class="funnel-col-label">{{ label }}</div>
+                    <div class="funnel-col-count">{{ count }}</div>
                 </div>
                 {% endfor %}
             </div>
-            <div style="display:flex; gap:8px; margin-top:16px; flex-wrap:wrap;">
-                {% set offer_rate = ((stats.offers / stats.interviews) * 100) | int if stats.interviews > 0 else 0 %}
-                <div style="flex:1; background:#fff0f0; border-radius:8px; padding:10px; text-align:center;">
-                    <div style="font-size:18px; font-weight:800; color:#FF6B6B;">{{ stats.interview_rate }}%</div>
-                    <div style="font-size:10px; color:#aaa;">Interview Rate</div>
+            {% set offer_rate = ((stats.offers / stats.interviews) * 100) | int if stats.interviews > 0 else 0 %}
+            <div class="funnel-rates">
+                <div class="rate-pill" style="background:#fff0f0;">
+                    <div class="rv" style="color:#FF6B6B;">{{ stats.interview_rate }}%</div>
+                    <div class="rl">Interview Rate</div>
                 </div>
-                <div style="flex:1; background:#f5f0ff; border-radius:8px; padding:10px; text-align:center;">
-                    <div style="font-size:18px; font-weight:800; color:#C855F7;">{{ offer_rate }}%</div>
-                    <div style="font-size:10px; color:#aaa;">Offer Rate</div>
+                <div class="rate-pill" style="background:#f5f0ff;">
+                    <div class="rv" style="color:#C855F7;">{{ offer_rate }}%</div>
+                    <div class="rl">Offer Rate</div>
                 </div>
-                <div style="flex:1; background:#fff4e6; border-radius:8px; padding:10px; text-align:center;">
-                    <div style="font-size:18px; font-weight:800; color:#FF8E53;">{{ stats.rejected }}</div>
-                    <div style="font-size:10px; color:#aaa;">Rejected</div>
+                <div class="rate-pill" style="background:#fff4f0;">
+                    <div class="rv" style="color:#FF8E53;">{{ stats.rejected }}</div>
+                    <div class="rl">Rejected</div>
                 </div>
             </div>
         </div>
 
-        <div class="chart-panel">
-            <div class="chart-panel-head"><h3>🎨 Status Breakdown</h3></div>
-            {% set status_colors = [
-                ('Pending', '#FFD93D'),
-                ('Applied', '#4D96FF'),
-                ('Written Test', '#FF8C42'),
-                ('Interview', '#C855F7'),
-                ('Offer', '#6BCB77'),
-                ('Rejected', '#FF6B6B')
+        <!-- Status Breakdown -->
+        <div class="panel">
+            <div class="panel-head"><h3>Status Breakdown</h3></div>
+            {% set status_list = [
+                ('Pending','#FFD93D'),('Applied','#4D96FF'),
+                ('Written Test','#FF8C42'),('Interview','#C855F7'),
+                ('Offer','#6BCB77'),('Rejected','#FF6B6B')
             ] %}
             {% set status_counts = {} %}
             {% for app in applications %}
                 {% if app.status in status_counts %}
-                    {% set _ = status_counts.update({app.status: status_counts[app.status] + 1}) %}
+                    {% set _ = status_counts.update({app.status: status_counts[app.status]+1}) %}
                 {% else %}
                     {% set _ = status_counts.update({app.status: 1}) %}
                 {% endif %}
             {% endfor %}
-            {% for status, color in status_colors %}
+            {% for status, color in status_list %}
             {% set count = status_counts.get(status, 0) %}
-            {% set pct = ((count / stats.total) * 100) | int if stats.total > 0 else 0 %}
+            {% set pct = ((count / stats.total)*100)|int if stats.total > 0 else 0 %}
             <div class="status-row">
                 <div class="status-dot" style="background:{{ color }};"></div>
                 <div class="status-name">{{ status }}</div>
-                <div class="status-bar-bg">
+                <div class="status-bar-track">
                     <div class="status-bar-fill" style="width:{{ pct }}%; background:{{ color }};"></div>
                 </div>
+                <div class="status-pct">{{ pct }}%</div>
                 <div class="status-count">{{ count }}</div>
             </div>
             {% endfor %}
         </div>
     </div>
 
-    <!-- Row 2: Weekly trend -->
-    <div class="chart-full">
-        <div class="chart-panel">
-            <div class="chart-panel-head">
-                <h3>📅 Weekly Application Trend</h3>
-                <span class="chip">Weekly</span>
-            </div>
-            {% if weekly_labels %}
-            <canvas id="lineChart" height="80"></canvas>
-            {% else %}
-            <div style="text-align:center; color:#ccc; padding:30px; font-size:13px;">
-                Add more applications to see your trend!
-            </div>
-            {% endif %}
+    <!-- Weekly Trend - full width -->
+    <div class="panel" style="margin-bottom:16px;">
+        <div class="panel-head">
+            <h3>Weekly Application Trend</h3>
+            <span class="chip">Weekly</span>
         </div>
+        {% if weekly_labels %}
+        <canvas id="lineChart" height="70"></canvas>
+        {% else %}
+        <div style="text-align:center;color:#ccc;padding:40px;font-size:13px;">
+            Add more applications to see your weekly trend!
+        </div>
+        {% endif %}
     </div>
 
-    <!-- Row 3: Doughnut + Bar -->
-    <div class="charts-row">
-        <div class="chart-panel">
-            <div class="chart-panel-head"><h3>🍩 Distribution</h3></div>
-            <canvas id="pieChart" height="220"></canvas>
+    <!-- Bottom: Doughnut + Bar + Mini summary -->
+    <div class="bottom-grid">
+        <div class="panel">
+            <div class="panel-head"><h3>Distribution</h3></div>
+            <canvas id="pieChart" height="200"></canvas>
         </div>
-        <div class="chart-panel">
-            <div class="chart-panel-head"><h3>📊 By Status</h3></div>
-            <canvas id="barChart" height="220"></canvas>
+        <div class="panel">
+            <div class="panel-head"><h3>By Status</h3></div>
+            <canvas id="barChart" height="200"></canvas>
+        </div>
+        <div class="panel">
+            <div class="panel-head"><h3>Summary</h3></div>
+            <div style="display:flex;flex-direction:column;gap:12px;margin-top:4px;">
+                <div style="background:#fff0f0;border-radius:12px;padding:14px;">
+                    <div style="font-size:11px;color:#FF6B6B;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">Applied</div>
+                    <div style="font-size:28px;font-weight:900;color:#1a1a2e;">{{ stats.total }}</div>
+                </div>
+                <div style="background:#f5f0ff;border-radius:12px;padding:14px;">
+                    <div style="font-size:11px;color:#C855F7;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">Interview Rate</div>
+                    <div style="font-size:28px;font-weight:900;color:#1a1a2e;">{{ stats.interview_rate }}%</div>
+                </div>
+                <div style="background:#f0fdf4;border-radius:12px;padding:14px;">
+                    <div style="font-size:11px;color:#6BCB77;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">Offers</div>
+                    <div style="font-size:28px;font-weight:900;color:#1a1a2e;">{{ stats.offers }}</div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -250,37 +272,54 @@
 
 {% block extra_scripts %}
 <script>
+const sc = document.getElementById('statsConfetti');
+if (sc) {
+    const sctx = sc.getContext('2d');
+    sc.width = window.innerWidth; sc.height = window.innerHeight;
+    const dopColors = ['#FF6B6B','#C855F7','#4D96FF','#6BCB77','#FFD93D','#FF8C42','#a78bfa'];
+    Array.from({length:30},()=>({
+        x:Math.random()*sc.width, y:Math.random()*sc.height,
+        size:Math.random()*7+3,
+        color:dopColors[Math.floor(Math.random()*dopColors.length)],
+        rotation:Math.random()*Math.PI*2,
+        opacity:Math.random()*0.1+0.03,
+        shape:Math.random()>0.6?'circle':'rect'
+    })).forEach(p=>{
+        sctx.save(); sctx.globalAlpha=p.opacity; sctx.fillStyle=p.color;
+        sctx.translate(p.x,p.y); sctx.rotate(p.rotation);
+        if(p.shape==='circle'){sctx.beginPath();sctx.arc(0,0,p.size,0,Math.PI*2);sctx.fill();}
+        else{sctx.fillRect(-p.size,-p.size/3,p.size*2,p.size/1.5);}
+        sctx.restore();
+    });
+}
+
 const dopamineColors = {
-    'Pending':      '#FFD93D',
-    'Applied':      '#4D96FF',
-    'Written Test': '#FF8C42',
-    'Interview':    '#C855F7',
-    'Offer':        '#6BCB77',
-    'Rejected':     '#FF6B6B'
+    'Pending':'#FFD93D','Applied':'#4D96FF','Written Test':'#FF8C42',
+    'Interview':'#C855F7','Offer':'#6BCB77','Rejected':'#FF6B6B'
 };
 const applications = {{ applications | tojson }};
 const statusCounts = {};
-applications.forEach(app => { statusCounts[app.status] = (statusCounts[app.status] || 0) + 1; });
+applications.forEach(app => { statusCounts[app.status] = (statusCounts[app.status]||0)+1; });
 const labels = Object.keys(statusCounts);
 const values = Object.values(statusCounts);
-const bgColors = labels.map(l => dopamineColors[l] || '#7c3aed');
+const bgColors = labels.map(l => dopamineColors[l]||'#7c3aed');
 
 if (document.getElementById('pieChart')) {
     new Chart(document.getElementById('pieChart'), {
-        type: 'doughnut',
-        data: { labels, datasets: [{ data: values, backgroundColor: bgColors, borderWidth: 3, borderColor: '#fff' }] },
-        options: { plugins: { legend: { position: 'bottom', labels: { padding: 14, font: { size: 11 } } } }, cutout: '60%' }
+        type:'doughnut',
+        data:{ labels, datasets:[{ data:values, backgroundColor:bgColors, borderWidth:3, borderColor:'#fff' }] },
+        options:{ plugins:{ legend:{ position:'bottom', labels:{ padding:12, font:{ size:10 } } } }, cutout:'62%' }
     });
 }
 if (document.getElementById('barChart')) {
     new Chart(document.getElementById('barChart'), {
-        type: 'bar',
-        data: { labels, datasets: [{ data: values, backgroundColor: bgColors, borderRadius: 8, borderSkipped: false }] },
-        options: {
-            plugins: { legend: { display: false } },
-            scales: {
-                y: { beginAtZero: true, ticks: { stepSize: 1 }, grid: { color: '#f5f3ff' } },
-                x: { grid: { display: false } }
+        type:'bar',
+        data:{ labels, datasets:[{ data:values, backgroundColor:bgColors, borderRadius:8, borderSkipped:false }] },
+        options:{
+            plugins:{ legend:{ display:false } },
+            scales:{
+                y:{ beginAtZero:true, ticks:{ stepSize:1 }, grid:{ color:'#f8f9fa' } },
+                x:{ grid:{ display:false } }
             }
         }
     });
@@ -288,23 +327,23 @@ if (document.getElementById('barChart')) {
 {% if weekly_labels %}
 if (document.getElementById('lineChart')) {
     new Chart(document.getElementById('lineChart'), {
-        type: 'line',
-        data: {
+        type:'line',
+        data:{
             labels: {{ weekly_labels | tojson }},
-            datasets: [{
-                label: 'Applications',
+            datasets:[{
+                label:'Applications',
                 data: {{ weekly_values | tojson }},
-                borderColor: '#C855F7',
-                backgroundColor: 'rgba(200,85,247,0.08)',
-                borderWidth: 2.5, fill: true, tension: 0.4,
-                pointBackgroundColor: '#C855F7', pointRadius: 5, pointHoverRadius: 7
+                borderColor:'#C855F7',
+                backgroundColor:'rgba(200,85,247,0.06)',
+                borderWidth:2.5, fill:true, tension:0.4,
+                pointBackgroundColor:'#C855F7', pointRadius:4, pointHoverRadius:6
             }]
         },
-        options: {
-            plugins: { legend: { display: false } },
-            scales: {
-                y: { beginAtZero: true, ticks: { stepSize: 1 }, grid: { color: '#f5f3ff' } },
-                x: { grid: { display: false } }
+        options:{
+            plugins:{ legend:{ display:false } },
+            scales:{
+                y:{ beginAtZero:true, ticks:{ stepSize:1 }, grid:{ color:'#f8f9fa' } },
+                x:{ grid:{ display:false } }
             }
         }
     });

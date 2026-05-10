@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>{% block title %}ApplyTrack{% endblock %}</title>
+  <link rel="icon" href="/static/logo.png" type="image/png">
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   {% block extra_head %}{% endblock %}
   <style>
@@ -149,9 +150,8 @@
         padding: 14px 32px; display: flex; align-items: center;
         justify-content: space-between; flex-shrink: 0;
     }
-    .breadcrumb { font-size: 13px; color: #aaa; }
-    .breadcrumb span { color: #7c3aed; font-weight: 700; }
-    .top-actions { display: flex; align-items: center; gap: 12px; }
+    .breadcrumb { font-size: 12px; color: #aaa; letter-spacing: 0.5px; }
+    .breadcrumb span { color: #7c3aed; font-weight: 700; text-transform: capitalize; }.top-actions { display: flex; align-items: center; gap: 12px; }
     .btn-add-top {
         background: #7c3aed; color: white; padding: 8px 18px;
         border-radius: 8px; text-decoration: none; font-size: 13px; font-weight: 700;
@@ -318,8 +318,8 @@
     <button class="toggle-btn" onclick="toggleSidebar()">‹</button>
     <div class="sidebar-inner">
       <div class="sidebar-logo">
-        <div class="logo-icon">📋</div>
-        <span class="logo-text">ApplyTrack</span>
+          <img src="/static/logo.png" style="width:32px;height:32px;flex-shrink:0;">
+          <span class="logo-text">ApplyTrack</span>
       </div>
 
       <div class="nav-section">
@@ -363,41 +363,77 @@
       </div>
 
       <div class="sidebar-bottom">
-        <a href="/settings" class="nav-item {% block nav_settings %}{% endblock %}" data-label="Settings">
-          <span class="nav-icon">⚙️</span><span class="nav-text">Settings</span>
-        </a>
-        <div class="user-row">
-          <div class="user-info">
-            <div class="user-avatar">{{ username[0].upper() if username else 'U' }}</div>
-            <span class="user-name">{{ username }}</span>
-          </div>
-          <a href="#" class="logout-icon nav-text" onclick="openLogout(); return false;" style="font-size:18px; color:#aaa; text-decoration:none;">→</a>
+    <a href="/settings" class="nav-item {% block nav_settings %}{% endblock %}" data-label="Settings">
+        <span class="nav-icon">⚙️</span><span class="nav-text">Settings</span>
+    </a>
+    <div class="user-row">
+        <div class="user-info">
+            <div class="user-avatar" id="sidebarAvatar" style="overflow:hidden; cursor:pointer;" onclick="window.location.href='/settings'">
+                <span id="sidebarAvatarContent">{{ username[0].upper() if username else 'U' }}</span>
+            </div>
+            <span class="user-name" id="sidebarUsername">{{ username }}</span>
         </div>
-      </div>
+        <a href="#" class="logout-icon nav-text" onclick="openLogout(); return false;" style="font-size:18px; color:#aaa; text-decoration:none;">→</a>
+        </div>
+    </div>
     </div>
   </div>
 
   <!-- Main -->
   <div class="main-content">
     <div class="top-bar">
-      <div class="breadcrumb">Home › <span>{% block page_title %}Page{% endblock %}</span></div>
-      <div class="top-actions">
-        <span class="top-user">👋 {{ username }}</span>
+      <div class="breadcrumb">MAIN › <span>{% block page_title %}Page{% endblock %}</span></div>    <div class="top-actions">
+        <div class="user-popup-wrap" style="position:relative;">
+            <div class="user-popup-trigger" onclick="toggleUserPopup()" style="
+                width:34px; height:34px; border-radius:50%;
+                background:linear-gradient(135deg,#7c3aed,#a78bfa);
+                display:flex; align-items:center; justify-content:center;
+                font-size:16px; cursor:pointer; overflow:hidden;
+                box-shadow:0 2px 8px rgba(124,58,237,0.25);
+                transition:transform 0.2s;
+            " id="topAvatar" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'">
+                <span id="topAvatarContent" style="color:white; font-weight:800; font-size:14px;">{{ username[0].upper() if username else 'U' }}</span>
+            </div>
+            <div id="userPopup" style="
+                display:none; position:absolute; right:0; top:44px;
+                background:white; border-radius:14px; padding:16px;
+                box-shadow:0 8px 32px rgba(0,0,0,0.12); border:1px solid #e9d5ff;
+                min-width:220px; z-index:500;
+            ">
+                <div style="display:flex; align-items:center; gap:12px; margin-bottom:14px; padding-bottom:14px; border-bottom:1px solid #f0f0f0;">
+                    <div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#a78bfa);display:flex;align-items:center;justify-content:center;font-size:20px;overflow:hidden;" id="popupAvatar">
+                        <span id="popupAvatarContent" style="color:white;font-weight:800;">{{ username[0].upper() if username else 'U' }}</span>
+                    </div>
+                    <div>
+                        <div id="popupDisplayName" style="font-size:14px;font-weight:700;color:#1a1a2e;">{{ username }}</div>
+                        <div id="popupEmail" style="font-size:11px;color:#aaa;margin-top:2px;"></div>
+                    </div>
+                </div>
+                <div id="popupJobTitle" style="font-size:12px;color:#7c3aed;font-weight:600;margin-bottom:12px;display:none;"></div>
+                <a href="/settings" style="display:flex;align-items:center;gap:8px;padding:8px;border-radius:8px;text-decoration:none;color:#555;font-size:13px;font-weight:500;transition:all 0.15s;" onmouseover="this.style.background='#f5f3ff';this.style.color='#7c3aed'" onmouseout="this.style.background='';this.style.color='#555'">
+                    ⚙️ Settings
+                </a>
+                <a href="#" onclick="openLogout();return false;" style="display:flex;align-items:center;gap:8px;padding:8px;border-radius:8px;text-decoration:none;color:#dc2626;font-size:13px;font-weight:500;transition:all 0.15s;" onmouseover="this.style.background='#fee2e2'" onmouseout="this.style.background=''">
+                    🚪 Log Out
+                </a>
+            </div>
+        </div>
         <a href="/add" class="btn-add-top">+ Add Application</a>
-      </div>
     </div>
+</div>
     <div class="page-body">
       {% block content %}{% endblock %}
     </div>
   </div>
 
   <!-- Help Widget -->
+<!-- Help Widget -->
 <div class="help-btn" onclick="toggleHelp()">💬</div>
 <div class="help-widget" id="helpWidget">
     <div class="help-header">
         <div>
-            <div class="help-hi">Hi {{ username }} 👋</div>
-            <div class="help-sub">How can we help?</div>
+            <div class="help-hi">Welcome, feedback is appreciated! 👋</div>
+            <div class="help-sub">We'd love to hear from you</div>
         </div>
         <button onclick="toggleHelp()" style="background:none;border:none;color:white;font-size:20px;cursor:pointer;line-height:1;">×</button>
     </div>
@@ -405,51 +441,105 @@
         <div class="help-tab-btn active" onclick="switchHelp('messages', this)">💬 Messages</div>
         <div class="help-tab-btn" onclick="switchHelp('contact', this)">📬 Contact Us</div>
     </div>
-    <div class="help-tab-content active" id="help-messages" style="min-height:200px;">
-        <div class="msg-empty">
-            <div>💬</div>
-            <p style="font-weight:700; color:#555; margin-bottom:4px;">No messages yet</p>
-            <p>Messages will appear here</p>
+    <div class="help-tab-content active" id="help-messages" style="min-height:220px; display:flex; flex-direction:column; justify-content:center; align-items:center;">
+        <div class="msg-empty" style="text-align:center;">
+            <div style="font-size:40px; margin-bottom:12px;">💬</div>
+            <p style="font-weight:700; color:#555; margin-bottom:6px;">No messages yet</p>
+            <p style="font-size:12px; color:#aaa;">Messages will appear here</p>
         </div>
     </div>
-    <div class="help-tab-content" id="help-contact" style="min-height:200px; padding:16px;">
-        <p style="font-size:13px; font-weight:700; color:#1a1a2e; margin-bottom:16px;">Get in touch with us 👋</p>
-        <div class="help-item">
-            <div class="help-item-icon">🐙</div>
-            <div>
-                <div class="help-item-title">Bacy Zhu</div>
-                <div class="help-item-desc">github.com/Zkkk-web</div>
-            </div>
-            <a href="https://github.com/Zkkk-web" target="_blank" class="help-item-arrow" style="text-decoration:none;">→</a>
+    <div class="help-tab-content" id="help-contact" style="min-height:220px; padding:16px; display:none;">
+    <p style="font-size:13px; font-weight:700; color:#1a1a2e; margin-bottom:16px;">Get in touch with us 👋</p>
+    
+    <div class="help-item" style="margin-bottom:10px;">
+        <div class="help-item-icon" style="background:#f6f8fa;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="#1a1a2e"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
         </div>
-        <div class="help-item">
-            <div class="help-item-icon">🐙</div>
-            <div>
-                <div class="help-item-title">Partner</div>
-                <div class="help-item-desc">github.com/h-19w</div>
-            </div>
-            <a href="https://github.com/h-19w" target="_blank" class="help-item-arrow" style="text-decoration:none;">→</a>
+        <div>
+            <div class="help-item-title">Bacy Zhu</div>
+            <div class="help-item-desc">github.com/Zkkk-web</div>
+            <div class="help-item-desc">zhukeb@kean.edu</div>
         </div>
-        <div class="help-item">
-            <div class="help-item-icon">✉️</div>
-            <div>
-                <div class="help-item-title">Email Bacy</div>
-                <div class="help-item-desc">zhukeb@kean.edu</div>
-            </div>
-            <a href="mailto:zhukeb@kean.edu" class="help-item-arrow" style="text-decoration:none;">→</a>
-        </div>
-        <div class="help-item">
-            <div class="help-item-icon">✉️</div>
-            <div>
-                <div class="help-item-title">Email Partner</div>
-                <div class="help-item-desc">kwong@kean.edu</div>
-            </div>
-            <a href="mailto:kwong@kean.edu" class="help-item-arrow" style="text-decoration:none;">→</a>
-        </div>
+        <a href="https://github.com/Zkkk-web" target="_blank" class="help-item-arrow" style="text-decoration:none;">→</a>
     </div>
+    
+    <div class="help-item">
+        <div class="help-item-icon" style="background:#f6f8fa;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="#1a1a2e"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+        </div>
+        <div>
+            <div class="help-item-title">Hadassah</div>
+            <div class="help-item-desc">github.com/h-19w</div>
+            <div class="help-item-desc">kwong@kean.edu</div>
+        </div>
+        <a href="https://github.com/h-19w" target="_blank" class="help-item-arrow" style="text-decoration:none;">→</a>
+    </div>
+</div>
 </div>
 
   <script>
+    // Sync avatar & profile info everywhere
+function syncUserDisplay() {
+    const avatar = localStorage.getItem('avatar');
+    const displayName = localStorage.getItem('displayName');
+    const email = localStorage.getItem('profileEmail');
+    const jobTitle = localStorage.getItem('jobTitle');
+    const uploadedAvatar = localStorage.getItem('uploadedAvatar');
+
+    // Sidebar
+    const sideContent = document.getElementById('sidebarAvatarContent');
+    if (sideContent) {
+        if (uploadedAvatar) {
+            sideContent.innerHTML = `<img src="${uploadedAvatar}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+        } else if (avatar) {
+            sideContent.textContent = avatar;
+            sideContent.style.fontSize = '18px';
+        }
+    }
+    const sideUser = document.getElementById('sidebarUsername');
+    if (sideUser && displayName) sideUser.textContent = displayName;
+
+    // Top avatar
+    const topContent = document.getElementById('topAvatarContent');
+    if (topContent) {
+        if (uploadedAvatar) {
+            topContent.innerHTML = `<img src="${uploadedAvatar}" style="width:34px;height:34px;object-fit:cover;border-radius:50%;">`;
+        } else if (avatar) {
+            topContent.textContent = avatar;
+            topContent.style.fontSize = '18px';
+        }
+    }
+
+    // Popup
+    const popupContent = document.getElementById('popupAvatarContent');
+    if (popupContent) {
+        if (uploadedAvatar) {
+            popupContent.innerHTML = `<img src="${uploadedAvatar}" style="width:44px;height:44px;object-fit:cover;border-radius:50%;">`;
+        } else if (avatar) {
+            popupContent.textContent = avatar;
+        }
+    }
+    const popupName = document.getElementById('popupDisplayName');
+    if (popupName && displayName) popupName.textContent = displayName;
+    const popupEmail = document.getElementById('popupEmail');
+    if (popupEmail && email) { popupEmail.textContent = email; }
+    const popupJob = document.getElementById('popupJobTitle');
+    if (popupJob && jobTitle) { popupJob.textContent = '🎯 ' + jobTitle; popupJob.style.display = 'block'; }
+}
+
+function toggleUserPopup() {
+    const p = document.getElementById('userPopup');
+    p.style.display = p.style.display === 'none' ? 'block' : 'none';
+}
+document.addEventListener('click', function(e) {
+    const wrap = document.querySelector('.user-popup-wrap');
+    if (wrap && !wrap.contains(e.target)) {
+        const p = document.getElementById('userPopup');
+        if (p) p.style.display = 'none';
+    }
+});
+
+window.addEventListener('load', syncUserDisplay);
     function toggleSidebar() {
       document.getElementById('sidebar').classList.toggle('collapsed');
       localStorage.setItem('sidebarCollapsed', document.getElementById('sidebar').classList.contains('collapsed'));
@@ -466,11 +556,16 @@
       document.getElementById('helpWidget').classList.toggle('open');
     }
     function switchHelp(tab, el) {
-      document.querySelectorAll('.help-tab-btn').forEach(t => t.classList.remove('active'));
-      document.querySelectorAll('.help-tab-content').forEach(t => t.classList.remove('active'));
-      el.classList.add('active');
-      document.getElementById('help-' + tab).classList.add('active');
-    }
+    document.querySelectorAll('.help-tab-btn').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.help-tab-content').forEach(t => {
+        t.classList.remove('active');
+        t.style.display = 'none';
+    });
+    el.classList.add('active');
+    const content = document.getElementById('help-' + tab);
+    content.style.display = tab === 'messages' ? 'flex' : 'block';
+    content.classList.add('active');
+}
   </script>
   {% block extra_scripts %}{% endblock %}
 

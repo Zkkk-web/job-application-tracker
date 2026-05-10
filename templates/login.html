@@ -1,89 +1,77 @@
-{% extends "base_public.html" %}
-{% block title %}Login — ApplyTrack{% endblock %}
-{% block extra_head %}
-<style>
-    body { background: #f5f3ff !important; }
-    .login-wrap {
-        min-height: 100vh; display: flex;
-        align-items: center; justify-content: center;
-        padding: 40px 20px;
-    }
-    .login-card {
-        background: white; border-radius: 20px;
-        padding: 48px 44px; width: 100%; max-width: 420px;
-        box-shadow: 0 20px 60px rgba(124,58,237,0.12);
-        border: 1px solid #e9d5ff;
-    }
-    .login-logo {
-        display: flex; align-items: center; gap: 10px;
-        margin-bottom: 32px; justify-content: center;
-    }
-    .login-logo-icon {
-        background: linear-gradient(135deg, #7c3aed, #a78bfa);
-        color: white; width: 40px; height: 40px; border-radius: 12px;
-        display: flex; align-items: center; justify-content: center; font-size: 20px;
-    }
-    .login-logo-text { font-size: 22px; font-weight: 800; color: #7c3aed; }
-    .login-card h2 { font-size: 24px; font-weight: 800; color: #1a1a2e; margin-bottom: 6px; }
-    .login-card .subtitle { font-size: 13px; color: #aaa; margin-bottom: 28px; }
-    .field-group { margin-bottom: 16px; }
-    .field-group label {
-        font-size: 12px; font-weight: 700; color: #7c3aed;
-        display: block; margin-bottom: 6px;
-        text-transform: uppercase; letter-spacing: 0.5px;
-    }
-    .field-group input {
-        width: 100%; padding: 12px 14px;
-        border: 1.5px solid #e9d5ff; border-radius: 10px;
-        font-size: 14px; margin-bottom: 0; transition: all 0.2s;
-        font-family: inherit;
-    }
-    .field-group input:focus {
-        outline: none; border-color: #7c3aed;
-        box-shadow: 0 0 0 3px rgba(124,58,237,0.1);
-    }
-    .alert { padding: 12px 16px; border-radius: 8px; margin-bottom: 16px; font-size: 13px; }
-    .alert-error { background: #fee2e2; color: #dc2626; }
-    .alert-success { background: #d1fae5; color: #059669; }
-    .btn-login {
-        width: 100%; padding: 13px; background: #7c3aed;
-        color: white; border: none; border-radius: 10px;
-        font-size: 15px; font-weight: 700; cursor: pointer;
-        margin-top: 8px; transition: all 0.2s;
-        box-shadow: 0 4px 14px rgba(124,58,237,0.3);
-    }
-    .btn-login:hover { background: #6d28d9; transform: translateY(-1px); }
-    .login-footer { text-align: center; margin-top: 20px; font-size: 13px; color: #888; }
-    .login-footer a { color: #7c3aed; font-weight: 700; text-decoration: none; }
-    .divider { display: flex; align-items: center; gap: 12px; margin: 20px 0; color: #ccc; font-size: 12px; }
-    .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: #f0f0f0; }
-</style>
-{% endblock %}
-{% block content %}
-<div class="login-wrap">
-    <div class="login-card">
-        <div class="login-logo">
-            <div class="login-logo-icon">📋</div>
-            <div class="login-logo-text">ApplyTrack</div>
-        </div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login — ApplyTrack</title>
+        <link rel="icon" href="/static/logo.png" type="image/png">    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f5f3ff; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 40px 20px; }
+        .card {
+            background: white; border-radius: 20px; padding: 48px 44px;
+            width: 100%; max-width: 420px;
+            box-shadow: 0 20px 60px rgba(124,58,237,0.12);
+            border: 1px solid #e9d5ff;
+        }
+        .logo { display: flex; align-items: center; gap: 10px; justify-content: center; margin-bottom: 32px; text-decoration: none; }
+        .logo-icon { background: linear-gradient(135deg,#7c3aed,#a78bfa); color: white; width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+        .logo-text { font-size: 22px; font-weight: 800; color: #7c3aed; }
+        h2 { font-size: 24px; font-weight: 800; color: #1a1a2e; margin-bottom: 6px; }
+        .subtitle { font-size: 13px; color: #aaa; margin-bottom: 28px; }
+        .field { margin-bottom: 16px; }
+        .field label { font-size: 11px; font-weight: 700; color: #7c3aed; display: block; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .field input { width: 100%; padding: 12px 14px; border: 1.5px solid #e9d5ff; border-radius: 10px; font-size: 14px; font-family: inherit; transition: all 0.2s; }
+        .field input:focus { outline: none; border-color: #7c3aed; box-shadow: 0 0 0 3px rgba(124,58,237,0.1); }
+        .alert { padding: 12px 16px; border-radius: 8px; margin-bottom: 16px; font-size: 13px; }
+        .alert-error { background: #fee2e2; color: #dc2626; }
+        .alert-success { background: #d1fae5; color: #059669; }
+        .btn-main { width: 100%; padding: 13px; background: #7c3aed; color: white; border: none; border-radius: 10px; font-size: 15px; font-weight: 700; cursor: pointer; margin-top: 8px; transition: all 0.2s; box-shadow: 0 4px 14px rgba(124,58,237,0.3); }
+        .btn-main:hover { background: #6d28d9; transform: translateY(-1px); }
+        .divider { display: flex; align-items: center; gap: 12px; margin: 20px 0; color: #ccc; font-size: 12px; }
+        .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: #f0f0f0; }
+        .btn-google { width: 100%; padding: 12px; background: white; color: #555; border: 1.5px solid #e0e0e0; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: all 0.2s; font-family: inherit; }
+        .btn-google:hover { border-color: #7c3aed; background: #faf9ff; }
+        .footer-text { text-align: center; margin-top: 20px; font-size: 13px; color: #888; }
+        .footer-text a { color: #7c3aed; font-weight: 700; text-decoration: none; }
+        .back-home { display: block; text-align: center; margin-bottom: 24px; font-size: 13px; color: #aaa; text-decoration: none; }
+        .back-home:hover { color: #7c3aed; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <a href="/" class="back-home">← Back to home</a>
+        <a href="/" class="logo">
+            <img src="/static/logo.png" style="width:40px;height:40px;">
+            <div class="logo-text">ApplyTrack</div>
+        </a>
         <h2>Welcome back</h2>
         <p class="subtitle">Sign in to continue your job search</p>
         {% if error %}<div class="alert alert-error">{{ error }}</div>{% endif %}
         {% if success %}<div class="alert alert-success">{{ success }}</div>{% endif %}
         <form method="POST">
-            <div class="field-group">
+            <div class="field">
                 <label>Username</label>
                 <input type="text" name="username" placeholder="Enter your username" required>
             </div>
-            <div class="field-group">
+            <div class="field">
                 <label>Password</label>
                 <input type="password" name="password" placeholder="Enter your password" required>
             </div>
-            <button type="submit" class="btn-login">Log In →</button>
+            <button type="submit" class="btn-main">Log In →</button>
         </form>
-        <div class="login-footer">
-            Don't have an account? <a href="/register">Sign up for free</a>
+        <div class="divider">or</div>
+        <button class="btn-google" onclick="showGoogleMsg()">
+            <svg width="18" height="18" viewBox="0 0 24 24">...</svg>
+            Continue with Google
+        </button>
+        <div id="googleMsg" style="display:none;margin-top:8px;padding:10px;background:#fef9c3;border-radius:8px;font-size:12px;color:#854d0e;text-align:center;">
+            Google login requires server setup. <a href="/register" style="color:#7c3aed;font-weight:700;">Sign up with username instead →</a>
         </div>
+        <script>
+        function showGoogleMsg() {
+            document.getElementById('googleMsg').style.display = 'block';
+        }
+        </script>
+        <div class="footer-text">Don't have an account? <a href="/register">Sign up free</a></div>
     </div>
-</div>
-{% endblock %}
+</body>
+</html>

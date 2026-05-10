@@ -35,6 +35,12 @@
             "position": "U.S.",
             "date": "2026-05-15",
             "status": "Pending"
+        },
+        {
+            "company": "Tengxun",
+            "position": "CN",
+            "date": "2026-05-10",
+            "status": "Offer"
         }
     ]
 }

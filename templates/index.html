@@ -3,241 +3,485 @@
 <head>
     <meta charset="UTF-8">
     <title>ApplyTrack — Job Application Tracker</title>
+    <link rel="icon" href="/static/logo.png" type="image/png">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', sans-serif; background: #fff; color: #1a1a2e; }
+        body { font-family: 'Segoe UI', sans-serif; background: #fff; color: #1a1a2e; overflow-x: hidden; }
 
-        .navbar {
-            display: flex; align-items: center;
-            justify-content: space-between;
-            padding: 18px 60px; background: white;
+        /* ── Navbar ── */
+        nav {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 16px 60px; background: white;
             border-bottom: 1px solid #f0f0f0;
             position: sticky; top: 0; z-index: 100;
         }
-        .logo { display: flex; align-items: center; gap: 10px; font-size: 20px; font-weight: 800; color: #7c3aed; }
-        .logo-icon {
-            background: linear-gradient(135deg, #7c3aed, #a78bfa);
-            color: white; width: 36px; height: 36px; border-radius: 10px;
-            display: flex; align-items: center; justify-content: center; font-size: 18px;
+        .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+        .nav-logo-icon {
+            background: linear-gradient(135deg,#7c3aed,#a78bfa);
+            color: white; width: 34px; height: 34px; border-radius: 9px;
+            display: flex; align-items: center; justify-content: center; font-size: 17px;
         }
-        .nav-links { display: flex; align-items: center; gap: 12px; }
+        .nav-logo-text { font-size: 18px; font-weight: 800; color: #7c3aed; }
+        .nav-links { display: flex; align-items: center; gap: 10px; }
         .nav-links a {
             text-decoration: none; color: #555; font-size: 14px;
             font-weight: 500; padding: 8px 16px; border-radius: 8px; transition: all 0.2s;
         }
         .nav-links a:hover { background: #f5f3ff; color: #7c3aed; }
-        .nav-links .btn-primary { background: #7c3aed; color: white; font-weight: 600; }
-        .nav-links .btn-primary:hover { background: #6d28d9; color: white; }
+        .nav-links .btn { background: #7c3aed; color: white !important; font-weight: 700; }
+        .nav-links .btn:hover { background: #6d28d9; }
 
-        /* Hero */
+        /* ── Hero ── */
         .hero {
-            display: flex; align-items: center;
-            justify-content: space-between;
-            padding: 80px 60px; max-width: 1200px;
-            margin: 0 auto; gap: 60px;
+            display: grid; grid-template-columns: 1fr 1fr;
+            align-items: center; gap: 60px;
+            padding: 90px 60px; max-width: 1200px; margin: 0 auto;
         }
-        .hero-left { flex: 1; }
         .hero-tag {
-            display: inline-block; background: #f5f3ff; color: #7c3aed;
-            font-size: 12px; font-weight: 700; padding: 6px 14px;
-            border-radius: 20px; margin-bottom: 20px;
-            letter-spacing: 1px; text-transform: uppercase;
+            display: inline-flex; align-items: center; gap: 6px;
+            background: #f5f3ff; color: #7c3aed; font-size: 12px;
+            font-weight: 700; padding: 6px 14px; border-radius: 20px;
+            margin-bottom: 24px; border: 1px solid #e9d5ff;
         }
-        .hero-left h1 {
-            font-size: 52px; font-weight: 800; line-height: 1.15;
-            color: #1a1a2e; margin-bottom: 20px;
-        }
-        .hero-left h1 span { color: #7c3aed; }
-        .hero-left p {
-            font-size: 17px; color: #666; line-height: 1.7;
-            margin-bottom: 36px; max-width: 480px;
-        }
-        .hero-buttons { display: flex; gap: 14px; align-items: center; }
-        .btn-purple {
+        .hero h1 { font-size: 54px; font-weight: 900; line-height: 1.1; color: #1a1a2e; margin-bottom: 20px; }
+        .hero h1 em { font-style: normal; color: #7c3aed; }
+        .hero p { font-size: 17px; color: #64748b; line-height: 1.7; margin-bottom: 36px; max-width: 460px; }
+        .hero-cta { display: flex; gap: 12px; align-items: center; }
+        .cta-primary {
             background: #7c3aed; color: white; padding: 14px 32px;
-            border-radius: 10px; text-decoration: none; font-weight: 700;
-            font-size: 15px; transition: all 0.2s;
-            box-shadow: 0 4px 14px rgba(124,58,237,0.3);
+            border-radius: 10px; text-decoration: none; font-weight: 700; font-size: 15px;
+            box-shadow: 0 4px 16px rgba(124,58,237,0.35); transition: all 0.2s;
         }
-        .btn-purple:hover { background: #6d28d9; transform: translateY(-1px); }
-        .btn-outline {
-            background: transparent; color: #7c3aed; padding: 14px 32px;
-            border-radius: 10px; text-decoration: none; font-weight: 700;
-            font-size: 15px; border: 2px solid #7c3aed; transition: all 0.2s;
+        .cta-primary:hover { background: #6d28d9; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(124,58,237,0.4); }
+        .cta-secondary {
+            color: #7c3aed; padding: 14px 24px; border-radius: 10px;
+            text-decoration: none; font-weight: 600; font-size: 15px;
+            border: 1.5px solid #e9d5ff; transition: all 0.2s;
         }
-        .btn-outline:hover { background: #f5f3ff; }
+        .cta-secondary:hover { background: #f5f3ff; }
 
-        /* Preview card */
-        .hero-right { flex: 1; position: relative; }
-        .shape {
-            position: absolute; border-radius: 50%; z-index: -1;
+        /* Hero right - app mockup */
+        .hero-visual { position: relative; }
+        .mockup-card {
+            background: white; border-radius: 18px;
+            box-shadow: 0 24px 64px rgba(124,58,237,0.14);
+            border: 1px solid #e9d5ff; overflow: hidden;
         }
-        .shape-1 { width: 120px; height: 120px; background: #a78bfa; top: -30px; right: -20px; border-radius: 30% 70% 70% 30%; }
-        .shape-2 { width: 80px; height: 80px; background: #fbbf24; bottom: -20px; left: -20px; border-radius: 50%; }
-        .shape-3 { width: 50px; height: 50px; background: #34d399; top: 40%; left: -30px; border-radius: 12px; transform: rotate(20deg); }
-        .preview-card {
-            background: white; border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.12);
-            overflow: hidden; border: 1px solid #f0f0f0;
+        .mockup-topbar {
+            background: #7c3aed; padding: 12px 18px;
+            display: flex; align-items: center; gap: 10px;
         }
-        .preview-header {
-            background: #7c3aed; padding: 14px 20px;
-            display: flex; align-items: center; gap: 8px;
-        }
-        .preview-header span { color: white; font-weight: 700; font-size: 14px; }
-        .preview-body { padding: 16px; }
-        .preview-cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-        .preview-col h4 {
-            font-size: 10px; font-weight: 700; text-transform: uppercase;
-            letter-spacing: 1px; color: #888; margin-bottom: 8px;
+        .mockup-topbar-title { color: white; font-weight: 700; font-size: 13px; }
+        .mockup-dots { display: flex; gap: 5px; margin-right: 8px; }
+        .mockup-dot { width: 10px; height: 10px; border-radius: 50%; }
+        .mockup-body { padding: 16px; }
+        .mockup-cols { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; }
+        .mockup-col-title {
+            font-size: 9px; font-weight: 800; text-transform: uppercase;
+            letter-spacing: 1px; color: #94a3b8; margin-bottom: 8px;
             padding-bottom: 6px; border-bottom: 2px solid #f0f0f0;
         }
-        .preview-item {
-            background: #f8f9fa; border-radius: 8px; padding: 8px;
-            margin-bottom: 6px; border-left: 3px solid #ddd; font-size: 11px;
+        .mockup-item {
+            background: #f8f9fa; border-radius: 8px; padding: 9px;
+            margin-bottom: 6px; border-left: 3px solid;
         }
-        .preview-item .co { font-weight: 700; color: #2c3e50; }
-        .preview-item .pos { color: #888; margin-top: 2px; }
-        .col-applied .preview-item { border-left-color: #3498db; }
-        .col-interview .preview-item { border-left-color: #9b59b6; }
-        .col-offer .preview-item { border-left-color: #27ae60; }
+        .mockup-item .m-co { font-size: 12px; font-weight: 700; color: #1a1a2e; }
+        .mockup-item .m-pos { font-size: 10px; color: #888; margin-top: 1px; }
+        .mockup-item .m-date { font-size: 9px; color: #aaa; margin-top: 4px; }
 
-        /* Stats bar */
-        .stats-bar {
-            background: #f5f3ff; padding: 30px 60px;
-            display: flex; justify-content: center; gap: 80px;
+        /* Floating badge */
+        .float-badge {
+            position: absolute; background: white; border-radius: 12px;
+            padding: 10px 14px; box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+            border: 1px solid #f0f0f0; font-size: 12px; font-weight: 700;
+            display: flex; align-items: center; gap: 8px;
+            animation: float 3s ease-in-out infinite;
         }
-        .stat-item { text-align: center; }
-        .stat-item h3 { font-size: 32px; font-weight: 800; color: #7c3aed; }
-        .stat-item p { font-size: 13px; color: #888; margin-top: 4px; }
+        @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+        .badge-1 { bottom: -20px; left: -30px; color: #059669; animation-delay: 0s; }
+        .badge-2 { top: -16px; right: -20px; color: #7c3aed; animation-delay: 1.5s; }
+        .badge-dot { width: 8px; height: 8px; border-radius: 50%; }
 
-        /* Features */
-        .features { padding: 80px 60px; max-width: 1200px; margin: 0 auto; }
-        .features-title { text-align: center; font-size: 36px; font-weight: 800; color: #1a1a2e; margin-bottom: 12px; }
-        .features-sub { text-align: center; color: #888; font-size: 16px; margin-bottom: 48px; }
-        .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
-        .feature-card {
-            background: white; border-radius: 16px; padding: 32px 28px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.07); border: 1px solid #f0f0f0; transition: all 0.2s;
+        /* ── Features Section ── */
+        .features-section { background: #fafafa; padding: 100px 60px; }
+        .features-inner { max-width: 1100px; margin: 0 auto; }
+        .section-eyebrow {
+            font-size: 12px; font-weight: 800; color: #7c3aed;
+            text-transform: uppercase; letter-spacing: 2px; margin-bottom: 12px;
         }
-        .feature-card:hover { transform: translateY(-4px); box-shadow: 0 8px 30px rgba(124,58,237,0.12); border-color: #e9d5ff; }
-        .feature-icon {
-            width: 52px; height: 52px; border-radius: 14px;
+        .section-title { font-size: 40px; font-weight: 900; color: #1a1a2e; margin-bottom: 16px; line-height: 1.15; }
+        .section-subtitle { font-size: 17px; color: #64748b; max-width: 520px; line-height: 1.6; margin-bottom: 60px; }
+
+        /* Feature tabs */
+        .feat-tabs { display: flex; gap: 0; border-bottom: 2px solid #e9d5ff; margin-bottom: 48px; }
+        .feat-tab {
+            padding: 12px 24px; font-size: 14px; font-weight: 600; color: #888;
+            cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px;
+            transition: all 0.2s;
+        }
+        .feat-tab.active { color: #7c3aed; border-bottom-color: #7c3aed; }
+        .feat-tab:hover { color: #7c3aed; }
+
+        /* Feature showcase */
+        .feat-showcase { display: none; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+        .feat-showcase.active { display: grid; }
+        .feat-left h3 { font-size: 30px; font-weight: 800; color: #1a1a2e; margin-bottom: 14px; line-height: 1.2; }
+        .feat-left p { font-size: 16px; color: #64748b; line-height: 1.7; margin-bottom: 28px; }
+        .feat-list { display: flex; flex-direction: column; gap: 14px; }
+        .feat-list-item { display: flex; align-items: flex-start; gap: 12px; }
+        .feat-check {
+            width: 22px; height: 22px; background: #d1fae5; border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
-            font-size: 24px; margin-bottom: 18px;
+            font-size: 11px; color: #059669; font-weight: 800; flex-shrink: 0; margin-top: 1px;
         }
-        .icon-purple { background: #f5f3ff; }
-        .icon-blue { background: #eff6ff; }
-        .icon-green { background: #f0fdf4; }
-        .feature-card h3 { font-size: 17px; font-weight: 700; color: #1a1a2e; margin-bottom: 10px; }
-        .feature-card p { font-size: 14px; color: #888; line-height: 1.6; }
+        .feat-list-item p { font-size: 14px; color: #475569; line-height: 1.5; }
+        .feat-right {
+            background: white; border-radius: 20px; padding: 28px;
+            box-shadow: 0 8px 40px rgba(124,58,237,0.08);
+            border: 1px solid #e9d5ff;
+        }
+        .feat-mock-header {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 18px; padding-bottom: 14px; border-bottom: 1px solid #f5f3ff;
+        }
+        .feat-mock-title { font-size: 14px; font-weight: 700; color: #1a1a2e; }
+        .feat-mock-chip {
+            background: #f5f3ff; color: #7c3aed; font-size: 11px;
+            font-weight: 700; padding: 4px 10px; border-radius: 20px;
+        }
+        .feat-mock-row {
+            display: flex; align-items: center; gap: 12px; padding: 11px;
+            border-radius: 10px; margin-bottom: 8px; background: #faf9ff;
+            border: 1px solid #f0f0f0; transition: all 0.2s;
+        }
+        .feat-mock-row:hover { border-color: #e9d5ff; background: #f5f3ff; }
+        .feat-mock-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+        .feat-mock-info { flex: 1; }
+        .feat-mock-co { font-size: 13px; font-weight: 700; color: #1a1a2e; }
+        .feat-mock-pos { font-size: 11px; color: #888; margin-top: 1px; }
+        .feat-mock-badge { font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px; white-space: nowrap; }
 
-        /* CTA */
-        .cta {
-            background: linear-gradient(135deg, #7c3aed, #a78bfa);
-            padding: 80px 60px; text-align: center; color: white;
+        /* ── Vision Section ── */
+        .vision-section { padding: 100px 60px; max-width: 1100px; margin: 0 auto; }
+        .vision-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 2px; margin-top: 48px; }
+        .vision-card {
+            padding: 40px 32px; border: 1px solid #f0f0f0; transition: all 0.2s; cursor: default;
         }
-        .cta h2 { font-size: 36px; font-weight: 800; margin-bottom: 16px; }
-        .cta p { font-size: 16px; opacity: 0.85; margin-bottom: 32px; }
-        .btn-white {
-            background: white; color: #7c3aed; padding: 14px 36px;
-            border-radius: 10px; text-decoration: none; font-weight: 700;
-            font-size: 15px; display: inline-block; transition: all 0.2s;
-        }
-        .btn-white:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.15); }
+        .vision-card:hover { background: #fafafa; }
+        .vision-card:first-child { border-radius: 16px 0 0 16px; }
+        .vision-card:last-child { border-radius: 0 16px 16px 0; }
+        .vision-num { font-size: 11px; font-weight: 800; color: #c4b5fd; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 16px; }
+        .vision-card h3 { font-size: 20px; font-weight: 800; color: #1a1a2e; margin-bottom: 12px; }
+        .vision-card p { font-size: 14px; color: #64748b; line-height: 1.7; }
 
-        .footer {
-            padding: 24px 60px; text-align: center; color: #aaa;
-            font-size: 13px; border-top: 1px solid #f0f0f0;
+        /* ── Stats bar ── */
+        .stats-section {
+            background: linear-gradient(135deg,#7c3aed,#a78bfa);
+            padding: 60px; display: flex; justify-content: center; gap: 80px;
         }
+        .stat-item { text-align: center; color: white; }
+        .stat-item h3 { font-size: 36px; font-weight: 900; margin-bottom: 6px; }
+        .stat-item p { font-size: 13px; opacity: 0.8; font-weight: 500; }
+
+        /* ── CTA ── */
+        .cta-section {
+            padding: 100px 60px; text-align: center;
+            background: #1a1a2e;
+        }
+        .cta-section h2 { font-size: 40px; font-weight: 900; color: white; margin-bottom: 16px; }
+        .cta-section p { font-size: 17px; color: #94a3b8; margin-bottom: 36px; }
+        .cta-btn {
+            background: #7c3aed; color: white; padding: 16px 40px;
+            border-radius: 12px; text-decoration: none; font-weight: 700;
+            font-size: 16px; display: inline-block; transition: all 0.2s;
+            box-shadow: 0 4px 16px rgba(124,58,237,0.5);
+        }
+        .cta-btn:hover { background: #6d28d9; transform: translateY(-2px); }
+
+        /* ── Footer ── */
+        footer {
+            padding: 28px 60px; display: flex; align-items: center;
+            justify-content: space-between; border-top: 1px solid #f0f0f0;
+        }
+        footer .ft-logo { display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 700; color: #7c3aed; text-decoration: none; }
+        footer .ft-logo-icon { background: linear-gradient(135deg,#7c3aed,#a78bfa); color: white; width: 28px; height: 28px; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+        footer p { font-size: 13px; color: #aaa; }
     </style>
 </head>
 <body>
-    <div class="navbar">
-        <div class="logo">
-            <div class="logo-icon">📋</div>
-            ApplyTrack
-        </div>
-        <div class="nav-links">
-            <a href="/login">Log in</a>
-            <a href="/register" class="btn-primary">Sign up for free</a>
-        </div>
-    </div>
 
-    <div class="hero">
-        <div class="hero-left">
-            <div class="hero-tag">🚀 Free for Students</div>
-            <h1>Less Hassle,<br><span>More Interviews</span></h1>
-            <p>ApplyTrack helps you organize your job search, track every application, and never miss a deadline — all in one place.</p>
-            <div class="hero-buttons">
-                <a href="/register" class="btn-purple">Sign Up for Free</a>
-                <a href="/login" class="btn-outline">Log In</a>
+<!-- Navbar -->
+<nav>
+    <a class="nav-logo" href="/">
+        <img src="/static/logo.png" style="width:34px;height:34px;">
+        <span class="nav-logo-text">ApplyTrack</span>
+    </a>
+    <div class="nav-links">
+        <a href="/login">Log in</a>
+        <a href="/register" class="btn">Sign up free</a>
+    </div>
+</nav>
+
+<!-- Hero -->
+<div style="max-width:1200px; margin:0 auto; padding:0 60px;">
+    <div class="hero" style="padding:90px 0;">
+        <div>
+            <div class="hero-tag">✦ Built for students &amp; job seekers</div>
+            <h1>Less Chaos,<br><em>More Offers</em></h1>
+            <p>ApplyTrack brings every application, resume, and deadline into one clean, visual dashboard — so you can focus on landing the job.</p>
+            <div class="hero-cta">
+                <a href="/register" class="cta-primary">Get Started Free →</a>
+                <a href="/login" class="cta-secondary">Log In</a>
             </div>
         </div>
-        <div class="hero-right">
-            <div class="shape shape-1"></div>
-            <div class="shape shape-2"></div>
-            <div class="shape shape-3"></div>
-            <div class="preview-card">
-                <div class="preview-header">
-                    <span>📋 My Job Search 2026</span>
+        <div class="hero-visual">
+            <div class="float-badge badge-2" style="top:-16px;right:-10px;">
+                <span style="font-size:16px;">🎉</span>
+                <div><div style="color:#7c3aed;font-size:11px;">Offer received!</div><div style="color:#aaa;font-size:10px;font-weight:400;">Microsoft · PM Intern</div></div>
+            </div>
+            <div class="float-badge badge-1" style="bottom:-16px;left:-10px;">
+                <div class="badge-dot" style="background:#6BCB77;"></div>
+                <div style="color:#555;font-size:11px;font-weight:600;">Interview Rate <span style="color:#059669;">+42%</span></div>
+            </div>
+            <div class="mockup-card">
+                <div class="mockup-topbar">
+                    <div class="mockup-dots">
+                        <div class="mockup-dot" style="background:rgba(255,255,255,0.4);"></div>
+                        <div class="mockup-dot" style="background:rgba(255,255,255,0.4);"></div>
+                        <div class="mockup-dot" style="background:rgba(255,255,255,0.4);"></div>
+                    </div>
+                    <div class="mockup-topbar-title"><img src="/static/logo.png" style="width:24px;height:24px;border-radius:4px;margin-right:8px;"> Job Search 2026</div>
                 </div>
-                <div class="preview-body">
-                    <div class="preview-cols">
-                        <div class="col-applied">
-                            <h4>Applied</h4>
-                            <div class="preview-item"><div class="co">Google</div><div class="pos">SWE Intern</div></div>
-                            <div class="preview-item"><div class="co">Meta</div><div class="pos">Data Analyst</div></div>
+                <div class="mockup-body">
+                    <div class="mockup-cols">
+                        <div>
+                            <div class="mockup-col-title">Applied</div>
+                            <div class="mockup-item" style="border-left-color:#4D96FF;">
+                                <div class="m-co">Google</div><div class="m-pos">SWE Intern</div><div class="m-date">Apr 8, 2026</div>
+                            </div>
+                            <div class="mockup-item" style="border-left-color:#4D96FF;">
+                                <div class="m-co">Meta</div><div class="m-pos">Data Analyst</div><div class="m-date">Apr 10, 2026</div>
+                            </div>
                         </div>
-                        <div class="col-interview">
-                            <h4>Interview</h4>
-                            <div class="preview-item"><div class="co">Apple</div><div class="pos">iOS Dev</div></div>
+                        <div>
+                            <div class="mockup-col-title">Interview</div>
+                            <div class="mockup-item" style="border-left-color:#C855F7;">
+                                <div class="m-co">Apple</div><div class="m-pos">iOS Dev</div><div class="m-date">Apr 15, 2026</div>
+                            </div>
                         </div>
-                        <div class="col-offer">
-                            <h4>Offer 🎉</h4>
-                            <div class="preview-item"><div class="co">Microsoft</div><div class="pos">PM Intern</div></div>
+                        <div>
+                            <div class="mockup-col-title">Offer 🏆</div>
+                            <div class="mockup-item" style="border-left-color:#6BCB77;">
+                                <div class="m-co">Microsoft</div><div class="m-pos">PM Intern</div><div class="m-date">Apr 20, 2026</div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    <div class="stats-bar">
-        <div class="stat-item"><h3>10K+</h3><p>Applications Tracked</p></div>
-        <div class="stat-item"><h3>500+</h3><p>Students Using</p></div>
-        <div class="stat-item"><h3>3x</h3><p>More Interviews</p></div>
-        <div class="stat-item"><h3>Free</h3><p>Always & Forever</p></div>
-    </div>
+<!-- Features Section -->
+<div class="features-section">
+    <div class="features-inner">
+        <div class="section-eyebrow">Platform Features</div>
+        <div class="section-title">Everything in one place</div>
+        <div class="section-subtitle">From tracking applications to building resumes — ApplyTrack handles your entire job search journey.</div>
 
-    <div class="features">
-        <div class="features-title">Everything You Need to Land the Job</div>
-        <div class="features-sub">Built for students who are serious about their career</div>
-        <div class="features-grid">
-            <div class="feature-card">
-                <div class="feature-icon icon-purple">🎯</div>
-                <h3>Our Mission</h3>
-                <p>Help students and job seekers stay organized during their job search journey, reducing stress and increasing success rates.</p>
+        <div class="feat-tabs">
+            <div class="feat-tab active" onclick="showFeat('tracker',this)">Job Tracker</div>
+            <div class="feat-tab" onclick="showFeat('resume',this)">Resume Builder</div>
+            <div class="feat-tab" onclick="showFeat('analytics',this)">Analytics</div>
+            <div class="feat-tab" onclick="showFeat('email',this)">Email Drafts</div>
+            <div class="feat-tab" onclick="showFeat('kanban',this)">Kanban Board</div>
+        </div>
+
+        <!-- Tracker -->
+        <div class="feat-showcase active" id="feat-tracker">
+            <div class="feat-left">
+                <h3>Track Every Application</h3>
+                <p>Never lose track of where you applied. Keep all your applications organized with status, date, and position in one place.</p>
+                <div class="feat-list">
+                    <div class="feat-list-item"><div class="feat-check">✓</div><p>Add company, position, date and current status</p></div>
+                    <div class="feat-list-item"><div class="feat-check">✓</div><p>Update status as you progress through rounds</p></div>
+                    <div class="feat-list-item"><div class="feat-check">✓</div><p>Filter and search by company or status</p></div>
+                    <div class="feat-list-item"><div class="feat-check">✓</div><p>See all applications in a clean, sortable table</p></div>
+                </div>
             </div>
-            <div class="feature-card">
-                <div class="feature-icon icon-blue">🌟</div>
-                <h3>Our Goal</h3>
-                <p>Make job hunting simple, transparent, and data-driven — so you always know where you stand and what to do next.</p>
+            <div class="feat-right">
+                <div class="feat-mock-header">
+                    <div class="feat-mock-title">All Applications</div>
+                    <div class="feat-mock-chip">4 total</div>
+                </div>
+                <div class="feat-mock-row"><div class="feat-mock-dot" style="background:#4D96FF;"></div><div class="feat-mock-info"><div class="feat-mock-co">Google</div><div class="feat-mock-pos">Software Engineer Intern</div></div><span class="feat-mock-badge" style="background:#dbeafe;color:#1d4ed8;">Applied</span></div>
+                <div class="feat-mock-row"><div class="feat-mock-dot" style="background:#C855F7;"></div><div class="feat-mock-info"><div class="feat-mock-co">Apple</div><div class="feat-mock-pos">iOS Developer</div></div><span class="feat-mock-badge" style="background:#ede9fe;color:#7c3aed;">Interview</span></div>
+                <div class="feat-mock-row"><div class="feat-mock-dot" style="background:#6BCB77;"></div><div class="feat-mock-info"><div class="feat-mock-co">Microsoft</div><div class="feat-mock-pos">PM Intern</div></div><span class="feat-mock-badge" style="background:#d1fae5;color:#059669;">Offer 🎉</span></div>
+                <div class="feat-mock-row"><div class="feat-mock-dot" style="background:#FFD93D;"></div><div class="feat-mock-info"><div class="feat-mock-co">Meta</div><div class="feat-mock-pos">Data Analyst</div></div><span class="feat-mock-badge" style="background:#fef9c3;color:#854d0e;">Pending</span></div>
             </div>
-            <div class="feature-card">
-                <div class="feature-icon icon-green">⚡</div>
-                <h3>What We Offer</h3>
-                <p>Track applications, update statuses, visualize your progress with charts, and manage your entire job search in one place.</p>
+        </div>
+
+        <!-- Resume -->
+        <div class="feat-showcase" id="feat-resume">
+            <div class="feat-left">
+                <h3>Build Your Resume</h3>
+                <p>Create a polished resume right inside ApplyTrack with a live preview. Export as PDF in one click.</p>
+                <div class="feat-list">
+                    <div class="feat-list-item"><div class="feat-check">✓</div><p>Live preview updates as you type</p></div>
+                    <div class="feat-list-item"><div class="feat-check">✓</div><p>Sections for experience, education, skills, projects</p></div>
+                    <div class="feat-list-item"><div class="feat-check">✓</div><p>One-click PDF export for employers</p></div>
+                    <div class="feat-list-item"><div class="feat-check">✓</div><p>Clean, ATS-friendly format</p></div>
+                </div>
+            </div>
+            <div class="feat-right">
+                <div style="border-bottom:3px solid #7c3aed;padding-bottom:14px;margin-bottom:16px;">
+                    <div style="font-size:20px;font-weight:800;color:#1a1a2e;">John Doe</div>
+                    <div style="font-size:12px;color:#888;margin-top:4px;">john@email.com · +1 234 567 · New York</div>
+                </div>
+                <div style="font-size:10px;font-weight:800;color:#7c3aed;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Experience</div>
+                <div style="font-size:12px;color:#555;margin-bottom:14px;line-height:1.5;">Software Engineer Intern · Google<br><span style="color:#aaa;font-size:11px;">Jun 2025 — Aug 2025 · Mountain View, CA</span></div>
+                <div style="font-size:10px;font-weight:800;color:#7c3aed;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Skills</div>
+                <div style="display:flex;flex-wrap:wrap;gap:6px;">
+                    <span style="background:#f5f3ff;color:#7c3aed;padding:3px 10px;border-radius:5px;font-size:11px;font-weight:700;">Python</span>
+                    <span style="background:#f5f3ff;color:#7c3aed;padding:3px 10px;border-radius:5px;font-size:11px;font-weight:700;">Flask</span>
+                    <span style="background:#f5f3ff;color:#7c3aed;padding:3px 10px;border-radius:5px;font-size:11px;font-weight:700;">React</span>
+                    <span style="background:#f5f3ff;color:#7c3aed;padding:3px 10px;border-radius:5px;font-size:11px;font-weight:700;">SQL</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Analytics -->
+        <div class="feat-showcase" id="feat-analytics">
+            <div class="feat-left">
+                <h3>Understand Your Progress</h3>
+                <p>Data-driven insights into your job search with beautiful dopamine-colored charts and statistics.</p>
+                <div class="feat-list">
+                    <div class="feat-list-item"><div class="feat-check">✓</div><p>Track interview rate and offer rate</p></div>
+                    <div class="feat-list-item"><div class="feat-check">✓</div><p>Visual funnel: Applied → Interview → Offer</p></div>
+                    <div class="feat-list-item"><div class="feat-check">✓</div><p>Weekly application trend line chart</p></div>
+                    <div class="feat-list-item"><div class="feat-check">✓</div><p>Status breakdown with colorful bar charts</p></div>
+                </div>
+            </div>
+            <div class="feat-right">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">
+                    <div style="background:linear-gradient(135deg,#FF6B6B,#FF8E53);border-radius:12px;padding:16px;color:white;text-align:center;"><div style="font-size:26px;font-weight:900;">24</div><div style="font-size:10px;opacity:0.85;margin-top:2px;">Total Applied</div></div>
+                    <div style="background:linear-gradient(135deg,#C855F7,#a78bfa);border-radius:12px;padding:16px;color:white;text-align:center;"><div style="font-size:26px;font-weight:900;">8</div><div style="font-size:10px;opacity:0.85;margin-top:2px;">Interviews</div></div>
+                    <div style="background:linear-gradient(135deg,#6BCB77,#4D96FF);border-radius:12px;padding:16px;color:white;text-align:center;"><div style="font-size:26px;font-weight:900;">3</div><div style="font-size:10px;opacity:0.85;margin-top:2px;">Offers</div></div>
+                    <div style="background:linear-gradient(135deg,#4D96FF,#00D2FF);border-radius:12px;padding:16px;color:white;text-align:center;"><div style="font-size:26px;font-weight:900;">33%</div><div style="font-size:10px;opacity:0.85;margin-top:2px;">Interview Rate</div></div>
+                </div>
+                <div style="background:#faf9ff;border-radius:10px;padding:12px;display:flex;align-items:center;gap:10px;">
+                    <div style="flex:1;height:6px;background:#f0f0f0;border-radius:3px;overflow:hidden;">
+                        <div style="width:33%;height:100%;background:linear-gradient(90deg,#C855F7,#7c3aed);border-radius:3px;"></div>
+                    </div>
+                    <div style="font-size:11px;font-weight:700;color:#7c3aed;white-space:nowrap;">33% to offer</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Email -->
+        <div class="feat-showcase" id="feat-email">
+            <div class="feat-left">
+                <h3>Professional Email Templates</h3>
+                <p>Never struggle with what to write. Ready-made templates for every stage of your job search — copy in one click.</p>
+                <div class="feat-list">
+                    <div class="feat-list-item"><div class="feat-check">✓</div><p>Follow-up emails after applying</p></div>
+                    <div class="feat-list-item"><div class="feat-check">✓</div><p>Thank you notes after interviews</p></div>
+                    <div class="feat-list-item"><div class="feat-check">✓</div><p>Salary negotiation templates</p></div>
+                    <div class="feat-list-item"><div class="feat-check">✓</div><p>Cold outreach &amp; referral requests</p></div>
+                </div>
+            </div>
+            <div class="feat-right">
+                <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;">
+                    <span style="background:#f5f3ff;color:#7c3aed;padding:6px 12px;border-radius:8px;font-size:11px;font-weight:700;border:1.5px solid #7c3aed;">📨 Follow-up</span>
+                    <span style="background:white;color:#888;padding:6px 12px;border-radius:8px;font-size:11px;font-weight:600;border:1px solid #e0e0e0;">🙏 Thank You</span>
+                    <span style="background:white;color:#888;padding:6px 12px;border-radius:8px;font-size:11px;font-weight:600;border:1px solid #e0e0e0;">💰 Negotiate</span>
+                </div>
+                <div style="background:#faf9ff;border-radius:10px;padding:16px;border:1px solid #e9d5ff;">
+                    <div style="font-size:10px;color:#aaa;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.5px;">Subject</div>
+                    <div style="font-size:13px;font-weight:700;color:#1a1a2e;margin-bottom:12px;">Follow-up on My Application – SWE Intern at Google</div>
+                    <div style="font-size:12px;color:#555;line-height:1.6;">Dear Hiring Manager,<br><br>I hope this message finds you well. I recently submitted my application for the <span style="color:#7c3aed;font-weight:700;">Software Engineer Intern</span> role at <span style="color:#7c3aed;font-weight:700;">Google</span>...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Kanban -->
+        <div class="feat-showcase" id="feat-kanban">
+            <div class="feat-left">
+                <h3>Visual Kanban Board</h3>
+                <p>See your entire job search pipeline at a glance. Drag-and-drop style columns make it easy to manage your applications visually.</p>
+                <div class="feat-list">
+                    <div class="feat-list-item"><div class="feat-check">✓</div><p>Six status columns: Pending to Offer</p></div>
+                    <div class="feat-list-item"><div class="feat-check">✓</div><p>Color-coded cards for quick scanning</p></div>
+                    <div class="feat-list-item"><div class="feat-check">✓</div><p>Job count per column shown at a glance</p></div>
+                    <div class="feat-list-item"><div class="feat-check">✓</div><p>One-click add from any column</p></div>
+                </div>
+            </div>
+            <div class="feat-right" style="padding:16px;">
+                <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">
+                    {% for col, color, items in [('Pending','#FFD93D',[('Wayfair','UX'),('Shopify','PM')]),('Interview','#C855F7',[('Apple','iOS')]),('Offer','#6BCB77',[('Microsoft','PM')])] %}
+                    <div style="background:#f8f9fa;border-radius:10px;padding:10px;">
+                        <div style="font-size:9px;font-weight:800;color:#888;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:8px;display:flex;justify-content:space-between;"><span>{{ col }}</span><span style="background:white;border-radius:20px;padding:1px 6px;">{{ items|length }}</span></div>
+                        {% for co,pos in items %}
+                        <div style="background:white;border-radius:7px;padding:8px;margin-bottom:6px;border-left:3px solid {{ color }};"><div style="font-size:11px;font-weight:700;">{{ co }}</div><div style="font-size:10px;color:#888;">{{ pos }}</div></div>
+                        {% endfor %}
+                    </div>
+                    {% endfor %}
+                </div>
             </div>
         </div>
     </div>
+</div>
 
-    <div class="cta">
-        <h2>Ready to Land Your Dream Job?</h2>
-        <p>Join thousands of students who are already tracking smarter.</p>
-        <a href="/register" class="btn-white">Get Started for Free →</a>
+<!-- Vision -->
+<div class="vision-section">
+    <div class="section-eyebrow">Our Purpose</div>
+    <div class="section-title">Built with intention</div>
+    <div class="vision-grid">
+        <div class="vision-card">
+            <div class="vision-num">01 — Mission</div>
+            <h3>Reduce the chaos of job hunting</h3>
+            <p>We built ApplyTrack because we experienced the stress of juggling dozens of applications across spreadsheets and sticky notes. You deserve better.</p>
+        </div>
+        <div class="vision-card">
+            <div class="vision-num">02 — Vision</div>
+            <h3>The career companion for every student</h3>
+            <p>From first internship application to landing a full-time role — ApplyTrack is designed to grow with you at every stage of your career journey.</p>
+        </div>
+        <div class="vision-card">
+            <div class="vision-num">03 — Why Us</div>
+            <h3>Simple, focused, and student-first</h3>
+            <p>No bloat, no upsells. Just a clean, powerful tool that helps you apply smarter, track better, and land more interviews.</p>
+        </div>
     </div>
+</div>
 
-    <div class="footer">© 2026 ApplyTrack · Built with ❤️ for students · <a href="https://github.com/Zkkk-web" style="color:#7c3aed;">GitHub</a></div>
+<!-- Stats -->
+<div class="stats-section">
+    <div class="stat-item"><h3>6</h3><p>Core Features</p></div>
+    <div class="stat-item"><h3>100%</h3><p>Student-Focused</p></div>
+    <div class="stat-item"><h3>∞</h3><p>Applications Trackable</p></div>
+    <div class="stat-item"><h3>0$</h3><p>Cost to Start</p></div>
+</div>
+
+<!-- CTA -->
+<div class="cta-section">
+    <h2>Ready to take control?</h2>
+    <p>Join students who are organizing smarter and landing more interviews with ApplyTrack.</p>
+    <a href="/register" class="cta-btn">Create Free Account →</a>
+</div>
+
+<footer>
+    <a href="/" class="ft-logo"><div class="ft-logo-icon"><img src="/static/logo.png" style="width:32px;height:32px;border-radius:8px;"></div> ApplyTrack</a>
+    <p>© 2026 ApplyTrack · Built with ❤️ for students</p>
+</footer>
+
+<script>
+function showFeat(name, el) {
+    document.querySelectorAll('.feat-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.feat-showcase').forEach(s => s.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('feat-' + name).classList.add('active');
+}
+</script>
 </body>
 </html>

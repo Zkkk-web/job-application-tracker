@@ -213,7 +213,7 @@
 <div style="max-width:100%;">
 
     <div style="margin-bottom:20px;">
-        <h2 style="font-size:22px; font-weight:800; color:#1a1a2e; margin-bottom:4px;">✉️ Email Drafts</h2>
+        <h2 style="font-size:22px; font-weight:800; color:#1a1a2e; margin-bottom:4px; display:flex; align-items:center; gap:8px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>Email Drafts</h2>
         <p style="font-size:13px; color:#aaa;">Select a template and customize your email in seconds</p>
     </div>
 
@@ -227,42 +227,42 @@
             </div>
             <div class="template-list">
                 <div class="template-item active" onclick="loadTemplate('followup', this)">
-                    <div class="template-icon t-purple">📨</div>
+                    <div class="template-icon t-purple"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
                     <div class="template-info">
                         <h4>Follow-up</h4>
                         <p>After submitting your application</p>
                     </div>
                 </div>
                 <div class="template-item" onclick="loadTemplate('thankyou', this)">
-                    <div class="template-icon t-blue">🙏</div>
+                    <div class="template-icon t-blue"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
                     <div class="template-info">
                         <h4>Thank You</h4>
                         <p>After an interview</p>
                     </div>
                 </div>
                 <div class="template-item" onclick="loadTemplate('withdraw', this)">
-                    <div class="template-icon t-orange">🚫</div>
+                    <div class="template-icon t-orange"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ea580c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg></div>
                     <div class="template-info">
                         <h4>Withdraw</h4>
                         <p>Withdraw your application</p>
                     </div>
                 </div>
                 <div class="template-item" onclick="loadTemplate('negotiate', this)">
-                    <div class="template-icon t-green">💰</div>
+                    <div class="template-icon t-green"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
                     <div class="template-info">
                         <h4>Salary Negotiate</h4>
                         <p>Negotiate your offer professionally</p>
                     </div>
                 </div>
                 <div class="template-item" onclick="loadTemplate('referral', this)">
-                    <div class="template-icon t-purple">🤝</div>
+                    <div class="template-icon t-purple"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
                     <div class="template-info">
                         <h4>Referral Request</h4>
                         <p>Ask someone for a referral</p>
                     </div>
                 </div>
                 <div class="template-item" onclick="loadTemplate('cold', this)">
-                    <div class="template-icon t-blue">📬</div>
+                    <div class="template-icon t-blue"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg></div>
                     <div class="template-info">
                         <h4>Cold Outreach</h4>
                         <p>Reach out to someone new</p>
@@ -275,7 +275,7 @@
         <div class="composer-panel">
             <div class="composer-header">
                 <div>
-                    <h3 id="composer-title">📨 Follow-up Email</h3>
+                    <h3 id="composer-title">Follow-up Email</h3>
                     <p id="composer-desc">After submitting your application</p>
                 </div>
             </div>
@@ -295,51 +295,51 @@
             </div>
             <div class="composer-footer">
                 <button class="btn-copy" onclick="copyEmail()"><img src="/static/logo.png" style="width:32px;height:32px;border-radius:8px;"> Copy to Clipboard</button>
-                <button class="btn-clear" onclick="clearEmail()">🗑️ Clear</button>
+                <button class="btn-clear" onclick="clearEmail()" style="display:flex;align-items:center;gap:6px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg> Clear</button>
             </div>
         </div>
 
     </div>
 </div>
 
-<div class="toast" id="toast">✅ Copied to clipboard!</div>
+<div class="toast" id="toast"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Copied to clipboard!</div>
 {% endblock %}
 
 {% block extra_scripts %}
 <script>
     const templates = {
         followup: {
-            title: '📨 Follow-up Email',
+            title: 'Follow-up Email',
             desc: 'After submitting your application',
             subject: "Follow-up on My Application – [Position] at [Company]",
             body: `Dear Hiring Manager,\n\nI hope this message finds you well. I recently submitted my application for the [Position] role at [Company] and wanted to follow up to express my continued interest in the opportunity.\n\nI am very enthusiastic about the possibility of joining your team. Please let me know if you need any additional information from my end.\n\nThank you for your time and consideration.\n\nBest regards,\n[Your Name]`
         },
         thankyou: {
-            title: '🙏 Thank You Email',
+            title: 'Thank You Email',
             desc: 'After an interview',
             subject: "Thank You – [Position] Interview at [Company]",
             body: `Dear [Interviewer's Name],\n\nThank you so much for taking the time to interview me for the [Position] role at [Company]. I really enjoyed our conversation and learning more about the team.\n\nThe discussion reinforced my enthusiasm for this opportunity, and I look forward to hearing about the next steps.\n\nBest regards,\n[Your Name]`
         },
         withdraw: {
-            title: '🚫 Withdraw Application',
+            title: 'Withdraw Application',
             desc: 'Withdraw your application',
             subject: "Withdrawal of Application – [Position] at [Company]",
             body: `Dear Hiring Manager,\n\nI am writing to formally withdraw my application for the [Position] role at [Company].\n\nAfter careful consideration, I have decided to pursue a different opportunity. I have great respect for [Company] and hope our paths may cross in the future.\n\nThank you for your time and consideration.\n\nBest regards,\n[Your Name]`
         },
         negotiate: {
-            title: '💰 Salary Negotiation',
+            title: 'Salary Negotiation',
             desc: 'Negotiate your offer professionally',
             subject: "Offer Discussion – [Position] at [Company]",
             body: `Dear [Hiring Manager's Name],\n\nThank you for the offer for the [Position] role at [Company]. I am very excited about this opportunity.\n\nAfter reviewing the offer, I would like to discuss the possibility of adjusting the base salary to [desired amount], based on my research and experience in the field.\n\nI am open to discussion and look forward to finding a mutually beneficial arrangement.\n\nBest regards,\n[Your Name]`
         },
         referral: {
-            title: '🤝 Referral Request',
+            title: 'Referral Request',
             desc: 'Ask someone for a referral',
             subject: "Referral Request – [Position] at [Company]",
             body: `Dear [Name],\n\nI hope you're doing well! I'm reaching out because I'm very interested in the [Position] role at [Company] and noticed you work there.\n\nI would be incredibly grateful if you could refer me for this position or share any insights about the team and culture.\n\nI've attached my resume for your reference. Please let me know if you'd be comfortable with this — I truly appreciate your time!\n\nBest regards,\n[Your Name]`
         },
         cold: {
-            title: '📬 Cold Outreach',
+            title: 'Cold Outreach',
             desc: 'Reach out to someone new',
             subject: "Interested in Opportunities at [Company]",
             body: `Dear [Name],\n\nI hope this message finds you well. My name is [Your Name] and I'm a [Your Role/Student] with experience in [Your Field].\n\nI've been following [Company]'s work in [area] and I'm very impressed by [specific achievement or product]. I would love to learn more about potential opportunities to contribute to your team.\n\nWould you be open to a brief 15-minute call to discuss how my background might align with [Company]'s needs?\n\nThank you for your time!\n\nBest regards,\n[Your Name]`

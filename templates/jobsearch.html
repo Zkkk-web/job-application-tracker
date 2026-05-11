@@ -212,12 +212,12 @@
 
     <!-- Topbar -->
     <div class="js-topbar">
-        <div class="js-title">🔍 Job Search 2026</div>
+        <div class="js-title" style="display:flex;align-items:center;gap:8px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>Job Search 2026</div>
         <div style="display:flex; align-items:center; gap:12px;">
             <div class="js-tabs">
-                <div class="js-tab active" onclick="switchView('resume', this)">📄 Resume</div>
-                <div class="js-tab" onclick="switchView('activities', this)">📝 Activities</div>
-                <div class="js-tab" onclick="switchView('goals', this)">🎯 Goals</div>
+                <div class="js-tab active" onclick="switchView('resume', this)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline;vertical-align:middle;margin-right:4px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Resume</div>
+                <div class="js-tab" onclick="switchView('activities', this)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline;vertical-align:middle;margin-right:4px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>Activities</div>
+                <div class="js-tab" onclick="switchView('goals', this)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline;vertical-align:middle;margin-right:4px;"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>Goals</div>
             </div>
             <a href="/add" class="btn-create">+ Create</a>
         </div>
@@ -241,14 +241,14 @@
                         </div>
                     </div>
                     <div class="resume-list-item" onclick="selectResume(this,'Software Engineer Resume','Tech · Internship')" style="cursor:pointer;">
-                        <div class="resume-list-icon" style="background:linear-gradient(135deg,#6BCB77,#4D96FF);">📄</div>
+                        <div class="resume-list-icon" style="background:linear-gradient(135deg,#6BCB77,#4D96FF);"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
                         <div class="resume-list-info">
                             <h4>Software Engineer</h4>
                             <p>Tech · Internship</p>
                         </div>
                     </div>
                     <div class="resume-list-item" onclick="selectResume(this,'Data Analyst Resume','Analytics · Junior')" style="cursor:pointer;">
-                        <div class="resume-list-icon" style="background:linear-gradient(135deg,#FF6B6B,#FF8E53);">📝</div>
+                        <div class="resume-list-icon" style="background:linear-gradient(135deg,#FF6B6B,#FF8E53);"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
                         <div class="resume-list-info">
                             <h4>Data Analyst</h4>
                             <p>Analytics · Junior</p>
@@ -263,8 +263,8 @@
                 <div class="preview-header-row">
                     <div class="preview-name">{{ username }}'s Resume</div>
                     <div class="preview-actions">
-                        <a href="/resume" class="preview-btn preview-btn-outline">✏️ Edit</a>
-                        <button class="preview-btn preview-btn-purple" onclick="window.print()">🖨️ Export PDF</button>
+                        <a href="/resume" class="preview-btn preview-btn-outline" style="display:inline-flex;align-items:center;gap:5px;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Edit</a>
+                        <button class="preview-btn preview-btn-purple" onclick="window.print()" style="display:inline-flex;align-items:center;gap:5px;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg> Export PDF</button>
                     </div>
                 </div>
 
@@ -350,7 +350,7 @@
                     {% endfor %}
                 {% else %}
                 <div style="padding:50px; text-align:center; color:#ccc;">
-                    <div style="font-size:40px; margin-bottom:12px;">📭</div>
+                    <div style="margin-bottom:12px;"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg></div>
                     <p style="font-size:13px;">No applications yet</p>
                     <a href="/add" style="color:#7c3aed; font-weight:700; font-size:13px; text-decoration:none;">+ Add your first</a>
                 </div>
@@ -362,19 +362,19 @@
                 <div class="side-card">
                     <h4>Key Numbers</h4>
                     <div class="side-stat-row">
-                        <span class="side-stat-label">📤 Applied</span>
+                        <span class="side-stat-label"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Applied</span>
                         <span class="side-stat-val">{{ applications | length }}</span>
                     </div>
                     <div class="side-stat-row">
-                        <span class="side-stat-label">🎤 Interviews</span>
+                        <span class="side-stat-label"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg> Interviews</span>
                         <span class="side-stat-val">{{ applications | selectattr('status', 'equalto', 'Interview') | list | length }}</span>
                     </div>
                     <div class="side-stat-row">
-                        <span class="side-stat-label">🏆 Offers</span>
+                        <span class="side-stat-label"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg> Offers</span>
                         <span class="side-stat-val">{{ applications | selectattr('status', 'equalto', 'Offer') | list | length }}</span>
                     </div>
                     <div class="side-stat-row">
-                        <span class="side-stat-label">❌ Rejected</span>
+                        <span class="side-stat-label"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> Rejected</span>
                         <span class="side-stat-val">{{ applications | selectattr('status', 'equalto', 'Rejected') | list | length }}</span>
                     </div>
                 </div>
@@ -397,7 +397,7 @@
         <div class="goals-layout">
             <!-- Applications goal -->
             <div class="goal-card">
-                <h3>📤 Applications Goal</h3>
+                <h3 style="display:flex;align-items:center;gap:6px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>Applications Goal</h3>
                 <p>How many companies do you want to apply to?</p>
                 <div class="goal-progress-bg">
                     <div class="goal-progress-fill" id="app-bar" style="width:0%; background:linear-gradient(90deg,#4D96FF,#C855F7);"></div>
@@ -415,7 +415,7 @@
 
             <!-- Interview goal -->
             <div class="goal-card">
-                <h3>🎤 Interview Goal</h3>
+                <h3 style="display:flex;align-items:center;gap:6px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>Interview Goal</h3>
                 <p>Target number of interviews to land</p>
                 <div class="goal-progress-bg">
                     <div class="goal-progress-fill" id="int-bar" style="width:0%; background:linear-gradient(90deg,#C855F7,#FF6B6B);"></div>
@@ -433,7 +433,7 @@
 
             <!-- Offer goal -->
             <div class="goal-card">
-                <h3>🏆 Offer Goal</h3>
+                <h3 style="display:flex;align-items:center;gap:6px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>Offer Goal</h3>
                 <p>How many offers are you aiming for?</p>
                 <div class="goal-big-num" style="color:#6BCB77;">{{ offers }}</div>
                 <p style="font-size:12px; color:#aaa; margin-bottom:8px;">offers received so far</p>
@@ -444,7 +444,7 @@
 
             <!-- Weekly checklist -->
             <div class="goal-card">
-                <h3>✅ This Week's Checklist</h3>
+                <h3 style="display:flex;align-items:center;gap:6px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>This Week's Checklist</h3>
                 <p>Daily habits for a successful job search</p>
                 <div class="goal-check-list">
                     {% for item in [

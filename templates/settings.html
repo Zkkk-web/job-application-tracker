@@ -97,7 +97,7 @@
                             border-radius:50%; display:flex; align-items:center;
                             justify-content:center; cursor:pointer; border:2px solid white;
                             font-size:12px; color:white;
-                        " title="Upload photo">📷</label>
+                        " title="Upload photo"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></label>
                         <input type="file" id="avatarUpload" accept="image/png,image/jpeg,image/gif,image/webp"
                             style="display:none;" onchange="uploadAvatar(this)">
                     </div>
@@ -176,7 +176,7 @@
                     <label class="toggle"><input type="checkbox" id="n_interview" checked onchange="savePref('n_interview',this.checked)"><span class="toggle-slider"></span></label>
                 </div>
                 <div class="setting-row">
-                    <div class="setting-info"><h4>Offer Celebrations 🎉</h4><p>Special alert when you get an offer</p></div>
+                    <div class="setting-info"><h4>Offer Celebrations</h4><p>Special alert when you get an offer</p></div>
                     <label class="toggle"><input type="checkbox" id="n_offer" checked onchange="savePref('n_offer',this.checked)"><span class="toggle-slider"></span></label>
                 </div>
             </div>
@@ -256,7 +256,7 @@ function showSection(name, el) {
 // ── Toast ──
 function showToast(msg, ok=true) {
     const t = document.getElementById('settingsToast');
-    t.textContent = (ok ? '✅ ' : '❌ ') + msg;
+    t.textContent = msg;
     t.style.background = ok ? '#7c3aed' : '#dc2626';
     t.classList.add('show');
     setTimeout(() => t.classList.remove('show'), 2500);

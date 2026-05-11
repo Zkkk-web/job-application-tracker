@@ -144,7 +144,7 @@ def kanban():
         'Offer': [a for a in applications if a['status'] == 'Offer'],
         'Rejected': [a for a in applications if a['status'] == 'Rejected'],
     }
-    return render_template('kanban.html', applications=applications, stats=stats, board=board)
+    return render_template('kanban.html', applications=applications, stats=stats, board=board, username=username)
 @app.route('/calendar')
 def calendar_view():
     if 'username' not in session:
@@ -172,7 +172,8 @@ def calendar_view():
                            applications=applications,
                            grid=grid,
                            month=month,
-                           year=year)
+                           year=year, 
+                           username=username)
 @app.route('/resume', methods=['GET', 'POST'])
 def resume():
     if 'username' not in session:
@@ -206,7 +207,8 @@ def resume_save():
 def email_drafts():
     if 'username' not in session:
         return redirect(url_for('login'))
-    return render_template('email_drafts.html')
+    username = session['username']
+    return render_template('email_drafts.html', username=username)
 
 
 @app.route('/stats')

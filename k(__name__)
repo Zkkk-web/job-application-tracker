@@ -1,0 +1,78 @@
+[33mcommit 9813180bc7c561ae98b7e63d04b1667d9f6e632c[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Merge: a76cc76 f51bd18
+Author: Bacy Zhu <19932079997@163.com>
+Date:   Mon May 11 10:34:37 2026 +0800
+
+    Merge pull request #1 from Zkkk-web/claude/heuristic-borg-4bf03f
+    
+    SVG icons change
+
+[33mcommit f51bd18d59bead6b5c8d07f9e28262d79325578f[m[33m ([m[1;31morigin/claude/heuristic-borg-4bf03f[m[33m, [m[1;32mclaude/heuristic-borg-4bf03f[m[33m)[m
+Author: Bacy Zhu <19932079997@163.com>
+Date:   Mon May 11 10:30:46 2026 +0800
+
+    Replace all emojis with inline SVG icons across all templates
+    
+    Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
+
+M	templates/base.html
+M	templates/calendar.html
+M	templates/dashboard.html
+M	templates/email_drafts.html
+M	templates/index.html
+M	templates/jobsearch.html
+M	templates/kanban.html
+M	templates/resume.html
+M	templates/settings.html
+M	templates/stats_page.html
+
+[33mcommit a76cc76436fee8ed06efc812add2039b7a6fd901[m
+Author: Bacy Zhu <19932079997@163.com>
+Date:   Mon May 11 02:25:57 2026 +0800
+
+    HTML change
+
+M	app.py
+M	data.json
+M	static/chart.png
+A	static/favicon.ico
+A	static/logo.png
+M	templates/base.html
+M	templates/base_public.html
+M	templates/dashboard.html
+M	templates/email_drafts.html
+M	templates/index.html
+M	templates/jobsearch.html
+M	templates/kanban.html
+M	templates/login.html
+M	templates/register.html
+M	templates/resume.html
+M	templates/settings.html
+M	templates/stats_page.html
+D	templates/test.html
+D	templates/test_dashboard.html
+M	templates/welcome.html
+M	users.json
+
+[33mcommit e2357c74ac644b97c0e45fe8ce0ce16c2dd48b2d[m
+Author: Bacy Zhu <19932079997@163.com>
+Date:   Sun May 10 22:38:19 2026 +0800
+
+    frontend change
+
+M	app.py
+M	templates/base.html
+M	templates/calendar.html
+M	templates/dashboard.html
+M	templates/email_drafts.html
+M	templates/index.html
+A	templates/jobsearch.html
+M	templates/kanban.html
+M	templates/login.html
+M	templates/register.html
+M	templates/resume.html
+A	templates/settings.html
+M	templates/stats_page.html
+A	templates/test.html
+A	templates/test_dashboard.html
+A	templates/welcome.html

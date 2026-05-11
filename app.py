@@ -6,7 +6,8 @@ from src.stats import show_stats, generate_chart
 
 app = Flask(__name__)
 app.secret_key = "job_tracker_secret_key"
-
+app.config['TEMPLATES_AUTO_RELOAD'] = True
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 # ─── Home ───────────────────────────────────────────
 @app.route('/')
 def index():

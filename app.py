@@ -8,6 +8,20 @@ app = Flask(__name__)
 app.secret_key = "job_tracker_secret_key"
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
+app.jinja_env.auto_reload = True
+app.jinja_env.cache = {}
+
+# ─── Cache Control ──────────────────────────────────
+@app.after_request
+def disable_cache(response):
+    response.cache_control.no_cache = True
+    response.cache_control.no_store = True
+    response.cache_control.max_age = 0
+    response.cache_control.must_revalidate = True
+    response.headers['Pragma'] = 'no-cache'
+    response.headers['Expires'] = '0'
+    return response
+
 # ─── Home ───────────────────────────────────────────
 @app.route('/')
 def index():
@@ -263,4 +277,4 @@ def clear_applications():
     save_applications(username, [])
     return '', 204
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, use_reloader=False)

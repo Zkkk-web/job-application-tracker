@@ -334,8 +334,19 @@ function confirmDelete() {
 
 // ── Load saved prefs on startup ──
 window.addEventListener('load', () => {
+    const bigAv = document.getElementById('bigAvatar');
+    const uploadedAvatar = localStorage.getItem('uploadedAvatar');
     const avatar = localStorage.getItem('avatar');
-    if (avatar) document.getElementById('bigAvatar').textContent = avatar;
+    if (bigAv) {
+        if (uploadedAvatar) {
+            bigAv.innerHTML = `<img src="${uploadedAvatar}" style="width:64px;height:64px;object-fit:cover;border-radius:50%;">`;
+        } else if (avatar) {
+            bigAv.textContent = avatar;
+            bigAv.style.fontSize = '28px';
+        }
+    }
+    // Sync all header/sidebar avatars too
+    if (typeof syncUserDisplay === 'function') syncUserDisplay();
 
     const displayName = localStorage.getItem('displayName');
     if (displayName) document.getElementById('displayName').value = displayName;

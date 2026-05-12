@@ -223,7 +223,9 @@
             <div class="cal-grid">
                 {% for week in grid.weeks %}
                     {% for day in week %}
-                    <div class="cal-cell {% if day == 0 %}empty{% endif %} {% if day == grid.today %}today{% endif %}">
+                    {% set date_str = '%04d-%02d-%02d' | format(year, month, day) %}
+                    <div class="cal-cell {% if day == 0 %}empty{% endif %} {% if day == grid.today %}today{% endif %}"
+                         {% if day != 0 %}onclick="openDayModal('{{ date_str }}', {{ day }})" style="cursor:pointer;"{% endif %}>
                         {% if day != 0 %}
                         <div class="day-number">{{ day }}</div>
                         {% for app in applications %}
@@ -239,6 +241,13 @@
                                 'Written Test': 'written'
                             }.get(app.status, '') %}
                             <span class="cal-event {{ status_class }}">{{ app.company }}</span>
+                            {% endif %}
+                        {% endfor %}
+                        {% for ev in cal_events %}
+                            {% if ev.date == date_str %}
+                            <span class="cal-event cal-custom-event" data-id="{{ ev.id }}"
+                                  style="background:{{ ev.color or '#94a3b8' }}; cursor:pointer;"
+                                  onclick="event.stopPropagation(); deleteEvent('{{ ev.id }}')">{{ ev.title }}</span>
                             {% endif %}
                         {% endfor %}
                         {% endif %}
@@ -314,4 +323,83 @@
         </div>
     </div>
 </div>
+
+<!-- Day Event Modal -->
+<div id="day-modal-overlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.4); z-index:9999; align-items:center; justify-content:center;" onclick="closeDayModal()">
+    <div onclick="event.stopPropagation()" style="background:white; border-radius:18px; padding:28px; width:360px; box-shadow:0 20px 60px rgba(0,0,0,0.2);">
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:20px;">
+            <h3 id="modal-date-title" style="font-size:16px; font-weight:800; color:#1a1a2e;"></h3>
+            <button onclick="closeDayModal()" style="background:none;border:none;font-size:20px;cursor:pointer;color:#aaa;line-height:1;">×</button>
+        </div>
+
+        <!-- Option: Add custom event -->
+        <div style="margin-bottom:16px;">
+            <label style="font-size:11px; font-weight:700; color:#7c3aed; text-transform:uppercase; letter-spacing:0.5px; display:block; margin-bottom:6px;">Event Title</label>
+            <input id="modal-event-title" type="text" placeholder="e.g. Interview prep, Deadline…"
+                   style="width:100%; padding:10px 14px; border:1.5px solid #e9d5ff; border-radius:10px; font-size:13px; font-family:inherit; outline:none;"
+                   onfocus="this.style.borderColor='#7c3aed'" onblur="this.style.borderColor='#e9d5ff'"
+                   onkeydown="if(event.key==='Enter') addCalEvent()">
+            <div style="display:flex; gap:8px; margin-top:8px; flex-wrap:wrap;">
+                <span class="color-dot" onclick="selectColor(this,'#7c3aed')" style="width:20px;height:20px;border-radius:50%;background:#7c3aed;cursor:pointer;border:2px solid #7c3aed;"></span>
+                <span class="color-dot" onclick="selectColor(this,'#059669')" style="width:20px;height:20px;border-radius:50%;background:#059669;cursor:pointer;"></span>
+                <span class="color-dot" onclick="selectColor(this,'#0284c7')" style="width:20px;height:20px;border-radius:50%;background:#0284c7;cursor:pointer;"></span>
+                <span class="color-dot" onclick="selectColor(this,'#f59e0b')" style="width:20px;height:20px;border-radius:50%;background:#f59e0b;cursor:pointer;"></span>
+                <span class="color-dot" onclick="selectColor(this,'#ef4444')" style="width:20px;height:20px;border-radius:50%;background:#ef4444;cursor:pointer;"></span>
+                <span class="color-dot" onclick="selectColor(this,'#94a3b8')" style="width:20px;height:20px;border-radius:50%;background:#94a3b8;cursor:pointer;"></span>
+            </div>
+        </div>
+
+        <button onclick="addCalEvent()" style="width:100%; padding:11px; background:#7c3aed; color:white; border:none; border-radius:10px; font-size:14px; font-weight:700; cursor:pointer; margin-bottom:10px;">+ Add Event</button>
+        <a id="modal-add-app-link" href="/add" style="display:block; padding:10px; border:1.5px solid #e9d5ff; border-radius:10px; text-align:center; color:#7c3aed; font-size:13px; font-weight:700; text-decoration:none; transition:all 0.15s;"
+           onmouseover="this.style.background='#f5f3ff'" onmouseout="this.style.background=''">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:4px;"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add Application on this Date
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+let _selectedDate = '';
+let _selectedColor = '#7c3aed';
+
+function openDayModal(dateStr, day) {
+    _selectedDate = dateStr;
+    document.getElementById('modal-date-title').textContent = 'Day ' + day;
+    document.getElementById('modal-event-title').value = '';
+    document.getElementById('modal-add-app-link').href = '/add?date=' + dateStr;
+    // Reset color selection
+    document.querySelectorAll('.color-dot').forEach(d => d.style.border = 'none');
+    document.querySelectorAll('.color-dot')[0].style.border = '2px solid white';
+    _selectedColor = '#7c3aed';
+    const ov = document.getElementById('day-modal-overlay');
+    ov.style.display = 'flex';
+    setTimeout(() => document.getElementById('modal-event-title').focus(), 50);
+}
+function closeDayModal() {
+    document.getElementById('day-modal-overlay').style.display = 'none';
+}
+function selectColor(el, color) {
+    document.querySelectorAll('.color-dot').forEach(d => d.style.border = 'none');
+    el.style.border = '2px solid white';
+    el.style.outline = '2px solid ' + color;
+    _selectedColor = color;
+}
+function addCalEvent() {
+    const title = document.getElementById('modal-event-title').value.trim();
+    if (!title) return;
+    fetch('/api/cal-events', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({title, date: _selectedDate, color: _selectedColor})
+    }).then(r => r.json()).then(() => {
+        closeDayModal();
+        location.reload();
+    });
+}
+function deleteEvent(id) {
+    if (!confirm('Remove this event?')) return;
+    fetch('/api/cal-events/' + id, {method: 'DELETE'}).then(() => location.reload());
+}
+</script>
 {% endblock %}

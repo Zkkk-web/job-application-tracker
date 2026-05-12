@@ -13,8 +13,9 @@
     .welcome-layout {
         position: relative; z-index: 1;
         display: flex; gap: 40px;
-        padding: 28px 32px 40px;
-        align-items: flex-start;
+        padding: 40px 32px 40px;
+        align-items: center;
+        min-height: calc(100vh - 240px);
     }
     .welcome-left { flex: 1; }
     .welcome-left h2 { font-size: 15px; color: #7c3aed; font-weight: 600; margin-bottom: 4px; }
@@ -38,12 +39,14 @@
     }
     .check-item:hover { border-color: #e9d5ff; box-shadow: 0 4px 12px rgba(124,58,237,0.08); }
     .check-circle {
-        width: 24px; height: 24px; border-radius: 0;
-        border: none; flex-shrink: 0; margin-top: 2px;
-        display: flex; align-items: center; justify-content: center; transition: all 0.2s;
-        font-size: 17px; text-align: center;
+        width: 26px; height: 26px; border-radius: 50%;
+        border: 2px solid #d8b4fe; flex-shrink: 0; margin-top: 2px;
+        display: flex; align-items: center; justify-content: center;
+        transition: all 0.2s; background: white;
     }
-    .check-circle.checked { color: #7c3aed; font-size: 17px; }
+    .check-circle.checked {
+        background: #7c3aed; border-color: #7c3aed;
+    }
     .check-content h4 { font-size: 14px; font-weight: 700; color: #1a1a2e; margin-bottom: 3px; }
     .check-content p { font-size: 12px; color: #888; line-height: 1.5; }
     .check-tag {
@@ -65,39 +68,46 @@
         <a href="/dashboard" class="btn-start">Go to Dashboard →</a>
     </div>
     <div class="checklist">
+        <!-- Account created — always checked -->
         <div class="check-item">
-            <div class="check-circle checked"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <div class="check-circle checked"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
             <div class="check-content">
                 <h4>Create your Account</h4>
                 <p>You're all set! Your account is ready to go.</p>
             </div>
         </div>
-        <div class="check-item" onclick="toggleCheck(this)">
-            <div class="check-circle"></div>
+        <!-- Add Application — auto-checked if user has apps -->
+        <div class="check-item" id="check-app" onclick="toggleCheck(this,'check-app')">
+            <div class="check-circle {% if has_applications %}checked{% endif %}">
+                {% if has_applications %}<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>{% endif %}
+            </div>
             <div class="check-content">
                 <h4>Add your First Application</h4>
                 <p>Start tracking by adding a company you've applied to.</p>
-                <a href="/add" class="check-tag">→ Add Application</a>
+                {% if not has_applications %}<a href="/add" class="check-tag">→ Add Application</a>{% endif %}
             </div>
         </div>
-        <div class="check-item" onclick="toggleCheck(this)">
-            <div class="check-circle"></div>
+        <!-- Build Resume — auto-checked if user has saved resume -->
+        <div class="check-item" id="check-resume" onclick="toggleCheck(this,'check-resume')">
+            <div class="check-circle {% if has_resume %}checked{% endif %}">
+                {% if has_resume %}<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>{% endif %}
+            </div>
             <div class="check-content">
                 <h4>Build your Resume</h4>
                 <p>Fill in your resume details to use with every application.</p>
-                <a href="/resume" class="check-tag">→ Resume Builder</a>
+                {% if not has_resume %}<a href="/resume" class="check-tag">→ Resume Builder</a>{% endif %}
             </div>
         </div>
-        <div class="check-item" onclick="toggleCheck(this)">
-            <div class="check-circle"></div>
+        <div class="check-item" onclick="toggleCheck(this,'check-kanban')">
+            <div class="check-circle" id="check-kanban"></div>
             <div class="check-content">
                 <h4>Explore the Kanban Board</h4>
                 <p>Visualize your applications by status.</p>
                 <a href="/board" class="check-tag">→ Kanban Board</a>
             </div>
         </div>
-        <div class="check-item" onclick="toggleCheck(this)">
-            <div class="check-circle"></div>
+        <div class="check-item" onclick="toggleCheck(this,'check-stats')">
+            <div class="check-circle" id="check-stats"></div>
             <div class="check-content">
                 <h4>View your Statistics</h4>
                 <p>See charts and insights about your job search progress.</p>
@@ -110,11 +120,24 @@
 
 {% block extra_scripts %}
 <script>
-function toggleCheck(item) {
+const CHECK_SVG = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+
+function toggleCheck(item, key) {
     const circle = item.querySelector('.check-circle');
-    circle.classList.toggle('checked');
-    circle.innerHTML = circle.classList.contains('checked') ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>' : '';
+    const isChecked = circle.classList.toggle('checked');
+    circle.innerHTML = isChecked ? CHECK_SVG : '';
+    if (key) localStorage.setItem('welcome_' + key, isChecked ? '1' : '0');
 }
+
+// Restore manual toggles from localStorage
+window.addEventListener('load', () => {
+    ['check-kanban','check-stats'].forEach(key => {
+        if (localStorage.getItem('welcome_' + key) === '1') {
+            const el = document.getElementById(key);
+            if (el) { el.classList.add('checked'); el.innerHTML = CHECK_SVG; }
+        }
+    });
+});
 const canvas = document.getElementById('confetti');
 const ctx = canvas.getContext('2d');
 canvas.width = canvas.offsetWidth || window.innerWidth;

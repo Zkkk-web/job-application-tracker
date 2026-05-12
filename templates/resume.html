@@ -216,7 +216,10 @@
                     <label>Projects</label>
                     <textarea id="projects" rows="3" placeholder="Project name, description, tech used..." oninput="updatePreview()"></textarea>
                 </div>
-                <button class="print-btn" onclick="window.print()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle; margin-right:6px;"><path d="M6 2h12l2 3H4l2-3z"/><path d="M4 5h16v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5z"/><path d="M8 12h8"/></svg>Export as PDF</button>
+                <div style="display:flex; gap:8px; margin-top:4px;">
+                    <button class="print-btn" style="flex:1;" onclick="saveResumeToLibrary()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:5px;"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>Save to Library</button>
+                    <button class="print-btn" style="flex:1;" onclick="window.print()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:5px;"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>Export PDF</button>
+                </div>
             </div>
 
             <!-- Live Preview -->
@@ -400,6 +403,43 @@ function syncFullPreview() {
     // Clone current preview into full preview
     const src = document.getElementById('previewInner').innerHTML;
     document.getElementById('fullPreview').innerHTML = src;
+}
+
+// ── Save to Resume Library ─────────────────────────
+function saveResumeToLibrary() {
+    const get = id => { const el = document.getElementById(id); return el ? el.value.trim() : ''; };
+    const data = {
+        name: get('name'),
+        email: get('email'),
+        phone: get('phone'),
+        linkedin: get('linkedin'),
+        github: get('github'),
+        location: get('location'),
+        summary: get('summary'),
+        education: get('education'),
+        experience: get('experience'),
+        skills: skills.join(', '),
+        projects: get('projects'),
+        awards: get('awards'),
+        position: get('jobTitle') || '',
+        template: currentTemplate,
+        saved_at: new Date().toISOString()
+    };
+    if (!data.name) { alert('Please enter at least your name before saving.'); return; }
+    fetch('/api/resumes', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(data)
+    }).then(r => r.json()).then(d => {
+        if (d.id) {
+            // Show success
+            const btn = event.target.closest('button');
+            const orig = btn.innerHTML;
+            btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:4px;"><polyline points="20 6 9 17 4 12"/></svg>Saved!';
+            btn.style.background = '#059669';
+            setTimeout(() => { btn.innerHTML = orig; btn.style.background = ''; }, 2000);
+        }
+    }).catch(() => alert('Save failed. Make sure you are logged in.'));
 }
 </script>
 {% endblock %}

@@ -27,18 +27,18 @@
     .kpi-card::before {
         content:''; position:absolute; top:0; left:0; right:0; height:3px; border-radius:16px 16px 0 0;
     }
-    .kpi-1::before { background:linear-gradient(90deg,#FF6B6B,#FF8E53); }
-    .kpi-2::before { background:linear-gradient(90deg,#C855F7,#a78bfa); }
-    .kpi-3::before { background:linear-gradient(90deg,#6BCB77,#4D96FF); }
-    .kpi-4::before { background:linear-gradient(90deg,#4D96FF,#00D2FF); }
-    .kpi-icon { font-size:20px; margin-bottom:12px; }
+    .kpi-1::before { background:linear-gradient(90deg,#6366f1,#818cf8); }
+    .kpi-2::before { background:linear-gradient(90deg,#7c3aed,#a78bfa); }
+    .kpi-3::before { background:linear-gradient(90deg,#059669,#34d399); }
+    .kpi-4::before { background:linear-gradient(90deg,#0284c7,#38bdf8); }
+    .kpi-icon { margin-bottom:12px; }
     .kpi-val { font-size:38px; font-weight:900; color:#1a1a2e; line-height:1; margin-bottom:6px; }
     .kpi-label { font-size:12px; color:#94a3b8; font-weight:600; text-transform:uppercase; letter-spacing:0.5px; }
-    .kpi-accent { position:absolute; bottom:-10px; right:-10px; width:60px; height:60px; border-radius:50%; opacity:0.06; }
-    .kpi-1 .kpi-accent { background:#FF6B6B; }
-    .kpi-2 .kpi-accent { background:#C855F7; }
-    .kpi-3 .kpi-accent { background:#6BCB77; }
-    .kpi-4 .kpi-accent { background:#4D96FF; }
+    .kpi-accent { position:absolute; bottom:-10px; right:-10px; width:60px; height:60px; border-radius:50%; opacity:0.05; }
+    .kpi-1 .kpi-accent { background:#6366f1; }
+    .kpi-2 .kpi-accent { background:#7c3aed; }
+    .kpi-3 .kpi-accent { background:#059669; }
+    .kpi-4 .kpi-accent { background:#0284c7; }
 
     /* Main grid */
     .main-grid { display:grid; grid-template-columns:1.2fr 1fr; gap:16px; margin-bottom:16px; }
@@ -117,25 +117,25 @@
     <!-- KPI Row -->
     <div class="kpi-row">
         <div class="kpi-card kpi-1">
-            <div class="kpi-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FF6B6B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 2 11 13 7 9 2 14"/></svg></div>
+            <div class="kpi-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 2 11 13 7 9 2 14"/></svg></div>
             <div class="kpi-val">{{ stats.total }}</div>
             <div class="kpi-label">Total Applied</div>
             <div class="kpi-accent"></div>
         </div>
         <div class="kpi-card kpi-2">
-            <div class="kpi-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#C855F7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></div>
+            <div class="kpi-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></div>
             <div class="kpi-val">{{ stats.interviews }}</div>
             <div class="kpi-label">Interviews</div>
             <div class="kpi-accent"></div>
         </div>
         <div class="kpi-card kpi-3">
-            <div class="kpi-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#6BCB77" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+            <div class="kpi-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
             <div class="kpi-val">{{ stats.offers }}</div>
             <div class="kpi-label">Offers</div>
             <div class="kpi-accent"></div>
         </div>
         <div class="kpi-card kpi-4">
-            <div class="kpi-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4D96FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div>
+            <div class="kpi-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div>
             <div class="kpi-val">{{ stats.interview_rate }}%</div>
             <div class="kpi-label">Interview Rate</div>
             <div class="kpi-accent"></div>
@@ -154,9 +154,9 @@
             {% set max_val = stats.total if stats.total > 0 else 1 %}
             <div class="funnel-grid">
                 {% for label, count, color in [
-                    ('Applied', stats.total, 'linear-gradient(180deg,#FF6B6B,#FF8E53)'),
-                    ('Interview', stats.interviews, 'linear-gradient(180deg,#C855F7,#a78bfa)'),
-                    ('Offer', stats.offers, 'linear-gradient(180deg,#6BCB77,#4D96FF)')
+                    ('Applied', stats.total, 'linear-gradient(180deg,#818cf8,#6366f1)'),
+                    ('Interview', stats.interviews, 'linear-gradient(180deg,#a78bfa,#7c3aed)'),
+                    ('Offer', stats.offers, 'linear-gradient(180deg,#34d399,#059669)')
                 ] %}
                 {% set pct = (count / max_val * 100) | int %}
                 {% set h = [pct, 6] | max %}
@@ -175,16 +175,16 @@
             </div>
             {% set offer_rate = ((stats.offers / stats.interviews) * 100) | int if stats.interviews > 0 else 0 %}
             <div class="funnel-rates">
-                <div class="rate-pill" style="background:#fff0f0;">
-                    <div class="rv" style="color:#FF6B6B;">{{ stats.interview_rate }}%</div>
+                <div class="rate-pill" style="background:#eef2ff;">
+                    <div class="rv" style="color:#6366f1;">{{ stats.interview_rate }}%</div>
                     <div class="rl">Interview Rate</div>
                 </div>
-                <div class="rate-pill" style="background:#f5f0ff;">
-                    <div class="rv" style="color:#C855F7;">{{ offer_rate }}%</div>
+                <div class="rate-pill" style="background:#ede9fe;">
+                    <div class="rv" style="color:#7c3aed;">{{ offer_rate }}%</div>
                     <div class="rl">Offer Rate</div>
                 </div>
-                <div class="rate-pill" style="background:#fff4f0;">
-                    <div class="rv" style="color:#FF8E53;">{{ stats.rejected }}</div>
+                <div class="rate-pill" style="background:#f1f5f9;">
+                    <div class="rv" style="color:#64748b;">{{ stats.rejected }}</div>
                     <div class="rl">Rejected</div>
                 </div>
             </div>
@@ -194,9 +194,9 @@
         <div class="panel">
             <div class="panel-head"><h3>Status Breakdown</h3></div>
             {% set status_list = [
-                ('Pending','#FFD93D'),('Applied','#4D96FF'),
-                ('Written Test','#FF8C42'),('Interview','#C855F7'),
-                ('Offer','#6BCB77'),('Rejected','#FF6B6B')
+                ('Pending','#94a3b8'),('Applied','#6366f1'),
+                ('Written Test','#f59e0b'),('Interview','#7c3aed'),
+                ('Offer','#059669'),('Rejected','#64748b')
             ] %}
             {% set status_counts = {} %}
             {% for app in applications %}

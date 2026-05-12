@@ -176,12 +176,14 @@
 
         /* ── Stats bar ── */
         .stats-section {
-            background: linear-gradient(135deg,#7c3aed,#a78bfa);
+            background: transparent;
+            border-top: 1px solid #f0f0f0;
+            border-bottom: 1px solid #f0f0f0;
             padding: 60px; display: flex; justify-content: center; gap: 80px;
         }
-        .stat-item { text-align: center; color: white; }
-        .stat-item h3 { font-size: 36px; font-weight: 900; margin-bottom: 6px; }
-        .stat-item p { font-size: 13px; opacity: 0.8; font-weight: 500; }
+        .stat-item { text-align: center; }
+        .stat-item h3 { font-size: 36px; font-weight: 900; margin-bottom: 6px; color: #7c3aed; }
+        .stat-item p { font-size: 13px; font-weight: 500; color: #64748b; }
 
         /* ── CTA ── */
         .cta-section {
@@ -474,7 +476,7 @@
 
 <footer>
     <a href="/" class="ft-logo"><div class="ft-logo-icon"><img src="/static/logo.png" style="width:32px;height:32px;"></div> ApplyTrack</a>
-    <p>© 2026 ApplyTrack · Built with <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle; margin:0 4px;"><path d="M12 21s-8.5-6.122-8.5-11.5S6.015 2 12 7.5 20.5 2 20.5 9.5 12 21 12 21z"/></svg> students</p>
+    <p>© 2026 ApplyTrack · Built with <svg width="14" height="14" viewBox="0 0 24 24" fill="#ef4444" stroke="none" style="vertical-align:middle; margin:0 4px;"><path d="M12 21.593c-.317-.143-6.5-3.365-8.5-7.593C2.066 11.242 3.234 8 5.851 8 7.553 8 9.119 9.093 10 10.5 10.881 9.093 12.447 8 14.149 8 16.766 8 17.934 11.242 16.5 14 14.5 18.228 12.317 21.45 12 21.593z"/></svg> students</p>
 </footer>
 
 <script>

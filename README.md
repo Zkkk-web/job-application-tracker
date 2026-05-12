@@ -4,36 +4,36 @@ A full-stack web application built with Python Flask to help students and job se
 
 ---
 
-##  Team Members
-- Bacy
-- Hadassah
+## 👥 Team Members
+- Member 1: Bacy
+- Member 2: Hadassah
 
 ---
 
-##  Features
+## ✨ Features
 
 ### Core Features
-- User Registration & Login (SHA-256 password encryption)
-- Add new job applications (company, position, date, status)
-- Update application status in real-time
-- Delete applications
-- View all applications in a clean table layout
-- Filter applications by status
+- 🔐 User Registration & Login (SHA-256 password encryption)
+- ➕ Add new job applications (company, position, date, status)
+- ✏️ Update application status in real-time
+- 🗑️ Delete applications
+- 📋 View all applications in a clean table layout
+- 🔍 Filter applications by status
 
 ### Dashboard & Analytics
-- Statistics overview (total applications, interviews, offers, rejection rate)
-- Pie chart — application status distribution
-- Bar chart — application count by status
+- 📊 Statistics overview (total applications, interviews, offers, rejection rate)
+- 🥧 Pie chart — application status distribution
+- 📈 Bar chart — application count by status
 
 ### Additional Pages
-- Calendar — track important dates and deadlines
-- Kanban Board — visual status tracking (Pending → Applied → Interview → Offer)
-- Resume Builder — build and manage your resume
-- Email Drafts — save and manage application emails
+- 📅 Calendar — track important dates and deadlines
+- 🗂️ Kanban Board — visual status tracking (Pending → Applied → Interview → Offer)
+- 📄 Resume Builder — build and manage your resume
+- ✉️ Email Drafts — save and manage application emails
 
 ---
 
-## Tech Stack
+## 🛠️ Tech Stack
 
 | Layer | Technology |
 |---|---|
@@ -45,7 +45,7 @@ A full-stack web application built with Python Flask to help students and job se
 
 ---
 
-## How to Run
+## 🚀 How to Run
 
 ### 1. Clone the repository
 ```
@@ -70,7 +70,7 @@ http://127.0.0.1:5000
 
 ---
 
-## Project Structure
+## 📁 Project Structure
 
 ```
 job-application-tracker/
@@ -101,7 +101,7 @@ job-application-tracker/
 
 ---
 
-## Application Status Flow
+## 📌 Application Status Flow
 
 ```
 Pending → Applied → Written Test → Interview → Offer ✅
@@ -110,6 +110,6 @@ Pending → Applied → Written Test → Interview → Offer ✅
 
 ---
 
-## Purpose
+## 🎯 Purpose
 
 This project was built to solve a real problem for students during job hunting season — keeping track of dozens of applications across different companies and platforms. Instead of using spreadsheets, this app provides a clean, interactive, and visual way to manage the entire job search process.

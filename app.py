@@ -6,6 +6,21 @@ from src.stats import show_stats, generate_chart
 
 app = Flask(__name__)
 app.secret_key = "job_tracker_secret_key"
+app.config['TEMPLATES_AUTO_RELOAD'] = True
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
+app.jinja_env.auto_reload = True
+app.jinja_env.cache = {}
+
+# ─── Cache Control ──────────────────────────────────
+@app.after_request
+def disable_cache(response):
+    response.cache_control.no_cache = True
+    response.cache_control.no_store = True
+    response.cache_control.max_age = 0
+    response.cache_control.must_revalidate = True
+    response.headers['Pragma'] = 'no-cache'
+    response.headers['Expires'] = '0'
+    return response
 
 # ─── Home ───────────────────────────────────────────
 @app.route('/')
@@ -143,7 +158,7 @@ def kanban():
         'Offer': [a for a in applications if a['status'] == 'Offer'],
         'Rejected': [a for a in applications if a['status'] == 'Rejected'],
     }
-    return render_template('kanban.html', applications=applications, stats=stats, board=board)
+    return render_template('kanban.html', applications=applications, stats=stats, board=board, username=username)
 @app.route('/calendar')
 def calendar_view():
     if 'username' not in session:
@@ -171,7 +186,8 @@ def calendar_view():
                            applications=applications,
                            grid=grid,
                            month=month,
-                           year=year)
+                           year=year, 
+                           username=username)
 @app.route('/resume', methods=['GET', 'POST'])
 def resume():
     if 'username' not in session:
@@ -205,7 +221,8 @@ def resume_save():
 def email_drafts():
     if 'username' not in session:
         return redirect(url_for('login'))
-    return render_template('email_drafts.html')
+    username = session['username']
+    return render_template('email_drafts.html', username=username)
 
 
 @app.route('/stats')
@@ -260,4 +277,4 @@ def clear_applications():
     save_applications(username, [])
     return '', 204
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, use_reloader=False)

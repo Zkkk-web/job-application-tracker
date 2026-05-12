@@ -347,13 +347,15 @@
     };
 
     // Load follow-up by default
-    loadTemplate('followup', document.querySelector('.template-item.active'));
-
     function loadTemplate(type, el) {
         document.querySelectorAll('.template-item').forEach(c => c.classList.remove('active'));
         el.classList.add('active');
         const t = templates[type];
-        document.getElementById('composer-title').textContent = t.title;
+        // Preserve the SVG icon, only update the text node
+        const titleEl = document.getElementById('composer-title');
+        const svg = titleEl.querySelector('svg');
+        titleEl.textContent = t.title;
+        if (svg) titleEl.prepend(svg);
         document.getElementById('composer-desc').textContent = t.desc;
         document.getElementById('email-subject').value = t.subject;
         document.getElementById('email-body').value = t.body;

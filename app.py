@@ -254,7 +254,8 @@ def stats():
                            stats=stats_data,
                            applications=applications,
                            weekly_labels=weekly_labels,
-                           weekly_values=weekly_values)
+                           weekly_values=weekly_values, 
+                           username=username)
 @app.route('/jobsearch')
 def jobsearch():
     if 'username' not in session:

@@ -97,16 +97,16 @@
                             border-radius:50%; display:flex; align-items:center;
                             justify-content:center; cursor:pointer; border:2px solid white;
                             font-size:12px; color:white;
-                        " title="Upload photo">📷</label>
+                        " title="Upload photo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h3l2-3h6l2 3h3v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7z"/><circle cx="12" cy="13" r="3"/></svg></label>
                         <input type="file" id="avatarUpload" accept="image/png,image/jpeg,image/gif,image/webp"
                             style="display:none;" onchange="uploadAvatar(this)">
                     </div>
                     <div class="avatar-info">
                         <h3>{{ username }}</h3>
                         <p>ApplyTrack Member</p>
-                        <button class="btn-avatar" onclick="toggleEmojiPicker()">Choose Emoji</button>
+                        <button class="btn-avatar" onclick="toggleEmojiPicker()">Choose Avatar</button>
                         <div class="emoji-picker" id="emojiPicker" style="display:none;">
-                            {% for e in ['😊','🚀','💪','🌟','🦁','🐯','🦊','🎯','💡','🔥','⚡','🎓','💼','🏆','🌈','🎨'] %}
+                            {% for e in ['A','R','M','S','L','T','F','N','I','P','D','C','B','O','U','E'] %}
                             <button class="emoji-btn" onclick="setAvatar('{{ e }}')">{{ e }}</button>
                             {% endfor %}
                         </div>
@@ -176,7 +176,7 @@
                     <label class="toggle"><input type="checkbox" id="n_interview" checked onchange="savePref('n_interview',this.checked)"><span class="toggle-slider"></span></label>
                 </div>
                 <div class="setting-row">
-                    <div class="setting-info"><h4>Offer Celebrations 🎉</h4><p>Special alert when you get an offer</p></div>
+                    <div class="setting-info"><h4>Offer Celebrations</h4><p>Special alert when you get an offer</p></div>
                     <label class="toggle"><input type="checkbox" id="n_offer" checked onchange="savePref('n_offer',this.checked)"><span class="toggle-slider"></span></label>
                 </div>
             </div>
@@ -256,7 +256,7 @@ function showSection(name, el) {
 // ── Toast ──
 function showToast(msg, ok=true) {
     const t = document.getElementById('settingsToast');
-    t.textContent = (ok ? '✅ ' : '❌ ') + msg;
+    t.innerHTML = msg;
     t.style.background = ok ? '#7c3aed' : '#dc2626';
     t.classList.add('show');
     setTimeout(() => t.classList.remove('show'), 2500);
@@ -303,9 +303,9 @@ function changePassword() {
 
 // ── Theme ──
 function applyTheme(el, color, name) {
-    document.querySelectorAll('.theme-card').forEach(c => { c.classList.remove('selected'); c.textContent=''; });
+    document.querySelectorAll('.theme-card').forEach(c => { c.classList.remove('selected'); c.innerHTML=''; });
     el.classList.add('selected');
-    el.textContent = '✓';
+    el.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
     localStorage.setItem('themeColor', color);
     localStorage.setItem('themeName', name);
     document.documentElement.style.setProperty('--primary', color);
@@ -320,14 +320,14 @@ function savePref(key, val) {
 
 // ── Danger ──
 function confirmClear() {
-    if (confirm('⚠️ This will delete ALL your applications. Are you sure?')) {
+    if (confirm('This will delete ALL your applications. Are you sure?')) {
         fetch('/clear_applications', {method:'POST'})
             .then(() => showToast('All applications cleared!'))
             .catch(() => showToast('Please add /clear_applications route to app.py', false));
     }
 }
 function confirmDelete() {
-    if (confirm('⚠️ This will permanently delete your account. Are you sure?')) {
+    if (confirm('This will permanently delete your account. Are you sure?')) {
         window.location.href = '/logout';
     }
 }
@@ -351,9 +351,9 @@ window.addEventListener('load', () => {
     const colors = ['#7c3aed','#2563eb','#059669','#1a1a2e'];
     colors.forEach((c, i) => {
         if (c === savedColor) {
-            document.querySelectorAll('.theme-card').forEach(el => { el.classList.remove('selected'); el.textContent=''; });
+            document.querySelectorAll('.theme-card').forEach(el => { el.classList.remove('selected'); el.innerHTML=''; });
             const el = document.getElementById('theme-' + i);
-            if (el) { el.classList.add('selected'); el.textContent='✓'; }
+            if (el) { el.classList.add('selected'); el.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>'; }
         }
     });
 

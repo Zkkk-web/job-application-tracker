@@ -38,11 +38,12 @@
     }
     .check-item:hover { border-color: #e9d5ff; box-shadow: 0 4px 12px rgba(124,58,237,0.08); }
     .check-circle {
-        width: 22px; height: 22px; border-radius: 50%;
-        border: 2px solid #d8b4fe; flex-shrink: 0; margin-top: 2px;
+        width: 24px; height: 24px; border-radius: 0;
+        border: none; flex-shrink: 0; margin-top: 2px;
         display: flex; align-items: center; justify-content: center; transition: all 0.2s;
+        font-size: 17px; text-align: center;
     }
-    .check-circle.checked { background: #7c3aed; border-color: #7c3aed; color: white; font-size: 12px; }
+    .check-circle.checked { color: #7c3aed; font-size: 17px; }
     .check-content h4 { font-size: 14px; font-weight: 700; color: #1a1a2e; margin-bottom: 3px; }
     .check-content p { font-size: 12px; color: #888; line-height: 1.5; }
     .check-tag {
@@ -65,7 +66,7 @@
     </div>
     <div class="checklist">
         <div class="check-item">
-            <div class="check-circle checked">✓</div>
+            <div class="check-circle checked"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
             <div class="check-content">
                 <h4>Create your Account</h4>
                 <p>You're all set! Your account is ready to go.</p>
@@ -112,7 +113,7 @@
 function toggleCheck(item) {
     const circle = item.querySelector('.check-circle');
     circle.classList.toggle('checked');
-    circle.textContent = circle.classList.contains('checked') ? '✓' : '';
+    circle.innerHTML = circle.classList.contains('checked') ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>' : '';
 }
 const canvas = document.getElementById('confetti');
 const ctx = canvas.getContext('2d');

@@ -14,7 +14,7 @@
       <input type="text" name="position" required>
 
       <label>Application Date</label>
-      <input type="date" name="date" id="dateInput" required>
+      <input type="date" name="date" required>
 
       <label>Status</label>
       <select name="status">
@@ -31,12 +31,4 @@
     </form>
   </div>
 
-{% endblock %}
-
-{% block extra_scripts %}
-<script>
-// Pre-fill date if coming from calendar
-const urlDate = new URLSearchParams(location.search).get('date');
-if (urlDate) document.getElementById('dateInput').value = urlDate;
-</script>
 {% endblock %}

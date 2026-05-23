@@ -5,13 +5,33 @@
 {% block content %}
 
   <div class="card" style="max-width:500px; margin: 40px auto;">
+
+    <!-- JD Parser Section -->
+    <h2>Parse JD with AI</h2>
+    <p style="color:#888; font-size:0.9em;">Paste a job description and let AI fill the form for you.</p>
+    <form method="POST" action="/parse_jd">
+      <label>Job Description</label>
+      <textarea name="jd_text" rows="6" placeholder="Paste the full JD here..." style="width:100%; padding:8px; border:1px solid #ccc; border-radius:4px;">{{ jd_text or '' }}</textarea>
+      <button type="submit" style="margin-top:8px; background:#6c63ff;">✨ Auto-fill with AI</button>
+    </form>
+
+    {% if error %}
+      <p style="color:red; margin-top:10px;">{{ error }}</p>
+    {% endif %}
+
+    <hr style="margin: 30px 0;">
+
+    <!-- Manual Form Section -->
     <h2>Add New Application</h2>
-    <form method="POST">
+    <form method="POST" action="/add">
       <label>Company Name</label>
-      <input type="text" name="company" required>
+      <input type="text" name="company" value="{{ prefill.company if prefill else '' }}" required>
 
       <label>Position</label>
-      <input type="text" name="position" required>
+      <input type="text" name="position" value="{{ prefill.position if prefill else '' }}" required>
+
+      <label>Requirements (optional)</label>
+      <input type="text" name="requirements" value="{{ prefill.requirements if prefill else '' }}">
 
       <label>Application Date</label>
       <input type="date" name="date" required>
@@ -29,6 +49,7 @@
       <button type="submit">Add Application</button>
       <a href="/dashboard" class="btn btn-danger" style="margin-left:10px;">Cancel</a>
     </form>
+
   </div>
 
 {% endblock %}

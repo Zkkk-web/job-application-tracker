@@ -4,7 +4,7 @@ from flask import Flask, render_template, request, redirect, url_for, session, j
 from src.auth import register_web, login_web
 from src.manager import load_applications, add_application, save_applications, delete_application, update_status
 from src.stats import show_stats, generate_chart
-
+from jd_parser import parse_jd
 # ─── Per-user data helpers ──────────────────────────
 DATA_DIR = "data"
 
@@ -123,7 +123,22 @@ def dashboard():
                            applications=enumerate(applications),
                            stats=stats,
                            chart_available=chart_available)
-
+# ─── Parse JD ───────────────────────────────────────
+@app.route('/parse_jd', methods=['POST'])
+def parse_jd_route():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+    
+    jd_text = request.form.get('jd_text', '')
+    
+    try:
+        parsed = parse_jd(jd_text)
+        return render_template('add.html',
+                             prefill=parsed,
+                             jd_text=jd_text)
+    except Exception as e:
+        return render_template('add.html',
+                             error=f"Failed to parse JD: {str(e)}")
 # ─── Add Application ────────────────────────────────
 @app.route('/add', methods=['GET', 'POST'])
 def add():

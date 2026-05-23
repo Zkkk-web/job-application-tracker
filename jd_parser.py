@@ -14,7 +14,7 @@ def skill_parse_jd(jd_text: str) -> dict:
         messages=[
             {
                 "role": "system",
-                "content": "You are a job description analyst. Return only valid JSON, no explanation or markdown. All values must be in English."
+                "content": "You are a job description analyst. Return only valid JSON, no explanation or markdown. All field values must be in the same language as the input job description. If the JD is in Chinese, respond entirely in Chinese. If in English, respond entirely in English. Never mix languages."
             },
             {
                 "role": "user",
@@ -47,7 +47,7 @@ def skill_action_plan(jd_text: str) -> dict:
         messages=[
             {
                 "role": "system",
-                "content": "You are a career coach. Return only valid JSON, no explanation or markdown. All values must be in English."
+                "content": "You are a career coach. Return only valid JSON, no explanation or markdown. All field values must be in the same language as the input job description. If the JD is in Chinese, respond entirely in Chinese. If in English, respond entirely in English. Never mix languages."
             },
             {
                 "role": "user",

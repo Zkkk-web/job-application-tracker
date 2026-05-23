@@ -1,9 +1,9 @@
 from openai import OpenAI
 import json
-
+import os
 def parse_jd(jd_text: str) -> dict:
     client = OpenAI(
-        api_key="sk-9a1e478270a24ac9af1fab8b7151e2c3",
+        api_key=os.environ.get("DEEPSEEK_API_KEY"),
         base_url="https://api.deepseek.com"
     )
 

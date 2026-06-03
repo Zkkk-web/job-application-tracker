@@ -44,7 +44,7 @@
     .btn-avatar { background: #f5f3ff; color: #7c3aed; border: 1px solid #e9d5ff; padding: 6px 14px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; margin-top: 8px; transition: all 0.15s; }
     .btn-avatar:hover { background: #ede9fe; }
     .emoji-picker { display: flex; flex-wrap: wrap; gap: 8px; padding: 12px; background: white; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.12); border: 1px solid #e9d5ff; margin-top: 8px; max-width: 260px; }
-    .emoji-btn { font-size: 22px; border: none; background: none; cursor: pointer; padding: 4px; border-radius: 6px; transition: background 0.15s; }
+    .emoji-btn { font-size: 22px; border: none; background: none; cursor: pointer; padding: 4px; border-radius: 6px; transition: background 0.15s; color: #1a1a2e; }
     .emoji-btn:hover { background: #f5f3ff; }
     .theme-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 10px; }
     .theme-card { height: 56px; border-radius: 10px; cursor: pointer; border: 2px solid transparent; transition: all 0.2s; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700; color: white; }
@@ -96,7 +96,7 @@
                             width:22px; height:22px; background:#7c3aed;
                             border-radius:50%; display:flex; align-items:center;
                             justify-content:center; cursor:pointer; border:2px solid white;
-                            font-size:12px; color:white;
+                            font-size:12px; color:black;
                         " title="Upload photo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h3l2-3h6l2 3h3v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7z"/><circle cx="12" cy="13" r="3"/></svg></label>
                         <input type="file" id="avatarUpload" accept="image/png,image/jpeg,image/gif,image/webp"
                             style="display:none;" onchange="uploadAvatar(this)">
@@ -106,10 +106,13 @@
                         <p>ApplyTrack Member</p>
                         <button class="btn-avatar" onclick="toggleEmojiPicker()">Choose Avatar</button>
                         <div class="emoji-picker" id="emojiPicker" style="display:none;">
-                            {% for e in ['A','R','M','S','L','T','F','N','I','P','D','C','B','O','U','E'] %}
+                            {% for e in ['😀','😂','😍','🥰','😎','🤩','🥳','😭','🥸','🤯','🥶','😱'] %}
                             <button class="emoji-btn" onclick="setAvatar('{{ e }}')">{{ e }}</button>
+                            
                             {% endfor %}
+                            
                         </div>
+
                     </div>
                 </div>
                 <div class="form-group">
@@ -267,12 +270,7 @@ function toggleEmojiPicker() {
     const p = document.getElementById('emojiPicker');
     p.style.display = p.style.display === 'none' ? 'flex' : 'none';
 }
-function setAvatar(emoji) {
-    document.getElementById('bigAvatar').textContent = emoji;
-    localStorage.setItem('avatar', emoji);
-    document.getElementById('emojiPicker').style.display = 'none';
-    showToast('Avatar updated!');
-}
+
 
 // ── Profile ──
 function saveProfile() {

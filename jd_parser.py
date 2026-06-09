@@ -8,7 +8,7 @@ client = OpenAI(
 )
 
 def skill_parse_jd(jd_text: str) -> dict:
-    """Skill 1: 结构化解析JD"""
+    """Skill 1: extract structured info from JD"""
     response = client.chat.completions.create(
         model="deepseek-chat",
         messages=[
@@ -41,7 +41,7 @@ Job Description:
 
 
 def skill_action_plan(jd_text: str) -> dict:
-    """Skill 2: 生成可执行建议"""
+    """Skill 2: generate actionable advice"""
     response = client.chat.completions.create(
         model="deepseek-chat",
         messages=[
@@ -71,7 +71,7 @@ Job Description:
 
 
 def parse_jd(jd_text: str) -> dict:
-    """合并两个Skill的结果"""
+    """Main function to parse JD and generate action plan"""
     parsed = skill_parse_jd(jd_text)
     action = skill_action_plan(jd_text)
     return {**parsed, **action}
